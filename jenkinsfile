@@ -1,0 +1,81 @@
+import groovy.json.JsonSlurper
+
+//SOURCES_JSON = "sources.json"
+TESTS_JSON = 'tests.json'
+SOURCES_JSON = "sources.json"
+CLEAN_JSON = 'cleanup.json'
+VM_LIST = ["vm-n2-ws11", "vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
+
+def getParralelDeliveryMap(src){
+      
+      return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
+}
+
+
+def deliverSources(src){
+  return{
+    stage(src['name']){ 
+      powershell encoding:'UTF-8', script:"""${src['source']}"""
+    }
+  }
+}
+
+
+pipeline{
+  parameters {
+      //booleanParam(name: 'Cleanup', defaultValue: false)
+      choice(name:"TESTVM", choices:VM_LIST )
+      //string(name:'Task', defaultValue: "", trim: true)
+  }
+
+  agent {label "${TESTVM}" }
+
+  stages{
+
+    stage('cleanup'){
+      steps{
+        script{
+          def data = readJSON file: CLEAN_JSON
+          def map = getParralelDeliveryMap(data)
+          parallel map
+        }
+      }
+    }
+
+    stage('Src Delivery'){ 
+      steps{
+        script{
+          def data = readJSON file: SOURCES_JSON
+          def map = getParralelDeliveryMap(data)
+          parallel map
+        }
+      }
+    }
+    
+
+    stage('DBs & IIS'){
+      parallel{
+        stage('Config IIS'){
+          steps{
+            print('config IIS')
+          }
+        }
+        stage('Deploy DB'){
+          steps{
+            print ('DB')
+          }
+        }
+      }
+    }
+
+    stage('Tests'){
+      steps{ 
+        script{ 
+          def data = readJSON file: TESTS_JSON
+          def map = getParralelDeliveryMap(data)
+          parallel map
+        }
+      }
+    }
+  }
+}

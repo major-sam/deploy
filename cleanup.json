@@ -1,0 +1,17 @@
+[{
+        "name": "clean1",
+        "source": "echo source1"
+    }, {
+        "name": "clean2",
+        "source": "echo source2"
+    }, {
+        "name": "clean3",
+        "source": " echo source3"
+    }, {
+        "name": "clean4",
+        "source": " echo source4"
+    }, {
+        "name": "clean5",
+        "source": "echo source5"
+    }
+]
