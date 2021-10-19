@@ -1,6 +1,4 @@
-import groovy.json.JsonSlurper
-
-//SOURCES_JSON = "sources.json"
+TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
 SOURCES_JSON = "sources.json"
 CLEAN_JSON = 'cleanup.json'
@@ -23,14 +21,36 @@ def deliverSources(src){
 
 pipeline{
   parameters {
-      //booleanParam(name: 'Cleanup', defaultValue: false)
       choice(name:"TESTVM", choices:VM_LIST )
-      //string(name:'Task', defaultValue: "", trim: true)
   }
 
   agent {label "${TESTVM}" }
 
   stages{
+    stage('Choose release tag'){
+      steps{
+        script{
+           def tags = powershell(
+                      returnStdout:true,
+                      encoding:'UTF-8',
+                      script:'git tag'
+                      ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
+            println tags
+            println tags.getClass()
+            println tags.isEmpty()
+            if (!tags.isEmpty()){
+              tags.add(0,TAG_PLACEHOOLDER)
+              println tags
+              tag = input message: 'Choose release to deploy', ok: 'Deploy!',
+                    parameters: [choice (name: '', choices: tags, description: "Choose release")]
+              println tag
+              if(tag != TAG_PLACEHOOLDER){
+                powershell "git checkout tags/${tag}"
+              }
+            }
+        }
+      }
+    }
 
     stage('cleanup'){
       steps{
