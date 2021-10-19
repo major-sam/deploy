@@ -57,12 +57,14 @@ pipeline{
       parallel{
         stage('Config IIS'){
           steps{
-            print('config IIS')
+            print("""config IIS. Example: 
+            powershell ./scripts/IISConfig.ps1""")
           }
         }
         stage('Deploy DB'){
           steps{
-            print ('DB')
+            print ("""DB example:
+            powershell ./scripts/DB.ps1""")
           }
         }
       }
