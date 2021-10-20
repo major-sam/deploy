@@ -1,4 +1,6 @@
-$username ="GKBALTBET\TestKernel_svc"
+echo 'no cleanup - no configure'
+
+<# $username ="GKBALTBET\TestKernel_svc"
 $pass = "GldycLIFKM2018"
 $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
@@ -84,4 +86,4 @@ if ( (C:\Windows\system32\inetsrv\appcmd.exe  list config   -section:system.appl
 $WebSiteName = "UniRu"
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartEnabled -Value True
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartProvider -Value $preloader
-	
+	 #>

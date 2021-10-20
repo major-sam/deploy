@@ -1,17 +1,29 @@
 [{
-        "name": "clean1",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "CIS",
+        "source": ".\\scripts\\cleanup\\CIS.ps1"
     }, {
-        "name": "clean2",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "Kernel",
+        "source": ".\\scripts\\cleanup\\Kernel.ps1"
     }, {
-        "name": "clean3",
-        "source": " echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "PDA",
+        "source": ".\\scripts\\cleanup\\PDA.ps1"
     }, {
-        "name": "clean4",
-        "source": " echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "UniRu",
+        "source": ".\\scripts\\cleanup\\UniRu.ps1"
     }, {
-        "name": "clean5",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "rabbitmq",
+        "source": ".\\scripts\\cleanup\\rabbitmq.ps1"
+    }, {
+        "name": "UniPaymentsService",
+        "source": ".\\scripts\\cleanup\\UniPaymentsService.ps1"
+    }, {
+        "name": "UniWebApiAuth",
+        "source": ".\\scripts\\cleanup\\UniWebApiAuth.ps1"
+    }, {
+        "name": "WebTouch",
+        "source": ".\\scripts\\cleanup\\WebTouch.ps1"
+    }, {
+        "name": "cleanup placeholder",
+        "source": "echo 'cleanup placeholder'"
     }
 ]

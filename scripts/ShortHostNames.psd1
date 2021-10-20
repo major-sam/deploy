@@ -26,6 +26,8 @@
     "VM-N1-WS5" = "ws5-n1"
     "VM-N1-WS6" = "ws6-n1"
     "VM-N1-WS7" = "ws7-n1"
+    # HM-N2
+    "vm-n2-ws11" = "ws11-n2"
     # Stage
     "vm1apktest-p1" = "st1"
     "vm-p1-ws2" = "st2"

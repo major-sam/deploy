@@ -2,17 +2,17 @@ TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
 SOURCES_JSON = "deploy.json"
 CLEAN_JSON = 'cleanup.json'
-VM_LIST = ["vm-n2-ws11", "vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
+VM_LIST = ["vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
 def getParralelDeliveryMap(src){
-      
       return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
 }
 
 def deliverSources(src){
   return{
     stage(src['name']){ 
-      powershell encoding:'UTF-8', script:"""${src['source']}"""
+      println "${src['source']}"     
+      powershell encoding:'UTF-8', script:"${src['source']}"
     }
   }
 }
@@ -76,20 +76,18 @@ pipeline{
       parallel{
         stage('Config IIS'){
           steps{
-            print("""config IIS. Example: 
-            powershell ./scripts/IISConfig.ps1""")
+            powershell '.\\scripts\\IISConfig.ps1'
           }
         }
         stage('Deploy DB'){
           steps{
-            print ("""DB example:
-            powershell ./scripts/DB.ps1""")
+            powershell '.\\scripts\\DB.ps1'
           }
         }
       }
     }
 
-    stage('Tests'){
+    stage('PostDepoy & Tests'){
       steps{ 
         script{ 
           def data = readJSON file: TESTS_JSON

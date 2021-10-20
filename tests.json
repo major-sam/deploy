@@ -1,17 +1,26 @@
 [{
-        "name": "test1",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "CIS",
+        "source": ".\\scripts\\testsAndPost\\CIS.ps1 "
     }, {
-        "name": "test2",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "Kernel",
+        "source": ".\\scripts\\testsAndPost\\Kernel.ps1 "
     }, {
-        "name": "test3",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "PDA",
+        "source": ".\\scripts\\testsAndPost\\PDA.ps1 "
     }, {
-        "name": "test4",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "rabbitmq",
+        "source": ".\\scripts\\testsAndPost\\rabbitmq.ps1 "
     }, {
-        "name": "test5",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
+        "name": "UniRu",
+        "source": ".\\scripts\\testsAndPost\\UniRu.ps1 "
+    }, {
+        "name": "UniWebApiAuth",
+        "source": ".\\scripts\\testsAndPost\\UniWebApiAuth.ps1 "
+    }, {
+        "name": "WebTouch",
+        "source": ".\\scripts\\testsAndPost\\WebTouch.ps1 "
+    }, {
+        "name": "UniPaymentsService",
+        "source": ".\\scripts\\testsAndPost\\UniPaymentsService.ps1 "
     }
 ]
