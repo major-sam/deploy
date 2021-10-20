@@ -1,17 +1,17 @@
 [{
-        "name": "test1",
+        "name": "some scripts",
+        "source": "echo $env:COMPUTERNAME\nsysteminfo"
+    }, {
+        "name": "service2",
         "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
-        "name": "test2",
+        "name": "service3",
         "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
-        "name": "test3",
+        "name": "service4",
         "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
-        "name": "test4",
-        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
-    }, {
-        "name": "test5",
+        "name": "service5",
         "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }
 ]

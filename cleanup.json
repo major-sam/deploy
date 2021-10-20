@@ -1,17 +1,17 @@
 [{
         "name": "clean1",
-        "source": "echo source1"
+        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
         "name": "clean2",
-        "source": "echo source2"
+        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
         "name": "clean3",
-        "source": " echo source3"
+        "source": " echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
         "name": "clean4",
-        "source": " echo source4"
+        "source": " echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }, {
         "name": "clean5",
-        "source": "echo source5"
+        "source": "echo 'example run: .scriptsps.ps1 OR echo a /n echo b OR echo a | echo b OR echo A&& echo B' "
     }
 ]

@@ -1,6 +1,6 @@
 TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
-SOURCES_JSON = "sources.json"
+SOURCES_JSON = "deploy.json"
 CLEAN_JSON = 'cleanup.json'
 VM_LIST = ["vm-n2-ws11", "vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
@@ -8,7 +8,6 @@ def getParralelDeliveryMap(src){
       
       return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
 }
-
 
 def deliverSources(src){
   return{
@@ -30,24 +29,24 @@ pipeline{
     stage('Choose release tag'){
       steps{
         script{
-           def tags = powershell(
-                      returnStdout:true,
-                      encoding:'UTF-8',
-                      script:'git tag'
-                      ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
+          def tags = powershell(
+                     returnStdout:true,
+                     encoding:'UTF-8',
+                     script:'git tag'
+                     ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
+          println tags
+          println tags.getClass()
+          println tags.isEmpty()
+          if (tags[0] =~ /[a-zA-Z]/){
+            tags.add(0,TAG_PLACEHOOLDER)
             println tags
-            println tags.getClass()
-            println tags.isEmpty()
-            if (!tags.isEmpty()){
-              tags.add(0,TAG_PLACEHOOLDER)
-              println tags
-              tag = input message: 'Choose release to deploy', ok: 'Deploy!',
-                    parameters: [choice (name: '', choices: tags, description: "Choose release")]
-              println tag
-              if(tag != TAG_PLACEHOOLDER){
-                powershell "git checkout tags/${tag}"
-              }
+            tag = input message: 'Choose release to deploy', ok: 'Deploy!',
+                  parameters: [choice (name: '', choices: tags, description: "Choose release")]
+            println tag
+            if(tag != TAG_PLACEHOOLDER){
+              powershell "git checkout tags/${tag}"
             }
+          }
         }
       }
     }
