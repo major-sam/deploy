@@ -8,20 +8,29 @@
         "name": "kernel",
         "source": ".\\scripts\\deploy\\kernel.ps1"
     }, {
+        "name": "kernelWeb",
+        "source": ".\\scripts\\deploy\\kernelWeb.ps1"
+    }, {
         "name": "PDA",
         "source": ".\\scripts\\deploy\\PDA.ps1"
     }, {
         "name": "UniPaymentsService",
         "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"
     }, {
-        "name": "UniRu",
-        "source": ".\\scripts\\deploy\\UniRu.ps1"
-    }, {
-        "name": "UniWebApiAuth",
-        "source": ".\\scripts\\deploy\\UniWebApiAuth.ps1"
-    }, {
+        "name": "UniRuAndApi",
+        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1"
+    },  {
         "name": "WebTouch",
         "source": ".\\scripts\\deploy\\WebTouch.ps1"
+    }, {
+        "name": "baltbetcom",
+        "source": ".\\scripts\\deploy\\baltbetcom.ps1"
+    }, {
+        "name": "ClientWorkSpace",
+        "source": ".\\scripts\\deploy\\ClientWorkSpace.ps1"
+    }, {
+        "name": "MessageService",
+        "source": ".\\scripts\\deploy\\MessageService.ps1"
     }, {
         "name": "cert",
         "source": "certutil.exe -addstore root .\\scripts\\deploy\\gkbaltbet-ca.cer"

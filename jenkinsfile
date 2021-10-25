@@ -2,7 +2,7 @@ TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
 SOURCES_JSON = "deploy.json"
 CLEAN_JSON = 'cleanup.json'
-VM_LIST = ["vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
+VM_LIST = ["devops-test-vm1","vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
 def getParralelDeliveryMap(src){
       return src.collectEntries{[ (it['name']) : deliverSources(it) ]}

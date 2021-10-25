@@ -29,6 +29,7 @@ $user_permissions = (($user_permissions | ConvertTo-Json) -replace '"', '\"')
 
 # Запрашиваем инфо о пользователе
 Write-Host -ForegroundColor Green "[INFO] RabbitMQ - Get info about user '$new_user'"
+Write-Host "curl.exe -i -u $rabbit_admin_user`:$rabbit_admin_pass -H "content-type:application/json" -X GET http://"$hostname":15672/api/users/$new_user -silent"
 $resp_get_user = curl.exe -i -u $rabbit_admin_user`:$rabbit_admin_pass -H "content-type:application/json" -X GET http://"$hostname":15672/api/users/$new_user -silent
 if ($resp_get_user[0] -eq "HTTP/1.1 200 OK") {
     Write-Host "[INFO] RabbitMQ - User '$new_user' exists" -ForegroundColor Green

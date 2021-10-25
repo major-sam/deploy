@@ -13,18 +13,21 @@ Invoke-Command -FilePath '\\server\tcbuild$\Testers\_VM Update Instructions\08.1
 
 Проверка: +79112492620 Qwerty1z
 #>
+import-module '.\scripts\sideFunctions.psm1'
+
+
+$release_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\22.10.2021 RELEASE"
+$release_bak_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\22.10.2021 RELEASE\_Full DB Restoration"
 
 $ProgressPreference = 'SilentlyContinue'
-$release_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\08.10.2021 RELEASE"
-$release_bak_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\08.10.2021 RELEASE\_Full DB Restoration\"
-$MSSQLDataPath = "C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\"
+
 $queryTimeout = 720
 $excludeSqlCmds = "1.DBRestore.sql"
 $files = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
 $dbs = @(
 	@{
 		DbName = "BaltBetM"
-		BackupFile = "BaltBetM.bak"
+		BackupFile = "$release_bak_folder\BaltBetM.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetM"
@@ -42,7 +45,7 @@ $dbs = @(
 	}
 	@{
 		DbName = "BaltBetMMirror"
-		BackupFile = "BaltBetM.bak"
+		BackupFile = "$release_bak_folder\BaltBetM.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetM"
@@ -60,7 +63,7 @@ $dbs = @(
 	}
 	@{
 		DbName = "BaltBetWeb"
-		BackupFile = "BaltBetWeb.bak"
+		BackupFile = "$release_bak_folder\BaltBetWeb.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetWeb"
@@ -91,36 +94,12 @@ $dbs = @(
 		)
 	} #>
 )
-
-function RestoreSqlDb($db_params) {
-	foreach ($db in $db_params){
-		$RelocateFile = @() 
-        $dbname = $db.DbName
-		$KillConnectionsSql=
-			"
-			USE master
-			GO
-			ALTER DATABASE [$dbname] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
-			GO
-			DROP DATABASE [$dbname]
-			GO
-			"
-		Invoke-Sqlcmd -Verbose -ServerInstance $env:COMPUTERNAME -Query $KillConnectionsSql -ErrorAction continue
-		if ($db.ContainsKey('RelocateFiles')){
-			foreach ($dbFile in $db.RelocateFiles) {
-				$RelocateFile += New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($dbFile.SourceName, ("{0}{1}" -f $MSSQLDataPath, $dbFile.FileName))
-			}
-			$dbBackupFile = $release_bak_folder + $db.BackupFile
-			Restore-SqlDatabase -Verbose -ServerInstance $env:COMPUTERNAME -Database $db.DbName -BackupFile  $dbBackupFile -RelocateFile $RelocateFile -ReplaceDatabase
-			Push-Location C:\Windows
-		}else{
-			Restore-SqlDatabase -Verbose -ServerInstance $env:COMPUTERNAME -Database $db.DbName -BackupFile  $dbBackupFile -ReplaceDatabase
-			Push-Location C:\Windows			
-		}
-	}
-}
-
-RestoreSqlDb($dbs)
+#todo refactoring
+[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
+$srv = New-Object "Microsoft.SqlServer.Management.Smo.Server" "."
+$MssqlVersion = "MSSQL" + $srv.Version.major
+$MSSQLDataPath = "C:\Program Files\Microsoft SQL Server\$MssqlVersion.MSSQLSERVER\MSSQL\DATA"
+RestoreSqlDb -db_params $dbs -MSSQLDataPath  $MSSQLDataPath
 
 
 # Выполняем скрипты из актуализации BaltBetM
