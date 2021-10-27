@@ -23,7 +23,7 @@ $rQuery =" EXEC sp_MSforeachdb
   "
 invoke-sqlcmd -ServerInstance $sqlInstanceName -Query $rQuery
 
-## cleanup services
+<## cleanup services
 #### service stop & remove
 Stop-Service BaltBet.MessageService.Host
 #### proc kill   
@@ -41,13 +41,10 @@ foreach($proc in $procs){
 	}
 	Remove-Variable pr
 }
-#### cleanup folders
-sleep 10
-Remove-Item -Path C:\Services\* -Force -Recurse
-
+#>
 ## cleanup kernel
 #### service stop & remove
-Stop-Service kernel, kernelweb
+Stop-Service Baltbet.*
 #### proc kill   
 
 $procs = @("Kernel", "KernelWeb")
@@ -66,5 +63,10 @@ foreach($proc in $procs){
 }
 
 sleep 10
-#### cleanup folders
+#### cleanup Kernel
+Get-Service -Displayname "*Baltbet*" | ForEach-object{ cmd /c  sc delete $_.Name}
 Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
+
+#### cleanup services folders
+sleep 10
+Remove-Item -Path C:\Services\* -Force -Recurse

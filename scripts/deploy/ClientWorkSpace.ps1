@@ -1,18 +1,13 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 
+$buildNumber = "1.0.0.3767"
 ###vars
 $WebSiteName = "ClientWorkSpace"
 $targetDir = "C:\inetpub\$WebSiteName"
-$sourceDir = "$env:nugettemp\krm"
+$sourceDir = "\\server\tcbuild$\Uni\tc_builds\krm"
 $ProgressPreference = 'SilentlyContinue'
-[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
-$srv = New-Object "Microsoft.SqlServer.Management.Smo.Server" "."
-$MssqlVersion = "MSSQL" + $srv.Version.major
-$release_bak_folder = "\\dev-comp49\share\DBs"
-$MSSQLDataPath = "C:\Program Files\Microsoft SQL Server\$MssqlVersion.MSSQLSERVER\MSSQL\DATA"
-$queryTimeout = 720
-
+$release_bak_folder= "\\dev-comp49\share\DBs"
 
 $dbs = @(
 	@{
@@ -30,12 +25,9 @@ $dbs = @(
 		)
 	}
 )
-RestoreSqlDb -db_params $dbs -MSSQLDataPath  $MSSQLDataPath
+RestoreSqlDb -db_params $dbs
 
 ### copy files
 
-write-host "Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse -Exclude "*.nupkg" -verbouse"
-Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse -Exclude "*.nupkg" 
-
-
-### IIS PART MOVED TO ISSconfig.ps1
+write-host "Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse  -verbouse"
+Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse 

@@ -1,0 +1,29 @@
+[{
+        "name": "CIS",
+        "source": ".\\scripts\\post\\CIS.ps1 "
+    }, {
+        "name": "Kernel",
+        "source": ".\\scripts\\post\\Kernel.ps1 "
+    }, {
+        "name": "KernelWeb",
+        "source": ".\\scripts\\post\\KernelWeb.ps1 "
+    }, {
+        "name": "PDA",
+        "source": ".\\scripts\\post\\PDA.ps1 "
+    }, {
+        "name": "rabbitmq",
+        "source": ".\\scripts\\post\\rabbitmq.ps1 "
+    }, {
+        "name": "UniRu",
+        "source": ".\\scripts\\post\\UniRu.ps1 "
+    }, {
+        "name": "UniWebApiAuth",
+        "source": ".\\scripts\\post\\UniWebApiAuth.ps1 "
+    }, {
+        "name": "WebTouch",
+        "source": ".\\scripts\\post\\WebTouch.ps1 "
+    }, {
+        "name": "UniPaymentsService",
+        "source": ".\\scripts\\post\\UniPaymentsService.ps1 "
+    }
+]

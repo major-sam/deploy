@@ -4,7 +4,7 @@ $buildNumber = "1.0.5521.1"
 $sourceDir = "\\server\tcbuild$\ServerDeploy\$buildNumber\KernelWeb"
 $netVersion = Get-ChildItem  -path $sourceDir -Recurse -Force |Select-Object -First 1
 $targetDir = 'C:\KernelWeb'
-$transformLibPath = ".\Microsoft.Web.XmlTransform.dll"
+$transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $transformFiles = @("$targetDir\settings.OctopusTestVM.xml","$targetDir\App.OctopusTestVM.config")
 

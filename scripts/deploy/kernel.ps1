@@ -1,16 +1,77 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 #vars
+
+$ProgressPreference = 'SilentlyContinue'
 $targetDir = 'C:\Kernel'
 $buildNumber = "1.0.5521.1"
 $sourceDir = "\\server\tcbuild$\ServerDeploy\$buildNumber\Kernel"
 $netVersion = Get-ChildItem  -path $sourceDir -Recurse -Force |Select-Object -First 1
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $pathtojson = "$targetDir\appsettings.json "
-$transformLibPath = ".\Microsoft.Web.XmlTransform.dll"
+$transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
+$release_bak_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\22.10.2021 RELEASE\_Full DB Restoration"
 $jsonDepth = 4
-
-
+$queryTimeout = 720
+$excludeSqlCmds = "1.DBRestore.sql"
+$files = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
+$webConfig = "$targetDir\settings.xml"
+$dbs = @(
+	@{
+		DbName = "BaltBetM"
+		BackupFile = "$release_bak_folder\BaltBetM.bak"
+		RelocateFiles = @(
+			@{
+				SourceName = "BaltBetM"
+				FileName = "BaltBetM.mdf"
+			}
+			@{
+				SourceName = "CoefFileGroup"
+				FileName = "CoefFileGroup.mdf"
+			}
+			@{
+				SourceName = "BaltBet"
+				FileName = "BaltBet.ldf"
+			}
+		)
+	}
+	@{
+		DbName = "BaltBetMMirror"
+		BackupFile = "$release_bak_folder\BaltBetM.bak"
+		RelocateFiles = @(
+			@{
+				SourceName = "BaltBetM"
+				FileName = "BaltBetMMirror.mdf"
+			}
+			@{
+				SourceName = "CoefFileGroup"
+				FileName = "CoefFileGroupMirror.mdf"
+			}
+			@{
+				SourceName = "BaltBet"
+				FileName = "BaltBetMirror.ldf"
+			}
+		)
+	}
+	@{
+		DbName = "BaltBetWeb"
+		BackupFile = "$release_bak_folder\BaltBetWeb.bak"
+		RelocateFiles = @(
+			@{
+				SourceName = "BaltBetWeb"
+				FileName = "BaltBetWeb.mdf"
+			}
+			@{
+				SourceName = "Files"
+				FileName = "Files"
+			}
+			@{
+				SourceName = "BaltBetWeb_log"
+				FileName = "BaltBetWeb.ldf"
+			}
+		)
+	}
+)
 
 $FILES= @(
       @{
@@ -30,8 +91,8 @@ $FILES= @(
         target = "$targetDir\Config\Log.config"
       } 
 )
+
 ### copy files
-write-host "Copy-Item -Path $sourceDir\$netVersion  -Destination $targetDir -Recurse -Exclude *.nupkg "
 Copy-Item -Path  "$sourceDir\$netVersion"  -Destination $targetDir -Recurse -Exclude "*.nupkg" 
 
 
@@ -43,16 +104,14 @@ $transformFiles = @("$targetDir\settings.OctopusTestVM.xml")
 foreach($transformFile in $transformFiles){
     (Get-Content -Encoding UTF8 $transformFile) | Foreach-Object {
         $_ -replace '#{VM[#{VMName}].ServerIp}',  $CurrentIpAddr 
-        # multiple replace`
-        #   -replace 'SQL', 'PowerShell' 
+        ### multiple replace example :
+        ###   -replace 'SQL', 'PowerShell' 
         } | Set-Content -Encoding UTF8 $transformFile
         Write-Host -ForegroundColor Green "$transformFile renewed"
     }
-##### xpath replace
-Write-Host -ForegroundColor Gray 'no files for xpath request'
-
 ##### edit json files
 
+Write-Host -ForegroundColor Green "[info] edit json files"
 $json_appsetings = Get-Content -Raw -path $pathtojson | ConvertFrom-Json 
 $HttpsInlineCertStore = '
     {     }
@@ -63,7 +122,7 @@ Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDept
 
 
 ### apply xml transformation
-
+Write-Host -ForegroundColor Green "[info] apply xml transformation"
 foreach($item in $FILES){
  try{
     XmlDocTransform -xml $item.target -xdt  $item.transf
@@ -74,9 +133,30 @@ foreach($item in $FILES){
 }
 
 ### edit settings.xml
-$webConfig = "$targetDir\settings.xml"
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
+
 $webdoc = [Xml](Get-Content $webConfig)
 $webdoc.Settings.EventCacheSettings.Enabled = "false"
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
 $webdoc.Save($webConfig)
+
+###Create dbs
+Write-Host -ForegroundColor Green "[INFO] Create dbs"
+
+RestoreSqlDb -db_params $dbs
+
+# Выполняем скрипты из актуализации BaltBetM
+$qwr="
+	ALTER DATABASE BaltBetM
+	COLLATE Cyrillic_General_CI_AS
+	GO
+	"
+Invoke-Sqlcmd -Verbose -ServerInstance $env:COMPUTERNAME -Query $qwr -ErrorAction continue
+
+$sqlFiles = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
+
+foreach ($file in $sqlFiles) {
+	Write-Host -ForegroundColor Gray "[INFO] EXECUTED STARETED: " $file
+	Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -InputFile $file -ErrorAction continue
+	Write-Host -ForegroundColor Green "[INFO] EXECUTED SUCCESSFULLY: " $file 
+}

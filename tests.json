@@ -1,26 +1,26 @@
 [{
         "name": "CIS",
-        "source": ".\\scripts\\testsAndPost\\CIS.ps1 "
+        "source": ".\\scripts\\tests\\CIS.ps1 "
     }, {
         "name": "Kernel",
-        "source": ".\\scripts\\testsAndPost\\Kernel.ps1 "
+        "source": ".\\scripts\\tests\\Kernel.ps1 "
     }, {
         "name": "PDA",
-        "source": ".\\scripts\\testsAndPost\\PDA.ps1 "
+        "source": ".\\scripts\\tests\\PDA.ps1 "
     }, {
         "name": "rabbitmq",
-        "source": ".\\scripts\\testsAndPost\\rabbitmq.ps1 "
+        "source": ".\\scripts\\tests\\rabbitmq.ps1 "
     }, {
         "name": "UniRu",
-        "source": ".\\scripts\\testsAndPost\\UniRu.ps1 "
+        "source": ".\\scripts\\tests\\UniRu.ps1 "
     }, {
         "name": "UniWebApiAuth",
-        "source": ".\\scripts\\testsAndPost\\UniWebApiAuth.ps1 "
+        "source": ".\\scripts\\tests\\UniWebApiAuth.ps1 "
     }, {
         "name": "WebTouch",
-        "source": ".\\scripts\\testsAndPost\\WebTouch.ps1 "
+        "source": ".\\scripts\\tests\\WebTouch.ps1 "
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\testsAndPost\\UniPaymentsService.ps1 "
+        "source": ".\\scripts\\tests\\UniPaymentsService.ps1 "
     }
 ]

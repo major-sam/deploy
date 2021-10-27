@@ -1,5 +1,6 @@
 TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
+POST_JSON = 'post.json'
 SOURCES_JSON = "deploy.json"
 CLEAN_JSON = 'cleanup.json'
 VM_LIST = ["devops-test-vm1","vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
@@ -53,7 +54,7 @@ pipeline{
 
     stage('cleanup'){
       steps{
-        script{
+	    script{
           def data = readJSON file: CLEAN_JSON
           def map = getParralelDeliveryMap(data)
           parallel map
@@ -61,7 +62,7 @@ pipeline{
       }
     }
 
-    stage('Src Delivery'){ 
+    stage('Deploy'){ 
       steps{
         script{
           def data = readJSON file: SOURCES_JSON
@@ -69,30 +70,34 @@ pipeline{
           parallel map
         }
       }
-    }
-    
+    }    
 
-    stage('DBs & IIS'){
-      parallel{
-        stage('Config IIS'){
-          steps{
-            powershell '.\\scripts\\IISConfig.ps1'
-          }
-        }
-        stage('Deploy DB'){
-          steps{
-            powershell '.\\scripts\\DB.ps1'
-          }
+    stage('Config IIS'){
+	  steps{
+		powershell '.\\scripts\\IISConfig.ps1'
+	  }
+	}
+
+    stage('PostDepoy'){
+      steps{ 
+        withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
+			script{ 
+			  def data = readJSON file: POST_JSON
+			  def map = getParralelDeliveryMap(data)
+			  parallel map
+			}
         }
       }
     }
 
-    stage('PostDepoy & Tests'){
+    stage('Tests'){
       steps{ 
-        script{ 
-          def data = readJSON file: TESTS_JSON
-          def map = getParralelDeliveryMap(data)
-          parallel map
+		withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
+			script{ 
+			  def data = readJSON file: TESTS_JSON
+			  def map = getParralelDeliveryMap(data)
+			  parallel map
+			}
         }
       }
     }

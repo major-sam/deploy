@@ -7,14 +7,6 @@ $targetDir  = 'C:\Services'
 $release_bak_folder = '\\dev-comp49\share\DBs'
 
 
-[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
-$srv = New-Object "Microsoft.SqlServer.Management.Smo.Server" "."
-$MssqlVersion = "MSSQL" + $srv.Version.major
-$MSSQLDataPath = "C:\Program Files\Microsoft SQL Server\$MssqlVersion.MSSQLSERVER\MSSQL\DATA"
-
-
-
-
 $dbs = @(
 	@{
 		DbName = "MessageService"
@@ -32,7 +24,7 @@ $dbs = @(
 	}
 )
 ###restore DB
-RestoreSqlDb -db_params $dbs -MSSQLDataPath  $MSSQLDataPath
+RestoreSqlDb -db_params $dbs
 
 ### copy files
 write-host "Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse -Exclude "*.nupkg

@@ -4,7 +4,7 @@ $buildNumber = "1.0.0.4163"
 $targetDir = "C:\inetpub\UniRu"
 $apiTargetDir = "C:\inetpub\UniruWebApi"
 
-$sourceDir = "\\server\tcbuild$\Uni\tc_builds"
+$sourceDir = "\\server\tcbuild$\Uni\tc_builds\uni"
 
 ## TODO!!!
 $sourceFile = Get-item -Path ".\scripts\deploy\UniRu.sql"
@@ -14,14 +14,10 @@ $oldHostname = 'VM1APKTEST-P1'
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $ProgressPreference = 'SilentlyContinue'
 $RuntimeVersion ='v4.0'
-[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
-$srv = New-Object "Microsoft.SqlServer.Management.Smo.Server" "."
-$MssqlVersion = "MSSQL" + $srv.Version.major
 $release_bak_folder = "\\dev-comp49\share\DBs"
 $queryTimeout = 720
 $webConfig = "$targetDir\Web.config"
 $apiWebConfig = "$apiTargetDir\Web.config"
-## move to db part
 $dbs = @(
 	@{
 		DbName = "UniRu"
@@ -39,10 +35,12 @@ $dbs = @(
 	}
 )
 
+###Create dbs
+Write-Host -ForegroundColor Green "[INFO] Create dbs"
 
-$MSSQLDataPath = "C:\Program Files\Microsoft SQL Server\$MssqlVersion.MSSQLSERVER\MSSQL\DATA"
-RestoreSqlDb -db_params $dbs -MSSQLDataPath  $MSSQLDataPath
+RestoreSqlDb -db_params $dbs
 
+### copy files
 robocopy "$sourceDir\$buildNumber\uniru" $targetDir /e 
 robocopy "$sourceDir\$buildNumber\uniruwebapi" $apiTargetDir /e 
 $global:LASTEXITCODE
@@ -58,8 +56,6 @@ if ($global:LASTEXITCODE -ne 0){
 $sFile = Get-item -Path "\\dev-comp49\share\UniRu.sql"
 Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -InputFile $sFile.Fullname -ErrorAction Stop
 Set-Location C:\
-### IIS PART MOVED TO ISSconfig.ps1
-
 
 ###
 #XML values replace

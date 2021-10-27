@@ -93,12 +93,14 @@ function XmlDocTransform($xml, $xdt){
 }
 
 
-function RestoreSqlDb($db_params, $MSSQLDataPath) {
-	write-host "mssql data:" $MSSQLDataPath
+function RestoreSqlDb($db_params) {	
 	#load assemblies
 	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SMO") | Out-Null
 	#Need SmoExtended for backup
 	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SmoExtended") | Out-Null
+	[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
+	$MSSQLDataPath =  (Invoke-Sqlcmd -query "select SERVERPROPERTY('InstanceDefaultDataPath') as 'd'").d
+	write-host "mssql data:" $MSSQLDataPath
 	foreach ($db in $db_params){
 		$RelocateFile = @() 
         $dbname = $db.DbName
