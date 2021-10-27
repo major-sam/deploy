@@ -72,3 +72,11 @@ foreach($item in $FILES){
  
     Write-Host -ForegroundColor Red " $item.target FAIL renew with transformation $item.transf"}
 }
+
+### edit settings.xml
+$webConfig = "$targetDir\settings.xml"
+Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
+$webdoc = [Xml](Get-Content $webConfig)
+$webdoc.Settings.EventCacheSettings.Enabled = "false"
+$webdoc.Settings.CurrentEventsJob.Enabled = "false"
+$webdoc.Save($webConfig)
