@@ -13,3 +13,4 @@ $params = @{
 }
 
 New-Service @params
+start-Service $params.Name

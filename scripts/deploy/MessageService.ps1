@@ -9,7 +9,7 @@ $source = GetSourceObject $sourceparams
 
 
 ## vars
-$targetDir  = 'C:\Services'
+$targetDir  = 'C:\Services\MessageService'
 $release_bak_folder = '\\dev-comp49\share\DBs'
 
 
@@ -34,5 +34,5 @@ RestoreSqlDb -db_params $dbs
 
 ### copy files
 
-write-host "Copy-Item -Path $($source.sourceBuildSource)\$netVersion  -Destination $targetDir -Recurse "
-Copy-Item -Path "$($source.sourceBuildSource)\$netVersion"  -Destination $targetDir -Recurse
+write-host "Copy-Item -Path $($source.sourceBuildSource)  -Destination $targetDir -Recurse "
+Copy-Item -Path "$($source.sourceBuildSource)"  -Destination $targetDir -Recurse
