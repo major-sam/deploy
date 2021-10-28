@@ -1,8 +1,14 @@
 import-module '.\scripts\sideFunctions.psm1'
+
+#get release params
+$sourceparams = @{
+	sourceFile = '.\Release.json'
+	sourceName = 'kernelWeb'
+}
+$source = GetSourceObject $sourceparams
+
 # vars
-$buildNumber = "1.0.5521.1"
-$sourceDir = "\\server\tcbuild$\ServerDeploy\$buildNumber\KernelWeb"
-$netVersion = Get-ChildItem  -path $sourceDir -Recurse -Force |Select-Object -First 1
+$netVersion = Get-ChildItem  -path $source.sourceBuildSource -Recurse -Force |Select-Object -First 1
 $targetDir = 'C:\KernelWeb'
 $transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
@@ -20,8 +26,8 @@ $FILES= @(
 )
 ### copy files
 
-write-host "Copy-Item -Path "$sourceDir\$netVersion"  -Destination $targetDir -Recurse -Exclude "*.nupkg" -verbouse"
-Copy-Item -Path "$sourceDir\$netVersion"  -Destination $targetDir -Recurse -Exclude "*.nupkg" 
+write-host "Copy-Item -Path $($source.sourceBuildSource)\$netVersion  -Destination $targetDir -Recurse "
+Copy-Item -Path "$($source.sourceBuildSource)\$netVersion"  -Destination $targetDir -Recurse
 
 
 ### set vm related values for transformation files

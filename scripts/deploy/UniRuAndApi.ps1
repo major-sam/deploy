@@ -1,16 +1,25 @@
 ﻿import-module '.\scripts\sideFunctions.psm1'
+
+#get release params
+$sf = '.\Release.json'
+$unisourceparams = @{
+	sourceFile = $sf
+	sourceName = 'UniRu'
+}
+$apisourceparams = @{
+	sourceFile = $sf
+	sourceName = 'UniWebApiAuth'
+}
+$unisource = GetSourceObject $unisourceparams
+$apisource = GetSourceObject $unisourceparams
+
 ###vars
-$buildNumber = "1.0.0.4163"
 $targetDir = "C:\inetpub\UniRu"
 $apiTargetDir = "C:\inetpub\UniruWebApi"
 
-$sourceDir = "\\server\tcbuild$\Uni\tc_builds\uni"
-
-## TODO!!!
-$sourceFile = Get-item -Path ".\scripts\deploy\UniRu.sql"
-$file = ".\UniRu.sql"
-$oldIp = '172.16.1.217'
-$oldHostname = 'VM1APKTEST-P1'
+$sourceFile = "$($env:workspace)\scripts\deploy\UniRu.sql"
+$oldIp = '#VM_IP'
+$oldHostname = '#VM_HOSTNAME'
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $ProgressPreference = 'SilentlyContinue'
 $RuntimeVersion ='v4.0'
@@ -41,24 +50,22 @@ Write-Host -ForegroundColor Green "[INFO] Create dbs"
 RestoreSqlDb -db_params $dbs
 
 ### copy files
-robocopy "$sourceDir\$buildNumber\uniru" $targetDir /e 
-robocopy "$sourceDir\$buildNumber\uniruwebapi" $apiTargetDir /e 
+robocopy $unisource.sourceBuildSource $targetDir /e 
+robocopy $apisource.sourceBuildSource $apiTargetDir /e 
 $global:LASTEXITCODE
 
 if ($global:LASTEXITCODE -ne 0){
 	$global:LASTEXITCODE = 0
 }
-(Get-Content -Encoding UTF8 -LiteralPath $sourceFile.Fullname)|Foreach-Object {
+$query = (Get-Content -Encoding UTF8 -Raw -Path $sourceFile)|Foreach-Object {
     $_ -replace $oldIp,  $IPAddress `
         -replace $oldHostname, $env:COMPUTERNAME`
-    } | Set-Content -Encoding UTF8 $file
-
-$sFile = Get-item -Path "\\dev-comp49\share\UniRu.sql"
-Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -InputFile $sFile.Fullname -ErrorAction Stop
+    } 
+Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -query $query -ErrorAction Stop
 Set-Location C:\
 
 ###
-#XML values replace
+#XML values replace UniRu
 ####
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
 $webdoc = [Xml](Get-Content $webConfig)
@@ -71,7 +78,7 @@ $webdoc.Save($webConfig)
 
 
 ###
-#XML values replace
+#XML values replace UniruWebApi
 ####
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $apiWebConfig"
 $webdoc = [Xml](Get-Content $apiWebConfig)

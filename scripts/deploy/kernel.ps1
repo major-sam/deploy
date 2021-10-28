@@ -1,12 +1,16 @@
 import-module '.\scripts\sideFunctions.psm1'
 
+#get release params
+$sourceparams = @{
+	sourceFile = '.\Release.json'
+	sourceName = 'Kernel'
+}
+$source = GetSourceObject $sourceparams
 #vars
 
 $ProgressPreference = 'SilentlyContinue'
 $targetDir = 'C:\Kernel'
-$buildNumber = "1.0.5521.1"
-$sourceDir = "\\server\tcbuild$\ServerDeploy\$buildNumber\Kernel"
-$netVersion = Get-ChildItem  -path $sourceDir -Recurse -Force |Select-Object -First 1
+$netVersion = (Get-ChildItem -path $source.sourceBuildSource -Recurse -Force |Select-Object -First 1).Name
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $pathtojson = "$targetDir\appsettings.json "
 $transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
@@ -93,8 +97,7 @@ $FILES= @(
 )
 
 ### copy files
-Copy-Item -Path  "$sourceDir\$netVersion"  -Destination $targetDir -Recurse -Exclude "*.nupkg" 
-
+Copy-Item -Path  "$($source.sourceBuildSource)\$netVersion"  -Destination $targetDir -Recurse
 
 ### set vm related values for transformation files
 

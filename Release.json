@@ -1,0 +1,43 @@
+[
+	{
+        "name": "KernelWeb",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5521.1\\KernelWeb",
+        "sourceBuild": "1.0.5521.1"
+    }, {
+        "name": "Kernel",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5521.1\\Kernel",
+        "sourceBuild": "1.0.5521.1"
+    }, {
+        "name": "MessageService",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\MessageService\\1.0.0.251",
+        "sourceBuild": "1.0.0.251"
+    }, {
+        "name": "PDA",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\08.10.2021 RELEASE\\WebPda\\2021-10-11.master.1024.f463408c.zip",
+        "sourceBuild": "2021-10-11.master.1024.f463408c.zip"
+    }, {
+        "name": "UniRu",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Uni\\tc_builds\\uni\\1.0.0.4163\\uniru",
+        "sourceBuild": "1.0.0.4163"
+    }, {
+        "name": "UniWebApiAuth",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Uni\\tc_builds\\uni\\1.0.0.4163\\uniruwebapi",
+        "sourceBuild": "1.0.0.4163"
+    }, {
+        "name": "WebTouch",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\15.10.2021 RELEASE\\WebTouchDev\\2021-10-15.master.1026.a07f5a68.zip",
+        "sourceBuild": "2021-10-15.master.1026.a07f5a68.zip"
+    }, {
+        "name": "ClientWorkSpace",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Uni\\tc_builds\\krm\\1.0.0.3767",
+        "sourceBuild": "1.0.0.3767"
+    },{
+        "name": "baltbetcom",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\WebSiteDev\\TC_artifacts\\1.0.0.1042",
+        "sourceBuild": "1.0.0.1042"
+    }, {
+        "name": "UniPaymentsService",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\08.10.2021 RELEASE\\Uni.PaymentsService\\1.0.0.21",
+        "sourceBuild": "1.0.0.21"
+    }
+]

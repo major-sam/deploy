@@ -92,7 +92,6 @@ function XmlDocTransform($xml, $xdt){
     $xmldoc.Save($xml);
 }
 
-
 function RestoreSqlDb($db_params) {	
 	#load assemblies
 	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SMO") | Out-Null
@@ -116,4 +115,10 @@ function RestoreSqlDb($db_params) {
 			Push-Location C:\Windows			
 		}
 	}
+}
+
+function GetSourceObject($itm) {    
+	$json = Get-Content -Raw -path $itm.sourceFile | ConvertFrom-Json
+	$obj = $json |?{ $_.name -eq $itm.sourceName}
+	return $obj
 }

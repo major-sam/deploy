@@ -1,13 +1,21 @@
-$buildNumber = "1.0.0.1038"
-$sourceDir = "\\server\tcbuild$\WebSiteDev\TC_artifacts\"
+import-module '.\scripts\sideFunctions.psm1'
+
+#get release params
+
+$sourceparams = @{
+	sourceFile = '.\Release.json'
+	sourceName = 'baltbetcom'
+}
+$source = GetSourceObject $sourceparams
+
 $targetDir  = 'C:\inetpub\baltbetcom'
 $ProgressPreference = 'SilentlyContinue'
 $webConfig = "$targetDir\Web.config"
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
-### IIS PART MOVED TO ISSconfig.ps1
 
-### Expand files
-copy-item -force -recurse -Path "$sourceDir\$buildNumber" $targetDir
+### copy files
+write-host "Copy-Item -Path `"$($source.sourceBuildSource)`"  -Destination $targetDir -Recurse"
+Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse 
 
 ###
 #XML values replace

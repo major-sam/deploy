@@ -1,8 +1,14 @@
 import-module '.\scripts\sideFunctions.psm1'
 
+#get release params
+$sourceparams = @{
+	sourceFile = '.\Release.json'
+	sourceName = 'MessageService'
+}
+$source = GetSourceObject $sourceparams
+
+
 ## vars
-$buildNumber = "1.0.0.76"
-$sourceDir = "\\server\tcbuild$\Testers\MessageService\$buildNumber\MessageService"
 $targetDir  = 'C:\Services'
 $release_bak_folder = '\\dev-comp49\share\DBs'
 
@@ -27,5 +33,6 @@ $dbs = @(
 RestoreSqlDb -db_params $dbs
 
 ### copy files
-write-host "Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse -Exclude "*.nupkg
-Copy-Item -Path "$sourceDir"  -Destination $targetDir -Recurse -Exclude "*.nupkg"
+
+write-host "Copy-Item -Path $($source.sourceBuildSource)\$netVersion  -Destination $targetDir -Recurse "
+Copy-Item -Path "$($source.sourceBuildSource)\$netVersion"  -Destination $targetDir -Recurse
