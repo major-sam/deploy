@@ -1,6 +1,6 @@
-echo 'no cleanup - no configure'
+import-module '.\scripts\sideFunctions.psm1'
 
-<# $username ="GKBALTBET\TestKernel_svc"
+$username ="GKBALTBET\TestKernel_svc"
 $pass = "GldycLIFKM2018"
 $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
@@ -46,32 +46,10 @@ $IISPools = @(
 
 
 
-Import-Module -Force WebAdministration
 foreach($site in $IISPools ){
-    $name =  $site.SiteName
-    $targetDir = "c:\inetpub\$name"
-    if (Test-Path IIS:\AppPools\$name){
-        Write-Host "SITE EXIST!!!"
-        }
-    else{
-        New-Item –Path IIS:\AppPools\$name -force
-        Set-ItemProperty –Path IIS:\AppPools\$name -Name managedRuntimeVersion -Value 'v4.0'
-        Set-ItemProperty –Path IIS:\AppPools\$name -Name startMode -Value 'AlwaysRunning'
-        if ($site.DomainAuth){
-           Set-ItemProperty IIS:\AppPools\$name -name processModel -value $site.DomainAuth
-        }
-        Start-WebAppPool -Name $name
-        New-Website -Name "$name" -ApplicationPool "$name" -PhysicalPath $targetDir -Force
-        $IISSite = "IIS:\Sites\$name"
-        Set-ItemProperty $IISSite -name  Bindings -value $site.Bindings
-        $webServerCert = get-item Cert:\LocalMachine\My\660a619045cf9a3117671c9a6804e17cbf9587fe
-        $bind = Get-WebBinding -Name $name -Protocol https
-            if($bind){
-            	$bind.AddSslCertificate($webServerCert.GetCertHashString(), "my")		
-            }
-        Start-WebSite -Name "$name"
-    }
+   RegisterIISSite($site)
 }	
+
 
 ###
 # ADD PRELOAD TO UNIRU
@@ -86,4 +64,3 @@ if ( (C:\Windows\system32\inetsrv\appcmd.exe  list config   -section:system.appl
 $WebSiteName = "UniRu"
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartEnabled -Value True
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartProvider -Value $preloader
-	 #>

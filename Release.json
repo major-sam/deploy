@@ -35,6 +35,22 @@
         "name": "baltbetcom",
         "sourceBuildSource": "\\\\server\\tcbuild$\\WebSiteDev\\TC_artifacts\\1.0.0.1042",
         "sourceBuild": "1.0.0.1042"
+    },{
+        "name": "MarketingService",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.MarketingService\\1.0.0.143",
+        "sourceBuild": "1.0.0.143"
+    },{
+        "name": "MarketingService.ApkService",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.Marketing.ApkService\\1.0.0.22",
+        "sourceBuild": "1.0.0.22"
+    },{
+        "name": "Marketing_Admin_Angular",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\Marketing_Admin_Angular\\1.0.0.5.zip",
+        "sourceBuild": "1.0.0.5"
+    },{
+        "name": "Marketing_Client_Angular",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\Marketing_Client_Angular\\1.0.0.2.zip",
+        "sourceBuild": "1.0.0.2"
     }, {
         "name": "UniPaymentsService",
         "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\08.10.2021 RELEASE\\Uni.PaymentsService\\1.0.0.21",

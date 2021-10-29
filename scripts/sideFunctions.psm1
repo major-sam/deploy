@@ -122,3 +122,47 @@ function GetSourceObject($itm) {
 	$obj = $json |?{ $_.name -eq $itm.sourceName}
 	return $obj
 }
+
+function CreateSqlDatabase($dbname){
+	[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo")
+	$server = new-object ("Microsoft.SqlServer.Management.Smo.Server") .
+
+    $dbExists = $FALSE
+	foreach ($db in $server.databases) {
+		if ($db.name -eq "Db") {
+		  Write-Host "Db already exists."
+		  $dbExists = $TRUE
+		}
+	}
+	if ($dbExists -eq $FALSE) {
+	  $db = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -argumentlist $server, $dbname
+	  $db.Create()
+	}
+}
+
+function RegisterIISSite($site){
+    Import-Module -Force WebAdministration
+    $name =  $site.SiteName
+    $targetDir = "c:\inetpub\$name"
+    if (Test-Path IIS:\AppPools\$name){
+        Write-Host "SITE EXIST!!!"
+    }
+    else{
+        New-Item -Path IIS:\AppPools\$name -force
+        Set-ItemProperty -Path IIS:\AppPools\$name -Name managedRuntimeVersion -Value 'v4.0'
+        Set-ItemProperty -Path IIS:\AppPools\$name -Name startMode -Value 'AlwaysRunning'
+        if ($site.DomainAuth){
+           Set-ItemProperty  IIS:\AppPools\$name -name processModel -value $site.DomainAuth
+        }
+        Start-WebAppPool -Name $name
+        New-Website -Name "$name" -ApplicationPool "$name" -PhysicalPath $targetDir -Force
+        $IISSite = "IIS:\Sites\$name"
+        Set-ItemProperty $IISSite -name  Bindings -value $site.Bindings
+        $webServerCert = get-item Cert:\LocalMachine\My\660a619045cf9a3117671c9a6804e17cbf9587fe
+        $bind = Get-WebBinding -Name $name -Protocol https
+        if($bind){
+        	$bind.AddSslCertificate($webServerCert.GetCertHashString(), "my")		
+        }
+        Start-WebSite -Name "$name"
+    }
+}

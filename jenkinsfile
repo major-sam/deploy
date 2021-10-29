@@ -1,7 +1,9 @@
 TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
 POST_JSON = 'post.json'
-SOURCES_JSON = "deploy.json"
+POST_MS_JSON = 'post_ms.json'
+DEPLOY_JSON = "deploy.json"
+DEPLOY_MS_JSON = "deploy_ms.json"
 CLEAN_JSON = 'cleanup.json'
 VM_LIST = ["devops-test-vm1","vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
@@ -21,7 +23,8 @@ def deliverSources(src){
 
 pipeline{
   parameters {
-      choice(name:"TESTVM", choices:VM_LIST )
+      choice name:"TESTVM", choices:VM_LIST 
+	  booleanParam name: "DEPLOY_MS", description: 'Deploy Marketing Service', defaultValue: false
   }
 
   agent {label "${TESTVM}" }
@@ -65,7 +68,22 @@ pipeline{
     stage('Deploy'){ 
       steps{
         script{
-          def data = readJSON file: SOURCES_JSON
+          def data = readJSON file: DEPLOY_JSON 
+          def map = getParralelDeliveryMap(data)
+          parallel map
+        }
+      }
+    }    
+
+    stage('Deploy Marketing Service'){
+	  when{
+		expression {
+		    DEPLOY_MS
+		}
+	  }
+      steps{
+        script{
+          def data = readJSON file: DEPLOY_MS_JSON
           def map = getParralelDeliveryMap(data)
           parallel map
         }
@@ -78,15 +96,46 @@ pipeline{
 	  }
 	}
 
+    stage('Config IIS for Marketing service'){
+	  when{
+		expression {
+			DEPLOY_MS
+		}
+	  }
+	  steps{
+		powershell '.\\scripts\\IISConfigMS.ps1'
+	  }
+	}
+
     stage('PostDepoy'){
-      steps{ 
-        withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
-			script{ 
-			  def data = readJSON file: POST_JSON
-			  def map = getParralelDeliveryMap(data)
-			  parallel map
+	  stages{
+		stage('Default'){
+		  steps{ 
+			withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
+			  script{ 
+			    def data = readJSON file: POST_JSON
+			    def map = getParralelDeliveryMap(data)
+			    parallel map
+			  }
 			}
-        }
+		  }
+	    }
+		stage('Marketing service'){
+			when{
+			  expression {
+				  DEPLOY_MS
+			  }
+			}
+			steps{
+		    	withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
+		    	  script{ 
+		    	    def data = readJSON file: POST_MS_JSON
+		    	    def map = getParralelDeliveryMap(data)
+		    	    parallel map
+		    	  }
+		    	}
+			}
+		}
       }
     }
 

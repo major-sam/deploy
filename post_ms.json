@@ -1,0 +1,8 @@
+[{
+        "name": "MarketingService.ApkService",
+        "source": ".\\scripts\\post\\ms\\MarketingService.ApkService.ps1"
+    }, {
+        "name": "Marketing service placeholder",
+        "source": "echo 'Marketing service placeholder'"
+    }
+]
