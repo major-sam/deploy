@@ -1,1 +1,1 @@
-Invoke-Sqlcmd -Database 'BaltBetM' -InputFile ".scripts\post\ms\KernelTables.sql"
+Invoke-Sqlcmd -Database 'BaltBetM' -InputFile '.scripts\post\ms\KernelTables.sql'

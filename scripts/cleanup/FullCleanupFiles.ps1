@@ -37,3 +37,6 @@ Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
 #### cleanup services folders
 sleep 10
 Remove-Item -Path C:\Services\* -Force -Recurse
+
+#### cleanup default logs
+Remove-Item -Path C:\Logs\* -Force -Recurse

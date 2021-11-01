@@ -37,8 +37,8 @@
         "sourceBuild": "1.0.0.1042"
     },{
         "name": "MarketingService",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.MarketingService\\1.0.0.143",
-        "sourceBuild": "1.0.0.143"
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.MarketingService\\1.0.0.146",
+        "sourceBuild": "1.0.0.146"
     },{
         "name": "MarketingService.ApkService",
         "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.Marketing.ApkService\\1.0.0.22",
