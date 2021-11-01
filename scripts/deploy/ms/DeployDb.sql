@@ -1,7 +1,7 @@
 GO
 PRINT N'Creating Schema [mkt]...';
 if schema_id('mkt') is null
-begrrr
+begin
   execute('create schema mkt')
 
   print 'Создана схема mkt'

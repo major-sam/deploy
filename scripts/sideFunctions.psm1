@@ -158,10 +158,10 @@ function RegisterIISSite($site){
         New-Website -Name "$name" -ApplicationPool "$name" -PhysicalPath $targetDir -Force
         $IISSite = "IIS:\Sites\$name"
         Set-ItemProperty $IISSite -name  Bindings -value $site.Bindings
-        $webServerCert = get-item Cert:\LocalMachine\My\660a619045cf9a3117671c9a6804e17cbf9587fe
         $bind = Get-WebBinding -Name $name -Protocol https
         if($bind){
-        	$bind.AddSslCertificate($webServerCert.GetCertHashString(), "my")		
+			$webServerCert = get-item $site.CertPath
+			$bind.AddSslCertificate($webServerCert.GetCertHashString(), "my")		
         }
         Start-WebSite -Name "$name"
     }

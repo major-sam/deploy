@@ -16,6 +16,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8880:"}
                 @{protocol='https';;bindingInformation="*:9880:"}
             )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
     }
     @{
         SiteName = 'MarketingImages'
@@ -26,6 +27,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8883:"}
                 @{protocol='https';bindingInformation="*:9883:"}
             )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
     }
     @{
         SiteName = 'MarketingServiceAdmin'
@@ -36,6 +38,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8881:"}
                 @{protocol='https';bindingInformation="*:9881:"}
             )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
     }
     @{
         SiteName = 'MarketingServiceClient'
@@ -46,6 +49,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8882:"}
                 @{protocol='https';bindingInformation="*:9882:"}
             )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
     }
 )  
 
@@ -59,8 +63,8 @@ foreach($site in $IISPools ){
 ###
 # allowDoubleEscaping
 ###
-C:\Windows\system32\inetsrv\AppCmd.exe set config  set config $IISPools[0].SiteName -section:system.webServer/security/requestfiltering -allowDoubleEscaping:true
+C:\Windows\system32\inetsrv\AppCmd.exe set config $IISPools[0].SiteName -section:system.webServer/security/requestfiltering -allowDoubleEscaping:true
 ###
 # set idleTimeOut 
 ###
-Set-ItemProperty ("IIS:\AppPools\$($IISPools[0].SiteName)) -Name processModel.idleTimeout -value ( [TimeSpan]::FromMinutes(0))
+Set-ItemProperty ("IIS:\AppPools\$($IISPools[0].SiteName)") -Name processModel.idleTimeout -value ( [TimeSpan]::FromMinutes(1))

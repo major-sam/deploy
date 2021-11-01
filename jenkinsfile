@@ -55,7 +55,7 @@ pipeline{
       }
     }
 
-    stage('cleanup'){
+    stage('Cleanup'){
       steps{
 	    script{
           def data = readJSON file: CLEAN_JSON
@@ -109,7 +109,7 @@ pipeline{
 
     stage('PostDepoy'){
 	  stages{
-		stage('Default'){
+		stage('Default Post'){
 		  steps{ 
 			withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
 			  script{ 
