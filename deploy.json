@@ -33,7 +33,8 @@
         "source": ".\\scripts\\deploy\\MessageService.ps1"
     }, {
         "name": "cert",
-        "source": "certutil.exe -addstore root .\\scripts\\deploy\\gkbaltbet-ca.cer"
+        "source": ".\\scripts\\deploy\\cert.ps1",
+        "oldsource": "certutil.exe -addstore root .\\scripts\\deploy\\gkbaltbet-ca.cer"
     }, {
         "name": "rabbitmq",
         "source": ".\\scripts\\deploy\\rabbitmq.ps1"

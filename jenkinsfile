@@ -78,7 +78,7 @@ pipeline{
     stage('Deploy Marketing Service'){
 	  when{
 		expression {
-		    DEPLOY_MS
+		    params.DEPLOY_MS
 		}
 	  }
       steps{
@@ -99,7 +99,7 @@ pipeline{
     stage('Config IIS for Marketing service'){
 	  when{
 		expression {
-			DEPLOY_MS
+			params.DEPLOY_MS
 		}
 	  }
 	  steps{
@@ -112,7 +112,7 @@ pipeline{
 		stage('Marketing service'){
 			when{
 			  expression {
-				  DEPLOY_MS
+				  params.DEPLOY_MS
 			  }
 			}
 			steps{
