@@ -166,3 +166,18 @@ function RegisterIISSite($site){
         Start-WebSite -Name "$name"
     }
 }
+
+function RegisterWinService($serviceBin){
+	##Credential provided by jenkins: "$($ENV:ServiceUserName)" "$($ENV:ServiceUserPassword)"
+	$passVar = ConvertTo-SecureString "$($ENV:ServiceUserPassword)" -AsPlainText -Force
+	$credentials = New-Object System.Management.Automation.PSCredential ("$($ENV:ServiceUserName)", $passVar )
+	$params = @{
+	  Name = $serviceBin.BaseName
+	  BinaryPathName = "$($serviceBin.fullName)  -displayname $($serviceBin.BaseName) -servicename $($serviceBin.BaseName)"
+	  DisplayName = $serviceBin.BaseName
+	  StartupType = "Automatic"
+	  Description = "This is a $($serviceBin.Directory.Name) service."
+	  Credential = $credentials
+	}
+	New-Service @params
+}
