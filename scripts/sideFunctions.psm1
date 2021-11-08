@@ -171,13 +171,35 @@ function RegisterWinService($serviceBin){
 	##Credential provided by jenkins: "$($ENV:ServiceUserName)" "$($ENV:ServiceUserPassword)"
 	$passVar = ConvertTo-SecureString "$($ENV:ServiceUserPassword)" -AsPlainText -Force
 	$credentials = New-Object System.Management.Automation.PSCredential ("$($ENV:ServiceUserName)", $passVar )
+	if ($($serviceBin.BaseName).StartsWith("Baltbet.")){
+		$sname = "$($serviceBin.BaseName)"
+	}
+	else{
+		$sname = "Baltbet.$($serviceBin.BaseName)"
+	}
 	$params = @{
-	  Name = $serviceBin.BaseName
-	  BinaryPathName = "$($serviceBin.fullName)  -displayname $($serviceBin.BaseName) -servicename $($serviceBin.BaseName)"
-	  DisplayName = $serviceBin.BaseName
+	  Name = $sname
+	  BinaryPathName = "$($serviceBin.fullName) -displayname `"$sname`" -servicename `"$sname`""
+	  DisplayName = $sname
 	  StartupType = "Automatic"
-	  Description = "This is a $($serviceBin.Directory.Name) service."
+	  Description = "This is a $sname service."
 	  Credential = $credentials
 	}
 	New-Service @params
+	return $sname
+}
+
+function Stop-ServiceWithTimeout ($name) {
+    $timespan = New-Object -TypeName System.Timespan -ArgumentList 0,0,10
+    $svc = Get-Service -Name $name
+    if ($svc -eq $null) { return $false }
+    if ($svc.Status -eq [ServiceProcess.ServiceControllerStatus]::Stopped) { return $true }
+    $svc.Stop()
+    try {
+        $svc.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timespan)
+    }
+    catch [ServiceProcess.TimeoutException] {
+        Write-Verbose "Timeout stopping service $($svc.Name)"
+		Stop-Process -Name $name -Force
+    }
 }

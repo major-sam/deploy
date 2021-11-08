@@ -1,9 +1,14 @@
+import-module '.\scripts\sideFunctions.psm1'
+
+
 $serviceblock = {
   Param($service)
    IF ($service.Status -eq 'Running'){
 	 Write-Host "$($service.name) is started. Stopping"
-     Stop-Service $service.name
+     Stop-ServiceWithTimeout("$($service.name)")
    }
+   sleep 5
+   cmd /c  sc delete $service.Name
 }
 
 $procblock  = {
@@ -19,19 +24,18 @@ $procblock  = {
     }
   }
 }
-
-Get-Service -Displayname "*Baltbet*" |  % {Start-Job -Scriptblock $serviceblock -ArgumentList $_ }
+$initScript = [scriptblock]::Create("Import-Module -Name '.\scripts\sideFunctions.psm1'")
+Get-Service -Displayname "*Baltbet*" |  % {Start-Job -InitializationScript $initScript -Scriptblock $serviceblock -ArgumentList $_ }
 Get-Job | Wait-Job | Receive-Job
-sleep 5 
+sleep 2 
 $procs = @("KernelWeb", "Kernel")
 #### grep all baltbet services
 Get-Process "*baltbet*"| % {$procs +=$_.ProcessName}
 
-$procs | % {Start-Job -Scriptblock $procblock -ArgumentList $_ }
+$procs | % {Start-Job -InitializationScript $initScript -Scriptblock $procblock -ArgumentList $_ }
 Get-Job | Wait-Job | Receive-Job
-
+#Get-Service -Displayname "*Baltbet*" | ForEach-object{ cmd /c  sc delete $_.Name}
 #### cleanup Kernel
-Get-Service -Displayname "*Baltbet*" | ForEach-object{ cmd /c  sc delete $_.Name}
 Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
 
 #### cleanup services folders
