@@ -5,7 +5,18 @@ POST_MS_JSON = 'post_ms.json'
 DEPLOY_JSON = "deploy.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 CLEAN_JSON = 'cleanup.json'
-VM_LIST = ["devops-test-vm1","devops-test-vm2","vm-n2-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
+VM_LIST = ["devops-test-vm1",
+	"devops-test-vm2", 
+	"devops-test-vm3",
+	"devops-test-vm3",
+	"devops-test-vm4",
+	"devops-test-vm5",
+	"devops-test-vm6",
+	"devops-test-vm7",
+	"devops-test-vm8",
+	"devops-test-vm9",
+	"devops-test-vm10",
+	"vm-n3-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
 def getParralelDeliveryMap(src){
       return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
@@ -15,7 +26,7 @@ def deliverSources(src){
   return{
     stage(src['name']){ 
       println "${src['source']}"     
-      powershell encoding:'UTF-8', script:"${src['source']}"
+      powershell encoding:'UTF8', script:"${src['source']}"
     }
   }
 }
