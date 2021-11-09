@@ -3,8 +3,8 @@ import-module '.\scripts\sideFunctions.psm1'
 write-host 'config iis for ms' 
 
 ##Credential provided by jenkins
-$username ="$($ENV:ServiceUserName)" 
-$pass =  "$($ENV:ServiceUserPassword)"
+$username = "$($ENV:SERVICE_CREDS_USR)" 
+$pass =  "$($ENV:SERVICE_CREDS_PSW)"
 $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
 $IISPools = @( 

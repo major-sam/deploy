@@ -168,17 +168,17 @@ function RegisterIISSite($site){
 }
 
 function RegisterWinService($serviceBin){
-	##Credential provided by jenkins: "$($ENV:ServiceUserName)" "$($ENV:ServiceUserPassword)"
-	$passVar = ConvertTo-SecureString "$($ENV:ServiceUserPassword)" -AsPlainText -Force
-	$credentials = New-Object System.Management.Automation.PSCredential ("$($ENV:ServiceUserName)", $passVar )
-	if ($($serviceBin.BaseName).StartsWith("Baltbet.")){
+	##Credential provided by jenkins
+	$passVar = ConvertTo-SecureString $ENV:SERVICE_CREDS_PSW -AsPlainText -Force
+	$credentials = New-Object System.Management.Automation.PSCredential ($ENV:SERVICE_CREDS_USR , $passVar )
+	if ($($serviceBin.BaseName)  -like 'baltbet*'){
 		$sname = "$($serviceBin.BaseName)"
 	}
 	else{
 		$sname = "Baltbet.$($serviceBin.BaseName)"
 	}
 	$params = @{
-	  Name = $sname
+	  Name = "$sname"
 	  BinaryPathName = "$($serviceBin.fullName) -displayname `"$sname`" -servicename `"$sname`""
 	  DisplayName = $sname
 	  StartupType = "Automatic"
@@ -186,7 +186,6 @@ function RegisterWinService($serviceBin){
 	  Credential = $credentials
 	}
 	New-Service @params
-	return $sname
 }
 
 function Stop-ServiceWithTimeout ($name) {

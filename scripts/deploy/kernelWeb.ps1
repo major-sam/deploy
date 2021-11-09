@@ -26,9 +26,12 @@ $FILES= @(
 )
 ### copy files
 
-write-host "Copy-Item -Path $($source.sourceBuildSource)\$netVersion  -Destination $targetDir -Recurse "
-Copy-Item -Path "$($source.sourceBuildSource)\$netVersion"  -Destination $targetDir -Recurse
+robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e
+$global:LASTEXITCODE
 
+if ($global:LASTEXITCODE -ne 0){
+	$global:LASTEXITCODE = 0
+}
 
 ### set vm related values for transformation files
 

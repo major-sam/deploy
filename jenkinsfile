@@ -8,7 +8,6 @@ CLEAN_JSON = 'cleanup.json'
 VM_LIST = ["devops-test-vm1",
 	"devops-test-vm2", 
 	"devops-test-vm3",
-	"devops-test-vm3",
 	"devops-test-vm4",
 	"devops-test-vm5",
 	"devops-test-vm6",
@@ -37,7 +36,9 @@ pipeline{
       choice name:"TESTVM", choices:VM_LIST 
 	  booleanParam name: "DEPLOY_MS", description: 'Deploy Marketing Service', defaultValue: false
   }
-
+  environment {
+	SERVICE_CREDS = credentials('Testkernel')
+  }
   agent {label "${TESTVM}" }
 
   stages{
@@ -127,24 +128,20 @@ pipeline{
 			  }
 			}
 			steps{
-		    	withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
-		    	  script{ 
-		    	    def data = readJSON file: POST_MS_JSON
-		    	    def map = getParralelDeliveryMap(data)
-		    	    parallel map
-		    	  }
-		    	}
+			  script{ 
+				def data = readJSON file: POST_MS_JSON
+				def map = getParralelDeliveryMap(data)
+				parallel map
+			  }
 			}
 		}
 		stage('Default Post'){
 		  steps{ 
-			withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
 			  script{ 
-			    def data = readJSON file: POST_JSON
-			    def map = getParralelDeliveryMap(data)
-			    parallel map
+				def data = readJSON file: POST_JSON
+				def map = getParralelDeliveryMap(data)
+				parallel map
 			  }
-			}
 		  }
 	    }
       }
@@ -152,13 +149,11 @@ pipeline{
 
     stage('Tests'){
       steps{ 
-		withCredentials([usernamePassword(credentialsId: 'Testkernel', usernameVariable: 'ServiceUserName', passwordVariable: 'ServiceUserPassword')]) {      
-			script{ 
-			  def data = readJSON file: TESTS_JSON
-			  def map = getParralelDeliveryMap(data)
-			  parallel map
-			}
-        }
+		script{ 
+		  def data = readJSON file: TESTS_JSON
+		  def map = getParralelDeliveryMap(data)
+		  parallel map
+		}
       }
     }
   }
