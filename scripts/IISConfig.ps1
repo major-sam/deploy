@@ -1,7 +1,8 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-$username ="GKBALTBET\TestKernel_svc"
-$pass = "GldycLIFKM2018"
+##Credential provided by jenkins
+$username ="$($ENV:ServiceUserName)" 
+$pass =  "$($ENV:ServiceUserPassword)"
 $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
 $IISPools = @( 
