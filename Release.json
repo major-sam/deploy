@@ -13,7 +13,7 @@
         "sourceBuild": "1.0.0.251"
     }, {
         "name": "PDA",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\08.10.2021 RELEASE\\WebPda\\2021-10-11.master.1024.f463408c.zip",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\WebPda\\2021-10-11.master.1024.f463408c.zip",
         "sourceBuild": "2021-10-11.master.1024.f463408c.zip"
     }, {
         "name": "UniRu",
@@ -25,7 +25,7 @@
         "sourceBuild": "1.0.0.4163"
     }, {
         "name": "WebTouch",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\15.10.2021 RELEASE\\WebTouchDev\\2021-10-15.master.1026.a07f5a68.zip",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\WebTouchDev\\2021-10-15.master.1026.a07f5a68.zip",
         "sourceBuild": "2021-10-15.master.1026.a07f5a68.zip"
     }, {
         "name": "ClientWorkSpace",
@@ -53,7 +53,7 @@
         "sourceBuild": "1.0.0.3"
     }, {
         "name": "UniPaymentsService",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\_VM Update Instructions\\08.10.2021 RELEASE\\Uni.PaymentsService\\1.0.0.21",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Services\\Uni.PaymentsService\\1.0.0.21",
         "sourceBuild": "1.0.0.21"
     }
 ]
