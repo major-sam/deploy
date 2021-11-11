@@ -14,7 +14,7 @@ VM_LIST = ["devops-test-vm1",
 	"devops-test-vm7",
 	"devops-test-vm8",
 	"devops-test-vm9",
-	"devops-test-vm10",
+	"devops-testvm10",
 	"vm-n3-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
 
 def getParralelDeliveryMap(src){
@@ -42,6 +42,14 @@ pipeline{
   agent {label "${TESTVM}" }
 
   stages{
+	stage('Set Description'){
+	  steps{
+		script{
+			BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+			currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}"
+		}
+	  }
+	}
     stage('Choose release tag'){
       steps{
         script{
@@ -51,7 +59,7 @@ pipeline{
                      script:'git tag'
                      ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
           println tags
-          println tags.getClass()
+          println tags.getClass(
           println tags.isEmpty()
           if (tags[0] =~ /[a-zA-Z]/){
             tags.add(0,TAG_PLACEHOOLDER)
@@ -121,7 +129,7 @@ pipeline{
 
     stage('PostDepoy'){
 	  stages{
-		stage('Marketing service'){
+		stage('PostDeploy Marketing service'){
 			when{
 			  expression {
 				  params.DEPLOY_MS
