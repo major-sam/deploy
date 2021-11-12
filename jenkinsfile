@@ -1,10 +1,16 @@
 TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
+
 POST_JSON = 'post.json'
+POST_TT_JSON = 'post_tt.json'
 POST_MS_JSON = 'post_ms.json'
+
 DEPLOY_JSON = "deploy.json"
+DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
+
 CLEAN_JSON = 'cleanup.json'
+
 VM_LIST = ["devops-test-vm1",
 	"devops-test-vm2", 
 	"devops-test-vm3",
@@ -124,7 +130,11 @@ pipeline{
 		}
 	  }
       steps{
-		  echo "TT"
+        script{
+          def data = readJSON file: DEPLOY_TT_JSON
+          def map = getParralelDeliveryMap(data)
+          parallel map
+        }
       }
     }    
 
@@ -182,7 +192,7 @@ pipeline{
 			}
 			steps{
 			  script{ 
-				def data = readJSON file: POST_MS_JSON
+				def data = readJSON file: POST_TT_JSON
 				def map = getParralelDeliveryMap(data)
 				parallel map
 			  }

@@ -1,3 +1,9 @@
-{
-
-}
+[
+	{
+        "name": "Maven deploy",
+        "source": "mvn install -s .\\mvn\\settings.xml -f .\\mvn\\pom-tt.xml"
+	},{
+        "name": "TT placeholder",
+        "source": "echo 'marketing service placeholder'"
+    }
+]
