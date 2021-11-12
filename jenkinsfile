@@ -32,16 +32,25 @@ def deliverSources(src){
 
 
 pipeline{
+
   parameters {
       choice name:"TESTVM", choices:VM_LIST 
 	  booleanParam name: "DEPLOY_MS", description: 'Deploy Marketing Service', defaultValue: false
+	  booleanParam name: "DEPLOY_TT", description: 'Deploy Trading Tool', defaultValue: false
   }
+
   environment {
 	SERVICE_CREDS = credentials('Testkernel')
   }
+
   agent {label "${TESTVM}" }
+  
+  tools {
+	maven 'maven382'
+  }
 
   stages{
+
 	stage('Set Description'){
 	  steps{
 		script{
@@ -50,6 +59,7 @@ pipeline{
 		}
 	  }
 	}
+
     stage('Choose release tag'){
       steps{
         script{
@@ -58,9 +68,6 @@ pipeline{
                      encoding:'UTF-8',
                      script:'git tag'
                      ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
-          println tags
-          println tags.getClass(
-          println tags.isEmpty()
           if (tags[0] =~ /[a-zA-Z]/){
             tags.add(0,TAG_PLACEHOOLDER)
             println tags
@@ -110,25 +117,48 @@ pipeline{
       }
     }    
 
+    stage('Deploy Trading Tool'){
+	  when{
+		expression {
+		    params.DEPLOY_TT
+		}
+	  }
+      steps{
+		  echo "TT"
+      }
+    }    
+
     stage('Config IIS'){
 	  steps{
 		powershell '.\\scripts\\IISConfig.ps1'
 	  }
 	}
 
-    stage('Config IIS for Marketing service'){
+    stage('Config IIS for Marketing Service'){
 	  when{
 		expression {
 			params.DEPLOY_MS
 		}
 	  }
 	  steps{
-		powershell '.\\scripts\\IISConfigMS.ps1'
+		powershell '.\\scripts\\IISconfigMS.ps1'
+	  }
+	}
+
+    stage('Config IIS For Trading Tool'){
+	  when{
+		expression {
+			params.DEPLOY_TT
+		}
+	  }
+	  steps{
+		powershell '.\\scripts\\IISConfigTT.ps1'
 	  }
 	}
 
     stage('PostDepoy'){
 	  stages{
+
 		stage('PostDeploy Marketing service'){
 			when{
 			  expression {
@@ -143,6 +173,22 @@ pipeline{
 			  }
 			}
 		}
+		
+		stage('PostDeploy TT'){
+			when{
+			  expression {
+				  params.DEPLOY_TT
+			  }
+			}
+			steps{
+			  script{ 
+				def data = readJSON file: POST_MS_JSON
+				def map = getParralelDeliveryMap(data)
+				parallel map
+			  }
+			}
+		}
+		
 		stage('Default Post'){
 		  steps{ 
 			  script{ 
@@ -164,5 +210,6 @@ pipeline{
 		}
       }
     }
+
   }
 }
