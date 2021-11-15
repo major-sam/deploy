@@ -1,7 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 write-host 'config iis for TT' 
-
+$apiPort = '50005'
 ##Credential provided by jenkins
 $username = "$($ENV:SERVICE_CREDS_USR)" 
 $pass =  "$($ENV:SERVICE_CREDS_PSW)"
@@ -14,18 +14,16 @@ $IISPools = @(
             userName="$username";password="$pass";identitytype=3
             }
         Bindings= @(
-                @{protocol='http';bindingInformation="*:8880:"}
-                @{protocol='https';;bindingInformation="*:9880:"}
+                @{protocol='http';bindingInformation="*:$apiPort:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = ''
+		rootDir = 'C:\Services\TradingTool\Services\Baltbet.TradingTool.Api'
     }
 )  
-
 
 
 Import-Module -Force WebAdministration
 foreach($site in $IISPools ){
 	echo $site
-	#RegisterIISSite($site)
+	RegisterIISSite($site)
 }

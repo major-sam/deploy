@@ -1,7 +1,7 @@
 [
 	{
-        "name": "Maven deploy",
-        "source": "mvn install -s .\\mvn\\settings.xml -f .\\mvn\\pom-tt.xml"
+        "name": "Api deploy",
+        "source": ".\\scripts\\deploy\\tt\\api.ps1"
 	},{
         "name": "TT placeholder",
         "source": "echo 'marketing service placeholder'"

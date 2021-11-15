@@ -35,7 +35,7 @@ RestoreSqlDb -db_params $dbs
 ### copy files
 
 write-host "Copy-Item -Path $($source.sourceBuildSource)  -Destination $targetDir -Recurse "
-robocopy "$($source.sourceBuildSource)"  $targetDir /e
+robocopy "$($source.sourceBuildSource)"  $targetDir /e /NFL /NDL /nc /ns /np
 $global:LASTEXITCODE
 
 if ($global:LASTEXITCODE -ne 0){
