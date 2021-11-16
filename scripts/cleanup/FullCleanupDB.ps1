@@ -1,7 +1,8 @@
 # cleanup inetpub and IIS
 ## cleanup DB
-$sqlInstanceName = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
-
+#$sqlInstanceName = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
+Install-Module -Name SqlServer -AllowClobber
+Import-Module -Name SqlServer -Force
 $rQuery =" EXEC sp_MSforeachdb
   'IF DB_ID(''?'') > 4
   BEGIN
@@ -15,4 +16,4 @@ $rQuery =" EXEC sp_MSforeachdb
   exec sp_delete_backuphistory @Delete_Date 
   GO
   "
-invoke-sqlcmd -ServerInstance $sqlInstanceName -Query $rQuery
+invoke-sqlcmd -ServerInstance $env:computername -Query $rQuery

@@ -25,6 +25,6 @@ Write-Host -ForegroundColor Green "$pathtojson renewed with json depth 1"
 ###
 #XML values replace in html
 ####
-$webdoc = Get-Content -Encoding UTF8 $webConfig |
-   % {$_ -replace "^.*base.*$", "<base href=`"https://$($env:COMPUTERNAME).gkbaltbet.local:9882/`">"}| 
-   % set-Content -Encoding UTF8 $webConfig
+$xmlContent = Get-Content -Encoding UTF8 $webConfig |
+   % {$_ -replace "^.*base.*$", "<base href=`"https://$($env:COMPUTERNAME).gkbaltbet.local:9881/`">"} 
+set-Content -Encoding UTF8 -Path $webConfig -Value $xmlContent
