@@ -131,21 +131,25 @@ pipeline{
 	  }
       steps{
         script{
-	      //version chooser: deployVersion = "-Ddeploy.version=1.0.1.1" 
-		  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-		  def deployBranch = "\"-Ddeploy.branch=rc-2021-10-25\""
-		  def deployVersion = "" 
-		  def deployParams = "${deployDir} ${deployBranch} ${deployVersion}"
-		  configFileProvider(
-		    [configFile(
-			   fileId: 'mavenSettingsGlobal', 
-			   targetLocation: 'MAVEN_SETTINGS.xml')
-			]){
-			  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f ${env.WORKSPACE}\\mvn\\pom-tt.xml ${deployParams}"
+			stage('TT Maven Deploy'){
+			  //version chooser: deployVersion = "-Ddeploy.version=1.0.1.1" 
+			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
+			  def deployBranch = "\"-Ddeploy.branch=rc-2021-10-25\""
+			  def deployVersion = "" 
+			  def deployParams = "${deployDir} ${deployBranch} ${deployVersion}"
+			  configFileProvider(
+				[configFile(
+				   fileId: 'mavenSettingsGlobal', 
+				   targetLocation: 'MAVEN_SETTINGS.xml')
+				]){
+				  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f ${env.WORKSPACE}\\mvn\\pom-tt.xml ${deployParams}"
+			  }
 		  }
-		  def data = readJSON file: DEPLOY_TT_JSON
-          def map = getParralelDeliveryMap(data)
-          parallel map
+		  stage('TT settings'){
+			  def data = readJSON file: DEPLOY_TT_JSON
+			  def map = getParralelDeliveryMap(data)
+			  parallel map
+		  }
         }
       }
     }    
