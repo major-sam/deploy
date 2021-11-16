@@ -65,7 +65,7 @@ function Format-Json {
         }
 
     if ($AsArray) { return $result }
-    return $result -Join [Environment]::NewLine
+    return ($result -Join [Environment]::NewLine)
 }
 
 function XmlDocTransform($xml, $xdt){

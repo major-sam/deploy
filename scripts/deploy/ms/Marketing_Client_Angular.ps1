@@ -22,7 +22,9 @@ Get-ChildItem -Recurse -Path "$targetDir\ClientApp" | % {Move-item -Path $_.Full
 Write-Host -ForegroundColor Green "[info] edit json files"
 $jsonAppsetings = Get-Content -Raw -path $pathtojson | ConvertFrom-Json 
 $jsonAppsetings.apiUrl = "https://$($env:COMPUTERNAME).gkbaltbet.local:9880"
-ConvertTo-Json $jsonAppsetings -Depth  1 | Format-Json | Set-Content $pathtojson -Encoding UTF8
+$content = ConvertTo-Json $jsonAppsetings -Depth  1 | Format-Json 
+$content.getType()
+Set-Content -path $pathtojson -Encoding UTF8 -Value $content
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth 1"
 ###
 #XML values replace in html
