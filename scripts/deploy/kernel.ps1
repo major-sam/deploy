@@ -145,7 +145,11 @@ Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
 
 $webdoc = [Xml](Get-Content $webConfig)
 $webdoc.Settings.EventCacheSettings.Enabled = "false"
+$webdoc.Settings.EventCacheSettings.CoefsCache.FileName = "C:\KCache\EventCoefsCache.dat"
+$webdoc.Settings.EventCacheSettings.CoefsSumCache.FileName =  "C:\KCache\EventCoefsSumCache.dat"
+
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
+$webdoc.Settings.EventCacheSettings.FileCache.FileName = "C:\KCache\EventCoefsCacheJob.dat"
 $webdoc.Save($webConfig)
 
 ###Create dbs

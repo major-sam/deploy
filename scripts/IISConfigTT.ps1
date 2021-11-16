@@ -9,15 +9,15 @@ $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
 $IISPools = @( 
     @{
-        SiteName = 'TradingTool.Api'
+        SiteName = 'Baltbet.TradingTool.Api'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
         Bindings= @(
-                @{protocol='http';bindingInformation="*:$apiPort:"}
+                @{protocol='http';bindingInformation="*:$($apiPort):"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'C:\Services\TradingTool\Services\Baltbet.TradingTool.Api'
+			rootDir = 'C:\Services\TradingTool\Services'
     }
 )  
 

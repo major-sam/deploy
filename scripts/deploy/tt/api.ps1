@@ -7,7 +7,11 @@ $pathtojson = 'C:\Services\TradingTool\Services\Baltbet.TradingTool.Api\appsetti
 $jsonDepth = 4
 
 Write-Host -ForegroundColor Green "[info] edit json files"
-$json_appsetings = Get-Content -Raw -path $pathtojson | ConvertFrom-Json 
+$configFile = Get-Content -Raw -path $pathtojson 
+## Json comment imporvement
+
+$json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
+
 $json_appsetings.Kestrel.EndPoints.Http.Url =  "http://$($apiAddr):$($apiPort)"
 $json_appsetings.AdfsOptions.Authenticate = "true"
 $json_appsetings.AdfsOptions.Issuer = "http://adfs-next.gkbaltbet.local/adfs/services/trust"
