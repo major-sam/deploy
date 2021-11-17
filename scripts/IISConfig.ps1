@@ -16,7 +16,7 @@ $IISPools = @(
                 @{protocol='https';;bindingInformation="*:4444:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'ClientWorkSpace'
@@ -27,7 +27,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8080:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'UniRu'
@@ -38,7 +38,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4443:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'UniruWebApi'
@@ -49,7 +49,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4449:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
 )  
 

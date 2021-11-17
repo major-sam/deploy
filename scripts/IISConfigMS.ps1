@@ -18,7 +18,7 @@ $IISPools = @(
                 @{protocol='https';;bindingInformation="*:9880:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'MarketingImages'
@@ -30,7 +30,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:9883:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'MarketingServiceAdmin'
@@ -42,7 +42,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:9881:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
     @{
         SiteName = 'MarketingServiceClient'
@@ -54,7 +54,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:9882:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\initpub'
+		rootDir = 'c:\inetpub'
     }
 )  
 

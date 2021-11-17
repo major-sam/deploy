@@ -18,6 +18,9 @@
         "name": "TT scrappers",
         "source": ".\\scripts\\deploy\\tt\\scrappers.ps1"
 	},{
+        "name": "TT cert",
+        "source": ".\\scripts\\deploy\\tt\\cert.ps1"
+	},{
         "name": "TT placeholder",
         "source": "echo 'marketing service placeholder'"
     }
