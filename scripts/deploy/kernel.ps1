@@ -97,7 +97,7 @@ $FILES= @(
 )
 
 ### copy files
-robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e
+robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
 
 $global:LASTEXITCODE
 
@@ -145,7 +145,11 @@ Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
 
 $webdoc = [Xml](Get-Content $webConfig)
 $webdoc.Settings.EventCacheSettings.Enabled = "false"
+$webdoc.Settings.EventCacheSettings.CoefsCache.FileName = "C:\KCache\EventCoefsCache.dat"
+$webdoc.Settings.EventCacheSettings.CoefSumCache.FileName =  "C:\KCache\EventCoefsSumCache.dat"
+
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
+$webdoc.Settings.CurrentEventsJob.FileCache.FileName = "C:\KCache\EventCoefsCacheJob.dat"
 $webdoc.Save($webConfig)
 
 ###Create dbs

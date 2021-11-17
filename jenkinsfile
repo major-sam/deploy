@@ -1,10 +1,16 @@
 TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
+
 POST_JSON = 'post.json'
+POST_TT_JSON = 'post_tt.json'
 POST_MS_JSON = 'post_ms.json'
+
 DEPLOY_JSON = "deploy.json"
+DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
+
 CLEAN_JSON = 'cleanup.json'
+
 VM_LIST = ["devops-test-vm1",
 	"devops-test-vm2", 
 	"devops-test-vm3",
@@ -67,7 +73,7 @@ pipeline{
                      returnStdout:true,
                      encoding:'UTF-8',
                      script:'git tag'
-                     ).replaceAll("[\\s ,\\p{Z}, \\p{C}]+", "").trim().split("\\r?\\n") as List
+                     ).replaceAll("[,\\p{Z}, \\p{C}]+", "").split("\\r?\\n") as List
           if (tags[0] =~ /[a-zA-Z]/){
             tags.add(0,TAG_PLACEHOOLDER)
             println tags
@@ -124,7 +130,27 @@ pipeline{
 		}
 	  }
       steps{
-		  echo "TT"
+        script{
+			stage('TT Maven Deploy'){
+			  //version chooser: deployVersion = "-Ddeploy.version=1.0.1.1" 
+			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
+			  def deployBranch = "\"-Ddeploy.branch=rc-2021-10-25\""
+			  def deployVersion = "" 
+			  def deployParams = "${deployDir} ${deployBranch} ${deployVersion}"
+			  configFileProvider(
+				[configFile(
+				   fileId: 'mavenSettingsGlobal', 
+				   targetLocation: 'MAVEN_SETTINGS.xml')
+				]){
+				  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f ${env.WORKSPACE}\\mvn\\pom-tt.xml ${deployParams}"
+			  }
+		  }
+		  stage('TT settings'){
+			  def data = readJSON file: DEPLOY_TT_JSON
+			  def map = getParralelDeliveryMap(data)
+			  parallel map
+		  }
+        }
       }
     }    
 
@@ -182,7 +208,7 @@ pipeline{
 			}
 			steps{
 			  script{ 
-				def data = readJSON file: POST_MS_JSON
+				def data = readJSON file: POST_TT_JSON
 				def map = getParralelDeliveryMap(data)
 				parallel map
 			  }

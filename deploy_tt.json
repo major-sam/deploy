@@ -1,3 +1,24 @@
-{
-
-}
+[
+	{
+        "name": "Api deploy",
+        "source": ".\\scripts\\deploy\\tt\\api.ps1"
+	},{
+        "name": "TT DB",
+        "source": ".\\scripts\\deploy\\tt\\db.ps1"
+	},{
+        "name": "TT importer",
+        "source": ".\\scripts\\deploy\\tt\\importer.ps1"
+	},{
+        "name": "TT matcher",
+        "source": ".\\scripts\\deploy\\tt\\matcher.ps1"
+	},{
+        "name": "TT resulter",
+        "source": ".\\scripts\\deploy\\tt\\resulter.ps1"
+	},{
+        "name": "TT scrappers",
+        "source": ".\\scripts\\deploy\\tt\\scrappers.ps1"
+	},{
+        "name": "TT placeholder",
+        "source": "echo 'marketing service placeholder'"
+    }
+]

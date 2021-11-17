@@ -26,7 +26,7 @@ $FILES= @(
 )
 ### copy files
 
-robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e
+robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e   /NFL /NDL /nc /ns /np
 $global:LASTEXITCODE
 
 if ($global:LASTEXITCODE -ne 0){
