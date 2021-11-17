@@ -73,7 +73,7 @@ pipeline{
                      returnStdout:true,
                      encoding:'UTF-8',
                      script:'git tag'
-                     ).replaceAll("[,\\p{Z}, \\p{C}]+", "").split("\\r?\\n") as List
+                     ).split("\\r?\\n") as List
           if (tags[0] =~ /[a-zA-Z]/){
             tags.add(0,TAG_PLACEHOOLDER)
             println tags
