@@ -1,7 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 $pathtojson = "C:\Services\TradingTool\Tools\Baltbet.TradingTool.Database.Updater\appsettings.json"
 $pathtoProxySeedjson = "C:\Services\TradingTool\Tools\Baltbet.TradingTool.Database.Updater\ProxySeed.json"
-$ProxySeedVar = "./ProxySeed.json"
+$ProxySeedVar = "C:/Services/TradingTool/Tools/Baltbet.TradingTool.Database.Updater/ProxySeed.json"
 $jsonDepth = 2
 
 Write-Host -ForegroundColor Green "[info] edit json files"
