@@ -11,17 +11,24 @@ DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
 
-VM_LIST = ["devops-test-vm1",
-	"devops-test-vm2", 
-	"devops-test-vm3",
-	"devops-test-vm4",
-	"devops-test-vm5",
-	"devops-test-vm6",
-	"devops-test-vm7",
-	"devops-test-vm8",
-	"devops-test-vm9",
-	"devops-testvm10",
-	"vm-n3-ws12", "vm-n2-ws3", "vm-n2-ws2", "vm-n2-ws1"]
+
+def getVmList(int max){
+    def ints = 10..max
+    def VM_LIST = ["devops-test-vm1",
+		"devops-test-vm2", 
+		"devops-test-vm3",
+		"devops-test-vm4",
+		"devops-test-vm5",
+		"devops-test-vm6",
+		"devops-test-vm7",
+		"devops-test-vm8",
+		"devops-test-vm9"
+	]
+	for (id in ints){
+		VM_LIST += "devops-testvm${id}"
+		}
+	return VM_LIST
+	}
 
 def getParralelDeliveryMap(src){
       return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
@@ -40,7 +47,7 @@ def deliverSources(src){
 pipeline{
 
   parameters {
-      choice name:"TESTVM", choices:VM_LIST 
+      choice name:"TESTVM", choices: getVmList(100)
 	  booleanParam name: "DEPLOY_MS", description: 'Deploy Marketing Service', defaultValue: false
 	  booleanParam name: "DEPLOY_TT", description: 'Deploy Trading Tool', defaultValue: false
   }
