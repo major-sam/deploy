@@ -8,6 +8,9 @@
         "name": "Service and Files Cleanup",
         "source": ".\\scripts\\cleanup\\FullCleanupFiles.ps1"
     }, {
+        "name": "Add runAs service access",
+        "source": ".\\scripts\\cleanup\\addRunAsSvc.ps1"
+    }, {
         "name": "cleanup placeholder",
         "source": "echo 'cleanup placeholder'"
     }
