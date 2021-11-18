@@ -95,11 +95,8 @@ function XmlDocTransform($xml, $xdt){
 function RestoreSqlDb($db_params) {	
 	#load assemblies
 	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SMO") | Out-Null
-	#Need SmoExtended for backup
-	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SmoExtended") | Out-Null
-	[reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | out-null
 	$MSSQLDataPath =  (Invoke-Sqlcmd -query "select SERVERPROPERTY('InstanceDefaultDataPath') as 'd'").d
-	write-host "mssql data:" $MSSQLDataPath
+	write-output "mssql data:" $MSSQLDataPath
 	foreach ($db in $db_params){
 		$RelocateFile = @() 
         $dbname = $db.DbName
@@ -107,7 +104,7 @@ function RestoreSqlDb($db_params) {
 			foreach ($dbFile in $db.RelocateFiles) {
 				$RelocateFile += New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($dbFile.SourceName, ("{0}\{1}" -f $MSSQLDataPath, $dbFile.FileName))
 			}
-            write-host -ForegroundColor DarkGreen $db.BackupFile
+            write-output -ForegroundColor DarkGreen $db.BackupFile
 			Restore-SqlDatabase -Verbose -ServerInstance $env:COMPUTERNAME -Database $db.DbName -BackupFile $db.BackupFile -RelocateFile $RelocateFile -ReplaceDatabase
 			Push-Location C:\Windows
 		}else{
@@ -130,7 +127,7 @@ function CreateSqlDatabase($dbname){
     $dbExists = $FALSE
 	foreach ($db in $server.databases) {
 		if ($db.name -eq "Db") {
-		  Write-Host "Db already exists."
+		  Write-output "Db already exists."
 		  $dbExists = $TRUE
 		}
 	}
@@ -145,7 +142,7 @@ function RegisterIISSite($site){
     $name =  $site.SiteName
     $targetDir = "$($site.rootDir)\$name"
     if (Test-Path IIS:\AppPools\$name){
-        Write-Host "SITE EXIST!!!"
+        Write-output "SITE EXIST!!!"
     }
     else{
         New-Item -Path IIS:\AppPools\$name -force
