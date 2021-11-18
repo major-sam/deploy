@@ -67,8 +67,10 @@ pipeline{
 	stage('Set Description'){
 	  steps{
 		script{
-			BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-			currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}"
+			def GIT_COMMIT_MSG = bat (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+			def GIT_COMMIT = bat (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
+			def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+			currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}"
 		}
 	  }
 	}
