@@ -15,6 +15,7 @@ ConvertTo-Json $json_appsetings -Depth $jsonDepth  | Format-Json | Set-Content $
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDepth"
 
 
+$ipv4 = '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 
 $listVar = @()
 $servicesVar = @(
@@ -37,12 +38,17 @@ $servicesVar = @(
 	"VBET"
 	)
 get-content '.\scripts\deploy\tt\proxies.txt' | % {
-	$prx = @{ Uri = "$_";
-	        Username = "";
-			Password = "";
-			Services = $servicesVar;
-			}
-	$listVar += $prx
+	if ("$_".trim().split(':')[0] -match $ipv4){
+		$prx = @{ Uri = "$_";
+				Username = "";
+				Password = "";
+				Services = $servicesVar;
+				}
+		$listVar += $prx
+		}
+	else{
+		write-output "$_ not valid proxy ip"
+		}
 	}
 
 ConvertTo-Json $listVar -Depth 3 | Format-Json | Set-Content $pathtoProxySeedjson -Encoding UTF8
