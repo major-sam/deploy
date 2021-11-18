@@ -34,12 +34,12 @@ Get-Process "*baltbet*"| % {$procs +=$_.ProcessName}
 
 $procs | % {Start-Job -InitializationScript $initScript -Scriptblock $procblock -ArgumentList $_ }
 Get-Job | Wait-Job | Receive-Job
-Get-Service -Displayname "*Baltbet*" | ForEach-object{ cmd /c  sc delete $_.Name}
+sleep 10
+Get-Service *Baltbet* | ForEach-object{ cmd /c  sc delete $_.Name}
 #### cleanup Kernel
 Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
 
 #### cleanup services folders
-sleep 10
 Remove-Item -Path C:\Services\* -Force -Recurse
 
 #### cleanup default logs
