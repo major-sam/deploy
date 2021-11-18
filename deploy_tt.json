@@ -21,6 +21,9 @@
         "name": "TT cert",
         "source": ".\\scripts\\deploy\\tt\\cert.ps1"
 	},{
+        "name": "TT client",
+        "source": ".\\scripts\\deploy\\tt\\client.ps1"
+	},{
         "name": "TT placeholder",
         "source": "echo 'marketing service placeholder'"
     }

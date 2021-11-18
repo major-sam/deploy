@@ -1,7 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 ##### edit imorter json files
 ## mayby to env
-$logPath = "C:\\Logs\\TradingTool\\scrappers\\"
+$logPath = "C:\Logs\TradingTool\scrappers\"
 $apiAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
 $apiPort = '50005'
 $jsonDepth = 4

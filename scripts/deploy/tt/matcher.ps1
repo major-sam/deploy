@@ -1,7 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 ##### edit imorter json files
 ## mayby to env
-$logPath = "C:\\Logs\\TradingTool\\Baltbet.TradingTool.Matching.txt"
+$logPath = "C:\Logs\TradingTool\Baltbet.TradingTool.Matching-.txt"
 $apiAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
 $apiPort = '50005'
 $pathtojson = 'C:\Services\TradingTool\Services\Baltbet.TradingTool.MatchingSvc\appsettings.json'

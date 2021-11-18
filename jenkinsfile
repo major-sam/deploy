@@ -155,7 +155,9 @@ pipeline{
 		  stage('TT settings'){
 			  def data = readJSON file: DEPLOY_TT_JSON
 			  def map = getParralelDeliveryMap(data)
-			  parallel map
+			  withCredentials([string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId')]){
+				  parallel map
+				}
 		  }
         }
       }

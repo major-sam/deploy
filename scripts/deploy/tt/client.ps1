@@ -1,10 +1,9 @@
 import-module '.\scripts\sideFunctions.psm1'
 ##### edit imorter json files
 ## mayby to env
-$logPath = "C:\Logs\TradingTool\Baltbet.TradingTool.Importer-.txt"
 $apiAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
 $apiPort = '50005'
-$pathtojson = 'C:\Services\TradingTool\Services\Baltbet.TradingTool.Importer\appsettings.json'
+$pathtojson = 'C:\Services\TradingTool\Client\Baltbet.TradingTool\appsettings.json'
 $jsonDepth = 4
 $ClientId = "10004"
 
@@ -14,10 +13,10 @@ $configFile = Get-Content -Raw -path $pathtojson
 
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 
-$json_appsetings.ClientOptions.Url =  "http://$($apiAddr):$($apiPort)"
-$json_appsetings.Serilog.WriteTo[0].Args.path = $logPath
-$json_appsetings.Kernel.Host = $apiAddr
-$json_appsetings.Kernel.ClientId = $ClientId
+$json_appsetings.Services.TradingToolBaseAddress =  "http://$($apiAddr):$($apiPort)"
+$json_appsetings.Auth.AdfsOptions.Authority = "https://adfs-next.gkbaltbet.local/adfs"
+$json_appsetings.Auth.AdfsOptions.ClientId = $env:ADFSClientId
+
 ConvertTo-Json $json_appsetings -Depth $jsonDepth  | Format-Json | Set-Content $pathtojson -Encoding UTF8
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDepth"
 
