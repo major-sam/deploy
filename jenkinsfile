@@ -109,10 +109,22 @@ pipeline{
 
     stage('Deploy'){ 
       steps{
-        script{
-          def data = readJSON file: DEPLOY_JSON 
-          def map = getParralelDeliveryMap(data)
-          parallel map
+		 withCredentials([
+			file ( 
+			   credentialsId: 'bb-webapps', 
+			   variable: 'BBWEBAPPS'),
+			file (
+			   credentialsId: 'gkbaltbet-ca', 
+			   variable: 'GKBALTBETCA'),
+			file (
+			   credentialsId: 'wcf-host', 
+			   variable: 'WCFHOST'),
+			]){
+			script{
+			  def data = readJSON file: DEPLOY_JSON 
+			  def map = getParralelDeliveryMap(data)
+			  parallel map
+		  }
         }
       }
     }    
@@ -157,7 +169,8 @@ pipeline{
 		  stage('TT settings'){
 			  def data = readJSON file: DEPLOY_TT_JSON
 			  def map = getParralelDeliveryMap(data)
-			  withCredentials([string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId')]){
+			  withCredentials([string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
+							file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 				  parallel map
 				}
 		  }
