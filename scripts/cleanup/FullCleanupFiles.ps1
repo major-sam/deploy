@@ -34,8 +34,15 @@ Get-Process "*baltbet*"| % {$procs +=$_.ProcessName}
 
 $procs | % {Start-Job -InitializationScript $initScript -Scriptblock $procblock -ArgumentList $_ }
 Get-Job | Wait-Job | Receive-Job
-sleep 10
-Get-Service *Baltbet* | ForEach-object{ cmd /c  sc delete $_.Name}
+Get-Service *Baltbet* | ForEach-object{ 
+	if($_.status  -eq "Stopped"){
+		cmd /c  sc delete $_.DbName
+	}
+	else{
+		$_.WaitForStatus("Stopped")
+		cmd /c  sc delete $_.DbName
+	}
+}
 #### cleanup Kernel
 Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
 
