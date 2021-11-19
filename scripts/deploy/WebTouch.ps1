@@ -13,4 +13,4 @@ $source = GetSourceObject $sourceparams
 $WebTouch_folder = "C:\inetpub\Mobile"
 
 Write-Host -ForegroundColor Green "[INFO] Expand archive WebTouch"
-Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $WebTouch_folder -Verbose -Force
+Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $WebTouch_folder -Force

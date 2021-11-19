@@ -12,4 +12,4 @@ $source = GetSourceObject $sourceparams
 $WebPda_folder = "C:\inetpub\baltplaymobile"
 
 Write-Host -ForegroundColor Green "[INFO] Expand archive WebPDA"
-Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $WebPda_folder -Verbose -Force
+Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $WebPda_folder -Force

@@ -5,7 +5,7 @@
         "sourceBuild": "1.0.5521.1"
     }, {
         "name": "Kernel",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5542.1\\Kernel",
+        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5545.1\\Kernel",
         "sourceBuild": "1.0.5545.1"
     }, {
         "name": "MessageService",
