@@ -20,6 +20,7 @@ $queryTimeout = 720
 $excludeSqlCmds = "1.DBRestore.sql"
 $files = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
 $webConfig = "$targetDir\settings.xml"
+$KernelConfig ="$targetDir\Kernel.exe.config"
 $dbs = @(
 	@{
 		DbName = "BaltBetM"
@@ -152,6 +153,10 @@ $webdoc.Settings.CurrentEventsJob.Enabled = "false"
 $webdoc.Settings.CurrentEventsJob.FileCache.FileName = "C:\KCache\EventCoefsCacheJob.dat"
 $webdoc.Save($webConfig)
 
+### edit kernel.exe.config
+$conf = [Xml](Get-Content $KernelConfig)
+$conf.configuration."system.serviceModel".services.service |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$env:COMPUTERNAME )}}
+$conf.Save($KernelConfig)
 ###Create dbs
 Write-Host -ForegroundColor Green "[INFO] Create dbs"
 
