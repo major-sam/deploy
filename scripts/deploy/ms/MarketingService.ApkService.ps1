@@ -16,3 +16,6 @@ $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScr
 write-host "Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse"
 Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse 
 
+$conf = [Xml](Get-Content $webConfig)
+$conf.configuration."system.serviceModel".services.service |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$CurrentIpAddr)}}
+$conf.Save($webConfig)
