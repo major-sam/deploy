@@ -5,8 +5,8 @@
         "sourceBuild": "1.0.5521.1"
     }, {
         "name": "Kernel",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5545.1\\Kernel",
-        "sourceBuild": "1.0.5545.1"
+        "sourceBuildSource": "\\\\server\\tcbuild$\\ServerDeploy\\1.0.5542.1\\Kernel",
+        "sourceBuild": "1.0.5542.1"
     }, {
         "name": "MessageService",
         "sourceBuildSource": "\\\\server\\tcbuild$\\Testers\\MessageService\\1.0.0.251",
@@ -37,8 +37,8 @@
         "sourceBuild": "1.0.0.1042"
     },{
         "name": "MarketingService",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.MarketingService\\1.0.0.151",
-        "sourceBuild": "1.0.0.151"
+        "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.MarketingService\\1.0.0.154",
+        "sourceBuild": "1.0.0.154"
     },{
         "name": "MarketingService.ApkService",
         "sourceBuildSource": "\\\\server\\tcbuild$\\Marketing\\BaltBet.Marketing.ApkService\\1.0.0.23",

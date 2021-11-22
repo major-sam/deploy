@@ -36,11 +36,11 @@ $procs | % {Start-Job -InitializationScript $initScript -Scriptblock $procblock 
 Get-Job | Wait-Job | Receive-Job
 Get-Service *Baltbet* | ForEach-object{ 
 	if($_.status  -eq "Stopped"){
-		cmd /c  sc delete $_.DbName
+		cmd /c  sc delete $_.Name
 	}
 	else{
 		$_.WaitForStatus("Stopped")
-		cmd /c  sc delete $_.DbName
+		cmd /c  sc delete $_.Name
 	}
 }
 #### cleanup Kernel
