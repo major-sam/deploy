@@ -182,7 +182,9 @@ function RegisterWinService($serviceBin){
 	  Description = "This is a $sname service."
 	  Credential = $credentials
 	}
+	write-output "$sname creation started"
 	New-Service @params
+	write-output "$sname creation done"
 }
 
 function Stop-ServiceWithTimeout ($name) {
