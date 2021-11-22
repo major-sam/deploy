@@ -3,7 +3,8 @@ $pathtojson = "C:\Services\TradingTool\Tools\Baltbet.TradingTool.Database.Update
 $pathtoProxySeedjson = "C:\Services\TradingTool\Tools\Baltbet.TradingTool.Database.Updater\ProxySeed.json"
 $ProxySeedVar = "C:/Services/TradingTool/Tools/Baltbet.TradingTool.Database.Updater/ProxySeed.json"
 $jsonDepth = 2
-
+$IpAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
+$dbname = 'TradingTool'
 Write-Host -ForegroundColor Green "[info] edit json files"
 $configFile = Get-Content -Raw -path $pathtojson 
 ## Json comment imporvement
@@ -63,3 +64,10 @@ Write-Host -ForegroundColor Green "$pathtoProxySeedjson renewed with json depth 
              } 
 
 
+$updateImportUrl = "
+UPDATE [TradingTool].[trading].[settings]
+SET [Value] = 'http://$($IpAddr):8444'
+WHERE [Key] = 'IMPORT_SERVICE_URL';
+"
+
+Invoke-Sqlcmd -Database $dbname  -query $updateImportUrl
