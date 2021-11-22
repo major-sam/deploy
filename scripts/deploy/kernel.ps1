@@ -152,7 +152,7 @@ $webdoc.Save($webConfig)
 
 ### edit kernel.exe.config
 $conf = [Xml](Get-Content $KernelConfig)
-$conf.configuration."system.serviceModel".services.service |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$env:COMPUTERNAME )}}
+$conf.configuration."system.serviceModel".services.service |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$CurrentIpAddr)}}
 $conf.Save($KernelConfig)
 ###Create dbs
 Write-Host -ForegroundColor Green "[INFO] Create dbs"
@@ -167,7 +167,7 @@ $qwr="
 	"
 Invoke-Sqlcmd -Verbose -ServerInstance $env:COMPUTERNAME -Query $qwr -ErrorAction continue
 
-$sqlFiles = Get-ChildItem -path ".\scripts\deploy\KernelSql\" -Include "*.sql" | Sort-Object -Property Name
+$sqlFiles = Get-ChildItem -path "$($env:workspace)\scripts\deploy\KernelSql\*" -Include "*.sql" | Sort-Object -Property Name
 
 $release_bak_folder = 
 foreach ($file in $sqlFiles) {

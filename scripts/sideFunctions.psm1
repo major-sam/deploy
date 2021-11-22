@@ -166,38 +166,36 @@ function RegisterIISSite($site){
 
 function RegisterWinService($serviceBin){
 	##Credential provided by jenkins
+	write-host "Register service:"
 	$passVar = ConvertTo-SecureString $ENV:SERVICE_CREDS_PSW -AsPlainText -Force
 	$credentials = New-Object System.Management.Automation.PSCredential ($ENV:SERVICE_CREDS_USR , $passVar )
 	if ($($serviceBin.BaseName)  -like 'baltbet*'){
 		$sname = "$($serviceBin.BaseName)"
+		
 	}
 	else{
 		$sname = "Baltbet.$($serviceBin.BaseName)"
 	}
-	$params = @{
-	  Name = "$sname"
-	  BinaryPathName = "$($serviceBin.fullName) -displayname `"$sname`" -servicename `"$sname`""
-	  DisplayName = $sname
-	  StartupType = "Automatic"
-	  Description = "This is a $sname service."
-	  Credential = $credentials
-	}
-	write-output "$sname creation started"
-	New-Service @params
-	write-output "$sname creation done"
+	write-host "add new service $sname"
+	New-Service -name $sname -BinaryPathName "$($serviceBin.FullName)  -displayname `"$sname`" -servicename `"$sname`"" -DisplayName $sname 
+	write-host "set $sname credentials"
+	$service = gwmi win32_service -filter "name='$sname'"
+	$service.Change($Null, $Null, $Null, $Null, $Null, $Null, $ENV:SERVICE_CREDS_USR, $ENV:SERVICE_CREDS_PSW)
+	write-host "$sname registred. Starting..."
+	return $sname
 }
 
-function Stop-ServiceWithTimeout ($name) {
-    $timespan = New-Object -TypeName System.Timespan -ArgumentList 0,0,10
-    $svc = Get-Service -Name $name
-    if ($svc -eq $null) { return $false }
-    if ($svc.Status -eq [ServiceProcess.ServiceControllerStatus]::Stopped) { return $true }
-    $svc.Stop()
-    try {
-        $svc.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timespan)
-    }
-    catch [ServiceProcess.TimeoutException] {
-        Write-Verbose "Timeout stopping service $($svc.Name)"
-		Stop-Process -Name $name -Force
-    }
-}
+	function Stop-ServiceWithTimeout ($name) {
+		$timespan = New-Object -TypeName System.Timespan -ArgumentList 0,0,10
+		$svc = Get-Service -Name $name
+		if ($svc -eq $null) { return $false }
+		if ($svc.Status -eq [ServiceProcess.ServiceControllerStatus]::Stopped) { return $true }
+		$svc.Stop()
+		try {
+			$svc.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timespan)
+		}
+		catch [ServiceProcess.TimeoutException] {
+			Write-Verbose "Timeout stopping service $($svc.Name)"
+			Stop-Process -Name $name -Force
+		}
+	}

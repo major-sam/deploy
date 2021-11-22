@@ -39,11 +39,15 @@ Get-Service *Baltbet* | ForEach-object{
 		cmd /c  sc delete $_.Name
 	}
 	elseif($_) {
-		$_.WaitForStatus("Stopped")
-		cmd /c  sc delete $_.Name
+		try{
+			$_.WaitForStatus("Stopped")
+			cmd /c  sc delete $_.Name
+		}catch{
+			write-output "$_  is not exist"
+		}
 	}
 	else{
-		write-out 'No service installed'}
+		write-output 'No service installed'}
 }
 #### cleanup Kernel
 Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
