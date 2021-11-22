@@ -14,17 +14,14 @@ $netVersion = (Get-ChildItem -path $source.sourceBuildSource -Recurse -Force |Se
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $pathtojson = "$targetDir\appsettings.json "
 $transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
-$release_bak_folder = "\\server\tcbuild$\Testers\_VM Update Instructions\19.11.2021 RELEASE\_Full DB Restoration"
 $jsonDepth = 4
 $queryTimeout = 720
-$excludeSqlCmds = "1.DBRestore.sql"
-$files = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
 $webConfig = "$targetDir\settings.xml"
 $KernelConfig ="$targetDir\Kernel.exe.config"
 $dbs = @(
 	@{
 		DbName = "BaltBetM"
-		BackupFile = "$release_bak_folder\BaltBetM.bak"
+		BackupFile = "\\server\tcbuild$\Testers\DB\BaltBetM.original.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetM"
@@ -42,7 +39,7 @@ $dbs = @(
 	}
 	@{
 		DbName = "BaltBetMMirror"
-		BackupFile = "$release_bak_folder\BaltBetM.bak"
+		BackupFile = "\\server\tcbuild$\Testers\DB\BaltBetM.original.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetM"
@@ -60,7 +57,7 @@ $dbs = @(
 	}
 	@{
 		DbName = "BaltBetWeb"
-		BackupFile = "$release_bak_folder\BaltBetWeb.bak"
+		BackupFile = "\\server\tcbuild$\Testers\DB\BaltBetWeb.bak"
 		RelocateFiles = @(
 			@{
 				SourceName = "BaltBetWeb"
@@ -170,8 +167,9 @@ $qwr="
 	"
 Invoke-Sqlcmd -Verbose -ServerInstance $env:COMPUTERNAME -Query $qwr -ErrorAction continue
 
-$sqlFiles = Get-ChildItem -path "$($release_bak_folder)\*" -Include "*.sql" -exclude $excludeSqlCmds | Sort-Object -Property Name
+$sqlFiles = Get-ChildItem -path ".\scripts\deploy\KernelSql\" -Include "*.sql" | Sort-Object -Property Name
 
+$release_bak_folder = 
 foreach ($file in $sqlFiles) {
 	Write-Host -ForegroundColor Gray "[INFO] EXECUTED STARETED: " $file
 	Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -InputFile $file -ErrorAction continue
