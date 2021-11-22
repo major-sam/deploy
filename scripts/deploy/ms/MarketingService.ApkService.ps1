@@ -18,4 +18,7 @@ Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse
 
 $conf = [Xml](Get-Content $webConfig)
 $conf.configuration."system.serviceModel".services.service |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$CurrentIpAddr)}}
+
+$conf.configuration.connectionStrings.add |Where-Object  name -eq "BaltBetM"| %{
+	$_.connectionString = 'server=localhost;Integrated Security=SSPI;MultipleActiveResultSets=true;Initial Catalog=BaltBetM'}
 $conf.Save($webConfig)
