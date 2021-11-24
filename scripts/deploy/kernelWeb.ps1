@@ -24,13 +24,20 @@ $FILES= @(
         target = "$targetDir\settings.xml"
       }
 )
+if ($DEPLOY_BY_MAVEN ){
+	Write-host "####################"
+	Write-host "robocopy replaced by maven"
+	Write-host "####################"
+}
+else{
 ### copy files
 
-robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e   /NFL /NDL /nc /ns /np
-$global:LASTEXITCODE
+	robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e   /NFL /NDL /nc /ns /np
+	$global:LASTEXITCODE
 
-if ($global:LASTEXITCODE -ne 0){
-	$global:LASTEXITCODE = 0
+	if ($global:LASTEXITCODE -ne 0){
+		$global:LASTEXITCODE = 0
+	}
 }
 
 ### set vm related values for transformation files

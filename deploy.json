@@ -5,17 +5,19 @@
         "name": "CIS",
         "source": "echo 'script is bad - redo'"
     }, {
-        "name": "kernel",
-        "source": ".\\scripts\\deploy\\kernel.ps1"
+        "name": "Kernel",
+        "source": ".\\scripts\\deploy\\kernel.ps1",
+		"deployDir": "c:\\"
     }, {
-        "name": "kernelWeb",
-        "source": ".\\scripts\\deploy\\kernelWeb.ps1"
+        "name": "KernelWeb",
+        "source": ".\\scripts\\deploy\\kernelWeb.ps1",
+		"deployDir": "c:\\"
     }, {
         "name": "PDA",
         "source": ".\\scripts\\deploy\\PDA.ps1"
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"
+        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"  
     }, {
         "name": "UniRuAndApi",
         "source": ".\\scripts\\deploy\\UniRuAndApi.ps1"

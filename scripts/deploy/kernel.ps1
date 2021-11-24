@@ -17,6 +17,8 @@ $transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
 $jsonDepth = 4
 $queryTimeout = 720
 $webConfig = "$targetDir\settings.xml"
+$UnityConfig = "$targetDir\Config\UnityConfig.config"
+$LogConfig = "$targetDir\Config\Log.Config"
 $KernelConfig ="$targetDir\Kernel.exe.config"
 $dbs = @(
 	@{
@@ -93,17 +95,21 @@ $FILES= @(
         target = "$targetDir\Config\Log.config"
       } 
 )
-
-### copy files
-robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
-
-$global:LASTEXITCODE
-
-if ($global:LASTEXITCODE -ne 0){
-	$global:LASTEXITCODE = 0
+if ($DEPLOY_BY_MAVEN ){
+	Write-host "####################"
+	Write-host "robocopy replaced by maven"
+	Write-host "####################"
 }
-### set vm related values for transformation files
+else{
+### copy files
+	robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
 
+	$global:LASTEXITCODE
+
+	if ($global:LASTEXITCODE -ne 0){
+		$global:LASTEXITCODE = 0
+	}
+}
 ##### raw replace
 
 $transformFiles = @("$targetDir\settings.OctopusTestVM.xml")
@@ -149,6 +155,20 @@ $webdoc.Settings.EventCacheSettings.CoefSumCache.FileName =  "C:\KCache\EventCoe
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
 $webdoc.Settings.CurrentEventsJob.FileCache.FileName = "C:\KCache\EventCoefsCacheJob.dat"
 $webdoc.Save($webConfig)
+### edit Log.config
+Write-Host "[INFO] Edit web.config of $LogConfig"
+
+$webdoc = [Xml](Get-Content $LogConfig)
+$webdoc.log4net.appender|%{$_.file.value = $_.file.value.replace("Log\", "c:\logs\kernel\")}
+
+$webdoc.Save($LogConfig)
+
+### edit Unity.config.xml
+Write-Host "[INFO] Edit web.config of $UnityConfig"
+
+$webdoc = [Xml](Get-Content $UnityConfig)
+($webdoc.unity.container|%{$_.register}|?{$_.type -like "Kernel.IStopKernelValidator, Kernel"}).constructor.param.value = "config\StartStop.txt"
+$webdoc.Save($UnityConfig)
 
 ### edit kernel.exe.config
 $conf = [Xml](Get-Content $KernelConfig)
