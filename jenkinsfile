@@ -65,58 +65,51 @@ def doMavenDeploy(repo){
 	}
 	//for future usage
 	def deployVersion = ""
+	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 	//for future usage
-	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${branch}\" ${deployDir} ${deployVersion}"
+	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${branch}\" ${deployDir} ${deployExec} ${deployVersion}"
 	configFileProvider(
 		[
 			configFile(
 			   fileId: 'mavenSettingsGlobal', 
 			   targetLocation: 'MAVEN_SETTINGS.xml'),
 			configFile(
-			   fileId: 'testkernel', 
+			   fileId: 'defaultPOM', 
 			   targetLocation: 'pomxml')
 		]){
-		powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+		//powershell "mvn clean deploy -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+		powershell "mvn clean dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 	}
 }
 
-def getParralelDeliveryMap(src){
-      return src.collectEntries{[ (it['name']) : deliverSources(it) ]}
-}
 
-def deliverSources(src){
-  return{
-	stage(src['name']){ 
-	  println "${src['source']}"   
-	  powershell (
-		encoding:'UTF8', 
-		script:"""
-			\$DEPLOY_BY_MAVEN=\$false
-			${src['source']}"""
-		)
-	}
-  }
-}
-
-def getDeployParralelDeliveryMap(src){
-      return src.collectEntries{[ (it['name']) : deliverSourcesWithMaven(it) ]}
-}
-
-def deliverSourcesWithMaven(src){
-  return{
-    stage(src['name']){ 
-	  def deployByMaven = 'false'
-      println "${src['source']}"   
-	  if (src['name'] in nexusArtifacts){
-		doMavenDeploy(src)
-		deployByMaven = 'true'
+def getParralelDeliveryMap(src,stage){
+	  println "$stage is stage in parrallel ###########"
+      if (stage ==~ "Deploy" ){ 
+	  println "MAVEN_################ stage in parrallel ###########"
+		  return src.collectEntries{[ (it['name']) : deliverSources(it,true) ]}
+	  }else{
+	  println "NON!!!MAVEN_################ stage in parrallel ###########"
+		  return src.collectEntries{[ (it['name']) : deliverSources(it,false) ]}
 	  }
-	  powershell (
-		encoding:'UTF8', 
-		script:"""
-			\$DEPLOY_BY_MAVEN=\$${deployByMaven}
-			${src['source']}"""
-		)
+}
+
+def deliverSources(src,state){
+  if (src['name'] in nexusArtifacts && state){
+	  return{
+		stage(src['name']){ 
+		  doMavenDeploy(src)
+		}
+	  }		
+  }
+  else{
+	  return{
+		stage(src['name']){ 
+		  powershell (
+			encoding:'UTF8', 
+			script:"${src['source']}"
+			)
+	  }
     }
   }
 }
@@ -181,7 +174,7 @@ pipeline{
       steps{
 	    script{
           def data = readJSON file: CLEAN_JSON
-          def map = getParralelDeliveryMap(data)
+          def map = getParralelDeliveryMap(data, "$STAGE_NAME")
           parallel map
         }
       }
@@ -206,7 +199,7 @@ pipeline{
 			script{
 			  nexusArtifacts = getNexusArtifactList()	
 			  def data = readJSON file: DEPLOY_JSON 
-			  def map = getDeployParralelDeliveryMap(data)
+			  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
 			  parallel map
 		  }
         }
@@ -222,7 +215,7 @@ pipeline{
       steps{
         script{
           def data = readJSON file: DEPLOY_MS_JSON
-          def map = getParralelDeliveryMap(data)
+          def map = getParralelDeliveryMap(data, "$STAGE_NAME")
           parallel map
         }
       }
@@ -252,7 +245,7 @@ pipeline{
 		  }
 		  stage('TT settings'){
 			  def data = readJSON file: DEPLOY_TT_JSON
-			  def map = getParralelDeliveryMap(data)
+			  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
 			  withCredentials([
 				string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 				file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
@@ -303,7 +296,7 @@ pipeline{
 			steps{
 			  script{ 
 				def data = readJSON file: POST_MS_JSON
-				def map = getParralelDeliveryMap(data)
+				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
 				parallel map
 			  }
 			}
@@ -318,7 +311,7 @@ pipeline{
 			steps{
 			  script{ 
 				def data = readJSON file: POST_TT_JSON
-				def map = getParralelDeliveryMap(data)
+				def map = getParralelDeliveryMap(data ,"$STAGE_NAME")
 				parallel map
 			  }
 			}
@@ -328,7 +321,7 @@ pipeline{
 		  steps{ 
 			  script{ 
 				def data = readJSON file: POST_JSON
-				def map = getParralelDeliveryMap(data)
+				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
 				parallel map
 			  }
 		  }
@@ -340,7 +333,7 @@ pipeline{
       steps{ 
 		script{ 
 		  def data = readJSON file: TESTS_JSON
-		  def map = getParralelDeliveryMap(data)
+		  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
 		  parallel map
 		}
       }

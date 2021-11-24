@@ -95,21 +95,21 @@ $FILES= @(
         target = "$targetDir\Config\Log.config"
       } 
 )
-if ($DEPLOY_BY_MAVEN ){
-	Write-host "####################"
-	Write-host "robocopy replaced by maven"
-	Write-host "####################"
-}
-else{
-### copy files
-	robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
-
-	$global:LASTEXITCODE
-
-	if ($global:LASTEXITCODE -ne 0){
-		$global:LASTEXITCODE = 0
-	}
-}
+#if ($DEPLOY_BY_MAVEN ){
+#	Write-host "####################"
+#	Write-host "robocopy replaced by maven"
+#	Write-host "####################"
+#}
+#else{
+#### copy files
+#	robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
+#
+#	$global:LASTEXITCODE
+#
+#	if ($global:LASTEXITCODE -ne 0){
+#		$global:LASTEXITCODE = 0
+#	}
+#}
 ##### raw replace
 
 $transformFiles = @("$targetDir\settings.OctopusTestVM.xml")
