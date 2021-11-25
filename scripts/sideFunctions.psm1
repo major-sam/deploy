@@ -180,7 +180,7 @@ function RegisterWinService($serviceBin){
 	New-Service -name $sname -BinaryPathName "$($serviceBin.FullName)  -displayname `"$sname`" -servicename `"$sname`"" -DisplayName $sname | OUT-Null
 	write-host "set $sname credentials"
 	$service = gwmi win32_service -filter "name='$sname'"
-	$service.Change($Null, $Null, $Null, $Null, $Null, $Null, $ENV:SERVICE_CREDS_USR, $ENV:SERVICE_CREDS_PSW)
+	$service.Change($Null, $Null, $Null, $Null, $Null, $Null, $ENV:SERVICE_CREDS_USR, $ENV:SERVICE_CREDS_PSW)| Out-Null
 	write-host "$sname registred. Starting..."
 	return $sname
 }
