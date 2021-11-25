@@ -104,7 +104,7 @@ function RestoreSqlDb($db_params) {
 			foreach ($dbFile in $db.RelocateFiles) {
 				$RelocateFile += New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($dbFile.SourceName, ("{0}\{1}" -f $MSSQLDataPath, $dbFile.FileName))
 			}
-            write-output -ForegroundColor DarkGreen $db.BackupFile
+            write-output $db.BackupFile
 			Restore-SqlDatabase -Verbose -ServerInstance $env:COMPUTERNAME -Database $db.DbName -BackupFile $db.BackupFile -RelocateFile $RelocateFile -ReplaceDatabase
 			Push-Location C:\Windows
 		}else{
