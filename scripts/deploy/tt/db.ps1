@@ -71,3 +71,5 @@ WHERE [Key] = 'IMPORT_SERVICE_URL';
 "
 
 Invoke-Sqlcmd -Database $dbname  -query $updateImportUrl
+write-host "add linked server"
+Invoke-Sqlcmd -Database 'master'  -query 'sp_addlinkedserver [srvapkbb3.gkbaltbet.local]'

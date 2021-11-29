@@ -5,6 +5,9 @@
         "name": "install services",
         "source": ".\\scripts\\post\\tt\\registerServices.ps1"
     },{
+        "name": "Get TT Kernel events",
+        "source": ".\\scripts\\post\\tt\\kernelDB.ps1"
+    },{
         "name": "TT placeholder",
         "source": "echo 'Marketing service placeholder'"
     }

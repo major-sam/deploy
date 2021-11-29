@@ -126,6 +126,7 @@ pipeline{
 
   environment {
 	SERVICE_CREDS = credentials('Testkernel')
+	TT_SERVICE_CREDS = credentials('kernelsvc')
 	NEXUS_CREDS = credentials('jenkinsAD')
   }
 
