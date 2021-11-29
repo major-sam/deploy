@@ -52,8 +52,8 @@ BEGIN
 	DECLARE @PlayerName nvarchar(50), @PlayerName2 nvarchar(50), @Player1Id int, @Player2Id int
 	SELECT top 1 @Player1Id = PlayerId, @PlayerName = PlayerName FROM #TempPlayers order by newid()
 	SELECT top 1 @Player2Id = PlayerId, @PlayerName2 = PlayerName FROM #TempPlayers order by newid()
-	INSERT INTO events(LineID, EventTypeId, LineMemberId, WorkerId, EventCreationTime, EventStartTime, EventActive, EventFinished, EventResultText, MaxBetLimit, MinBetLimit, MinExpressCount, MaxExpressCount, EventName,Live, EventTypeGroupID,ClientShow) 
-	VALUES(@EventID,@EventTypeId, @LineMemberId,@WorkerID,getdate(),@StartDate,1,0,'',10000,20,0,0, @PlayerName + '-' + @PlayerName2, @Live,@GroupId,15)
+	INSERT INTO events(LineID, EventTypeId, LineMemberId, WorkerId, EventCreationTime, EventStartTime, EventActive, EventFinished, EventResultText, MaxBetLimit, MinBetLimit, MinExpressCount, MaxExpressCount, EventName,Live, EventTypeGroupID,ClientShow, BetStartDate, BetEndDate, IsBetFinished) 
+	VALUES(@EventID,@EventTypeId, @LineMemberId,@WorkerID,getdate(),@StartDate,1,0,'',10000,20,0,0, @PlayerName + '-' + @PlayerName2, @Live,@GroupId,15,getdate(), @StartDate, 0)
     INSERT INTO EventComments(EventId) VALUES(@EventID)
 	INSERT INTO EventMembers(EventMemberId,LineID,LineMemberId)
 	VALUES(@EventMemberId+1,@EventID,@Player1Id)
