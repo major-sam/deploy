@@ -2,6 +2,9 @@
         "name": "Fix TTDB",
         "source": ".\\scripts\\post\\tt\\ttDb.ps1"
     },{
+        "name": "install services",
+        "source": ".\\scripts\\post\\tt\\registerServices.ps1"
+    },{
         "name": "TT placeholder",
         "source": "echo 'Marketing service placeholder'"
     }
