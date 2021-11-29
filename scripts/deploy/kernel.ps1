@@ -146,14 +146,18 @@ foreach($item in $FILES){
 
 ### edit settings.xml
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
+$cachePath = 'c:\kCache'
+if (!(test-path $cachePath)){
+	md $cachePath
 
+	}
 $webdoc = [Xml](Get-Content $webConfig)
 $webdoc.Settings.EventCacheSettings.Enabled = "false"
-$webdoc.Settings.EventCacheSettings.CoefsCache.FileName = "C:\KCache\EventCoefsCache.dat"
-$webdoc.Settings.EventCacheSettings.CoefSumCache.FileName =  "C:\KCache\EventCoefsSumCache.dat"
+$webdoc.Settings.EventCacheSettings.CoefsCache.FileName = "$cachePath\EventCoefsCache.dat"
+$webdoc.Settings.EventCacheSettings.CoefSumCache.FileName =  "$cachePath\EventCoefsSumCache.dat"
 
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
-$webdoc.Settings.CurrentEventsJob.FileCache.FileName = "C:\KCache\EventCoefsCacheJob.dat"
+$webdoc.Settings.CurrentEventsJob.FileCache.FileName = "$cachePath\EventCoefsCacheJob.dat"
 $webdoc.Save($webConfig)
 ### edit Log.config
 Write-Host "[INFO] Edit web.config of $LogConfig"
