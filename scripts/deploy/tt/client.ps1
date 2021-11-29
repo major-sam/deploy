@@ -13,7 +13,7 @@ $configFile = Get-Content -Raw -path $pathtojson
 
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 
-$json_appsetings.Services.TradingToolBaseAddress =  "http://$($apiAddr):$($apiPort)"
+$json_appsetings.Services.TradingToolBaseAddress =  "http://$($apiAddr):$($apiPort)/"
 $json_appsetings.Auth.AdfsOptions.Authority = "https://adfs-next.gkbaltbet.local/adfs"
 $json_appsetings.Auth.AdfsOptions.ClientId = $env:ADFSClientId
 
