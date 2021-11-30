@@ -1,3 +1,5 @@
+$ENV:HOMEDRIVE='C:'
+restart-service RabbitMQ
 $usernames = @("GKBALTBET\TestKernel_svc")
 
 foreach($username in $usernames){
