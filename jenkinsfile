@@ -5,10 +5,12 @@ TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
+POST_PAY_JSON = 'post_pay.json'
 POST_MS_JSON = 'post_ms.json'
 
 DEPLOY_JSON = "deploy.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
+DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
@@ -43,31 +45,30 @@ def getVmList(int max){
 	return VM_LIST
 	}
 
-def doMavenDeploy(repo){
-	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
+def getNexusBranch (repoName, userTask){
+	def result = 'master'
 	if(params.Task != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
 				returnStdout: true,
-				script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET \"http://nexus:8081/service/rest/v1/search?repository=${repo['name']}&maven.groupId=${repo['name']}&maven.artifactId=${Task}\" -H \"accept: application/json\""
+				script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET \"http://nexus:8081/service/rest/v1/search?repository=${repoName}&maven.groupId=${repoName}&maven.artifactId=${userTask}\" -H \"accept: application/json\""
 				)
 			)
 		if(repoMap.items){
-			branch = params.Task
-			}
-		else{
-			branch = 'master'
-			}
+			result = params.Task
+			}	
 	}
-	else{
-		println "empty task or wrong repo"
-		branch = 'master'
-	}
+	return result
+}
+
+def doMavenDeploy(repo){
+	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
+	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
 	def deployVersion = ""
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 	//for future usage
-	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${branch}\" ${deployDir} ${deployExec} ${deployVersion}"
+	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} ${deployVersion}"
 	configFileProvider(
 		[
 			configFile(
@@ -77,7 +78,6 @@ def doMavenDeploy(repo){
 			   fileId: 'defaultPOM', 
 			   targetLocation: 'pomxml')
 		]){
-		//powershell "mvn clean deploy -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 		powershell "mvn clean dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 	}
 }
@@ -121,6 +121,7 @@ pipeline{
       string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
       choice name:"TESTVM", choices: getVmList(100)
 	  booleanParam name: "DEPLOY_MS", description:'Deploy Marketing Service', defaultValue: false
+	  booleanParam name: "DEPLOY_PAY", description:'Deploy Payment Balanser', defaultValue: false
 	  booleanParam name: "DEPLOY_TT", description:'Deploy Trading Tool', defaultValue: false
   }
 
@@ -233,7 +234,8 @@ pipeline{
 			stage('TT Maven Deploy'){
 			  //version chooser: deployVersion = "-Ddeploy.version=1.0.1.1" 
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-			  def deployBranch = "\"-Ddeploy.branch=rc-2021-10-25\""
+			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
+			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
 			  def deployVersion = "" 
 			  def deployParams = "${deployDir} ${deployBranch} ${deployVersion}"
 			  configFileProvider(
@@ -256,6 +258,21 @@ pipeline{
         }
       }
     }    
+	stage('Deploy Payment Balanser'){
+	  when{
+		expression {
+		    params.DEPLOY_PAY
+		}
+	  }
+		steps{
+			script{
+			  nexusArtifacts = getNexusArtifactList()	
+			  def data = readJSON file: DEPLOY_PAY_JSON 
+			  def map = getParralelDeliveryMap(data, "Deploy")
+			  parallel map
+			}
+		}
+	}
 
     stage('Config IIS'){
 	  steps{

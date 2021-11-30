@@ -1,0 +1,5 @@
+[{
+        "name": "Pay placeholder",
+        "source": "echo 'Payment service placeholder'"
+    }
+]

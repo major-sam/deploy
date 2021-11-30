@@ -1,0 +1,13 @@
+[{
+        "name": "pay placeholder",
+        "source": "echo 'payment service placeholder'"
+    }, {
+        "name": "PaymentBalancing",
+        "source": ".\\scripts\\deploy\\pay\\balancing.ps1",
+		"deployDir": "c:\\services\\paymentBalancer\\"
+    }, {
+        "name": "PaymentBalanceReport",
+        "source": ".\\scripts\\deploy\\pay\\report.ps1",
+		"deployDir": "c:\\services\\paymentBalancer\\"
+    }
+]
