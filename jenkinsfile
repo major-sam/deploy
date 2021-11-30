@@ -291,6 +291,18 @@ pipeline{
 	  }
 	}
 
+    stage('Config IIS For Payment Balancer Blazor'){
+	  when{
+		expression {
+			params.DEPLOY_PAY
+		}
+		
+	  }
+	  steps{
+		powershell '.\\scripts\\IISConfigPAY.ps1'
+	  }
+	}
+
     stage('Config IIS For Trading Tool'){
 	  when{
 		expression {

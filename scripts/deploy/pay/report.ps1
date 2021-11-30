@@ -1,10 +1,10 @@
 import-module '.\scripts\sideFunctions.psm1'
 ##### edit imorter json files
 ## mayby to env
-$logPath = "C:\Logs\Payment\BaltBet.Payment.BalancingService-.txt"
+$logPath = "C:\Logs\Payments\BaltBet.Payment.BalancingService-.txt"
 $apiAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
 $apiPort = '50001'
-$pathtojson = "C:\Services\Payment\PaymentBalanceReport\appsettings.json"
+$pathtojson = "C:\Services\Payments\PaymentBalanceReport\appsettings.json"
 $jsonDepth = 4
 
 Write-Host -ForegroundColor Green "[info] edit json files"
@@ -14,7 +14,7 @@ $configFile = Get-Content -Encoding UTF8 $pathtojson  -Raw
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 
 $json_appsetings.Kestrel.Endpoints.Https.Url = "https://$($apiAddr):$($apiPort)"
-$json_appsetings.Kestrel.Endpoints.Https.Url.Certificate.Location = "LocalMachine"
+$json_appsetings.Kestrel.Endpoints.Https.Certificate.Location = "LocalMachine"
 $json_appsetings.BalancingServiceOptions.BaseAddress = "http://$($apiAddr):8081"
 $json_appsetings.KernelOptions.KernelApiBaseAddress = "http://$($apiAddr):8081"
 ($json_appsetings.Serilog.WriteTo|%{
