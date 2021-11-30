@@ -1,5 +1,8 @@
-$ENV:HOMEDRIVE='C:'
-restart-service RabbitMQ
+if($env:HOMEDRIVE -like 'z:') {
+	$ENV:HOMEDRIVE='C:'
+	restart-service RabbitMQ 
+	start-sleep 7
+}
 $usernames = @("GKBALTBET\TestKernel_svc")
 
 foreach($username in $usernames){
