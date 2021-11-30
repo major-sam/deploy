@@ -126,8 +126,8 @@ function CreateSqlDatabase($dbname){
 
     $dbExists = $FALSE
 	foreach ($db in $server.databases) {
-		if ($db.name -eq "Db") {
-		  Write-output "Db already exists."
+		if ($db.name -eq $dbname) {
+		  Write-output "Db $dbname already exists."
 		  $dbExists = $TRUE
 		}
 	}

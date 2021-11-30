@@ -1,5 +1,11 @@
 [{
         "name": "Pay placeholder",
         "source": "echo 'Payment service placeholder'"
+    },{
+        "name": "Kernel DB",
+        "source": ".\\scripts\\post\\pay\\kernelDB.ps1"
+    },{
+        "name": "Payments DB",
+        "source": ".\\scripts\\post\\pay\\payDB.ps1"
     }
 ]

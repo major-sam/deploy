@@ -317,6 +317,21 @@ pipeline{
     stage('PostDepoy'){
 	  stages{
 
+		stage('PostDeploy Payment Balancer'){
+			when{
+			  expression {
+				  params.DEPLOY_PAY
+			  }
+			}
+			steps{
+			  script{ 
+				def data = readJSON file: POST_PAY_JSON
+				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+				parallel map
+			  }
+			}
+		}
+		
 		stage('PostDeploy Marketing service'){
 			when{
 			  expression {

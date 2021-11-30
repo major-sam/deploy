@@ -20,6 +20,7 @@ $json_appsetings.Kernel.KernelApiBaseAddress = "http://$($apiAddr):8081"
 		 $_.Args.path = $logPath
 	  }
 })
+$json_appsetings.ConnectionStrings.BalancingDb = "data source=localhost;initial catalog=BalancingDb;integrated security=True;MultipleActiveResultSets=True;"
 $json_appsetings.Swagger.Enabled = $false
 ConvertTo-Json $json_appsetings -Depth $jsonDepth  | Format-Json | Set-Content $pathtojson -Encoding UTF8
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDepth"
