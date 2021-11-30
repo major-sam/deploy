@@ -5,4 +5,5 @@ Get-ChildItem C:/Services/TradingTool -Exclude "tools","client"| Get-childitem -
 	}| %{
 		$sname = registerwinservice($_)
 		start-service $sname
+		Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
 	}
