@@ -14,8 +14,7 @@ $configFile = Get-Content $pathtojson  -Raw
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 
 $json_appsetings.Kestrel.Endpoints.PSObject.Properties.Remove('Https')
-$json_appsetings.Kestrel.Endpoints.PSObject.Properties.add('Http')
-$json_appsetings.Kestrel.Endpoints.Http.PSObject.Properties.add('Url')
+$json_appsetings.Kestrel.Endpoints | Add-Member -Force -NotePropertyMembers @{ Http= @{ Url = "http://$($apiAddr):$($apiPort)" }} 
 $json_appsetings.Kestrel.Endpoints.Http.Url = "http://$($apiAddr):$($apiPort)"
 $json_appsetings.Kernel.KernelApiBaseAddress = "http://$($apiAddr):8081"
 ($json_appsetings.Serilog.WriteTo|%{
