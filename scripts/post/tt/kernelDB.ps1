@@ -33,5 +33,5 @@ else{    $conn = New-Object Microsoft.SqlServer.Management.Common.ServerConnecti
     write-host "done"    
 }
 
-invoke-sqlcmd -QueryTimeout 720 -database 'BaltbetM'  -ServerInstance LOCALHOST -InputFile  ".\scripts\post\tt\KernelLineEvents.sql" 
+invoke-sqlcmd -QueryTimeout 720 -database 'BaltbetM'  -ServerInstance LOCALHOST -InputFile  ".\scripts\post\tt\KernelLineEvents.sql" -verbose
 
