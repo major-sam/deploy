@@ -28,7 +28,6 @@ Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDept
 $pathtojson = 'C:\Services\Payments\PaymentBalancing\BaltBet.Payment.BalancingService.Blazor\appsettings.json'
 $logPath = "C:\Logs\Payments\BaltBet.Payment.BalancingService.Blazor-.txt"
 $jsonDepth = 4
-$apiPort = '50002'
 Write-Host -ForegroundColor Green "[info] edit json files"
 $configFile = Get-Content $pathtojson  -Raw
 ## Json comment imporvement
@@ -36,7 +35,7 @@ $configFile = Get-Content $pathtojson  -Raw
 		#ertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 $json_appsetings.PSObject.Properties.Remove('Kestrel')
-$json_appsetings.Balancing.Address = "https://$($apiAddr):$($apiPort)"
+$json_appsetings.Balancing.Address = "http://$($apiAddr):$($apiPort)"
 ($json_appsetings.Serilog.WriteTo|%{
 	 if($_.name -like "file"){
 		 $_.Args.path = $logPath
