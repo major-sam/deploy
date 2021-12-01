@@ -69,7 +69,7 @@ def doMavenDeploy(repo){
 	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
-	def deployVersion = ""
+    def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 	//for future usage
 	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} ${deployVersion}"
@@ -82,7 +82,7 @@ def doMavenDeploy(repo){
 			   fileId: 'defaultPOM', 
 			   targetLocation: 'pomxml')
 		]){
-		powershell "mvn clean dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+		powershell "mvn clean versions:use-latest-releases dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 	}
 }
 
@@ -236,11 +236,10 @@ pipeline{
       steps{
         script{
 			stage('TT Maven Deploy'){
-			  //version chooser: deployVersion = "-Ddeploy.version=1.0.1.1" 
+			  def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
 			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-			  def deployVersion = "" 
 			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch} ${deployVersion}"
 			  configFileProvider(
 				[configFile(
@@ -250,7 +249,7 @@ pipeline{
 				   fileId: 'defaultPOM', 
 				   targetLocation: 'pomxml')
 				]){
-				  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+				  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 			  }
 		  }
 		  stage('TT settings'){
