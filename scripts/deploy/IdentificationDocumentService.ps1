@@ -34,6 +34,9 @@ $SQLServerComFilesPath.SetAttribute("value","C:\DownloadsCPS")
 $SQLServerCpsFilesPath = $conf.configuration.appSettings.add | Where-Object key -eq "SQLServerCpsFilesPath"
 $SQLServerCpsFilesPath.SetAttribute("value","C:\DownloadsCPS")
 
+$GlobalLog = $conf.configuration.log4net.appender | Where-Object name -eq "GlobalLogFileAppender"
+$GlobalLog.file.SetAttribute("value","C:\Logs\IdentificationDocumentService")
+
 $conf.Save($ConfigFilePath)
 
 Write-Host -ForegroundColor Green "[INFO] IdentificationService deployed"
