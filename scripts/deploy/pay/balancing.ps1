@@ -28,7 +28,7 @@ Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDept
 $pathtojson = 'C:\Services\Payments\PaymentBalancing\BaltBet.Payment.BalancingService.Blazor\appsettings.json'
 $logPath = "C:\Logs\Payments\BaltBet.Payment.BalancingService.Blazor-.txt"
 $jsonDepth = 4
-
+$apiPort = '50002'
 Write-Host -ForegroundColor Green "[info] edit json files"
 $configFile = Get-Content $pathtojson  -Raw
 ## Json comment imporvement

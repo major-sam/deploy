@@ -3,7 +3,7 @@ import-module '.\scripts\sideFunctions.psm1'
 ## mayby to env
 $logPath = "C:\Logs\Payments\BaltBet.Payment.BalancingService-.txt"
 $apiAddr =  (Get-NetIPAddress -AddressFamily IPv4 | ?{$_.InterfaceIndex -ne 1}).IPAddress.trim()
-$apiPort = '50001'
+$apiPort = '50009'
 $pathtojson = "C:\Services\Payments\PaymentBalanceReport\appsettings.json"
 $jsonDepth = 4
 
