@@ -47,8 +47,10 @@ def getVmList(int max){
 
 def getNexusBranch (repoName, userTask){
 	def result = 'master'
-	def featureTask = "feature-${params.Task}" ? userTask =~ /^[A-Z]{2,}-\d+$/: userTask 
-	if(params.Task != ""){
+	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
+	println featureTask
+	println params.Task
+	if(userTask != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
 				returnStdout: true,
@@ -59,6 +61,7 @@ def getNexusBranch (repoName, userTask){
 			result = featureTask 
 			}	
 	}
+	println result
 	return result
 }
 
