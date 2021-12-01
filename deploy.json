@@ -40,5 +40,9 @@
     }, {
         "name": "rabbitmq",
         "source": ".\\scripts\\deploy\\rabbitmq.ps1"
+    }, {
+        "name": "IdentificationDocumentService",
+        "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1",
+        "deployDir": "c:\\Services\\"
     }
 ]
