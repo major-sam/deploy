@@ -33,13 +33,5 @@ else{    $conn = New-Object Microsoft.SqlServer.Management.Common.ServerConnecti
     write-host "done"    
 }
 
-$passVar = ConvertTo-SecureString $ENV:TT_SERVICE_CREDS_PSW -AsPlainText -Force
-$credentials = New-Object System.Management.Automation.PSCredential ($ENV:TT_SERVICE_CREDS_USR , $passVar )
-$scriptBlock = { importsystemmodules; invoke-sqlcmd -QueryTimeout 720 -database 'BaltbetM'  -ServerInstance LOCALHOST -InputFile  ".\scripts\post\tt\KernelLineEvents.sql" }
-$job = Start-Job  -ScriptBlock $scriptBlock -Credential $credentials |get-job |Wait-job
-$result = Receive-Job -Job $job
-$result
-
-Remove-Job -Job $job
-
+invoke-sqlcmd -QueryTimeout 720 -database 'BaltbetM'  -ServerInstance LOCALHOST -InputFile  ".\scripts\post\tt\KernelLineEvents.sql" 
 
