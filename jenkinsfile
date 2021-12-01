@@ -241,13 +241,16 @@ pipeline{
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
 			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
 			  def deployVersion = "" 
-			  def deployParams = "${deployDir} ${deployBranch} ${deployVersion}"
+			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch} ${deployVersion}"
 			  configFileProvider(
 				[configFile(
 				   fileId: 'mavenSettingsGlobal', 
-				   targetLocation: 'MAVEN_SETTINGS.xml')
+				   targetLocation: 'MAVEN_SETTINGS.xml'),
+				configFile(
+				   fileId: 'defaultPOM', 
+				   targetLocation: 'pomxml')
 				]){
-				  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f ${env.WORKSPACE}\\mvn\\pom-tt.xml ${deployParams}"
+				  powershell "mvn clean dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 			  }
 		  }
 		  stage('TT settings'){
