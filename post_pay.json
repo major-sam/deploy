@@ -7,5 +7,8 @@
     },{
         "name": "Payments DB",
         "source": ".\\scripts\\post\\pay\\payDB.ps1"
+    },{
+        "name": "Install Services",
+        "source": ".\\scripts\\post\\pay\\installServices.ps1"
     }
 ]
