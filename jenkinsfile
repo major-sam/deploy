@@ -164,10 +164,21 @@ pipeline{
 	stage('Set Description'){
 	  steps{
 		script{
-			def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-			def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
-			def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-			currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+			def locked= true
+			lock( resource: params.TESTVM ,skipIfLocked: true) {
+				locked = false
+			}
+			if (locked){
+				currentBuild.description = "VM ${params.TESTVM} is Locked. Biuld Skipped"
+				currentBuild.result = 'NOT_BUILT'
+				error('VM is LOCKED. Check Lockable Resources')
+			}
+			else{
+				def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+				def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
+				def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+				currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+			}
 		}
 	  }
 	}
