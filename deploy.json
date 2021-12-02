@@ -44,5 +44,9 @@
         "name": "IdentificationDocumentService",
         "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "TicketService",
+        "source": ".\\scripts\\deploy\\TicketService.ps1",
+        "deployDir": "c:\\Services\\"
     }
 ]
