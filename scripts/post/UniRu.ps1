@@ -1,4 +1,4 @@
-﻿﻿# Меняем настройки сайта
+﻿# Меняем настройки сайта
 
 function Replace-StringInArray
 {
