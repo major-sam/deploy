@@ -100,7 +100,7 @@ $obj.connection = "data source=localhost;initial catalog=UniRu;Integrated Securi
 $ConnectionStringsAdd = $webdoc.CreateElement('add')
 $ConnectionStringsAdd.SetAttribute("name","OAuth.LastLogoutUrl")
 $ConnectionStringsAdd.SetAttribute("connectionString","https://${env:COMPUTERNAME}.gkbaltbet.local:449/account/logout/last")
- $webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
+$webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
 $webdoc.Save($apiWebConfig)
 
 Write-Host -ForegroundColor Green "[INFO] Done"

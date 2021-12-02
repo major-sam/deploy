@@ -48,8 +48,6 @@ def getVmList(int max){
 def getNexusBranch (repoName, userTask){
 	def result = 'master'
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
-	println featureTask
-	println params.Task
 	if(userTask != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
@@ -61,7 +59,6 @@ def getNexusBranch (repoName, userTask){
 			result = featureTask 
 			}	
 	}
-	println result
 	return result
 }
 
@@ -69,10 +66,9 @@ def doMavenDeploy(repo){
 	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
-    def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 	//for future usage
-	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} ${deployVersion}"
+	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
 	configFileProvider(
 		[
 			configFile(
@@ -236,11 +232,10 @@ pipeline{
       steps{
         script{
 			stage('TT Maven Deploy'){
-			  def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
 			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch} ${deployVersion}"
+			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
 			  configFileProvider(
 				[configFile(
 				   fileId: 'mavenSettingsGlobal', 

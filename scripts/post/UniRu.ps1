@@ -1,4 +1,5 @@
 ﻿# Меняем настройки сайта
+﻿Start-WebAppPool "UniRu"
 
 function Replace-StringInArray
 {
