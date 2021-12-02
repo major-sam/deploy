@@ -50,8 +50,8 @@ Write-Host -ForegroundColor Green "[INFO] Create dbs"
 RestoreSqlDb -db_params $dbs
 
 ### copy files /NFL /NDL /nc /ns /np
-robocopy $unisource.sourceBuildSource $targetDir /e  /NFL /NDL /nc /ns /np
-robocopy $apisource.sourceBuildSource $apiTargetDir /e  /NFL /NDL /nc /ns /np
+#robocopy $unisource.sourceBuildSource $targetDir /e  /NFL /NDL /nc /ns /np
+#robocopy $apisource.sourceBuildSource $apiTargetDir /e  /NFL /NDL /nc /ns /np
 $global:LASTEXITCODE
 
 if ($global:LASTEXITCODE -ne 0){
