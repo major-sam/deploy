@@ -14,8 +14,8 @@ $unisource = GetSourceObject $unisourceparams
 $apisource = GetSourceObject $unisourceparams
 
 ###vars
-$targetDir = "C:\inetpub\UniRu"
-$apiTargetDir = "C:\inetpub\UniruWebApi"
+$targetDir = "C:\inetpub\ClientWorkPlace\UniRu"
+$apiTargetDir = "C:\inetpub\ClientWorkPlace\UniruWebApi"
 
 $sourceFile = "$($env:workspace)\scripts\deploy\UniRu.sql"
 $oldIp = '#VM_IP'
