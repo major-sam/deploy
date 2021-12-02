@@ -22,7 +22,7 @@ function Replace-StringInArray
 }
 
 
-$IPAddress = (Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4).IPAddress
+$IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 
 Write-Host -ForegroundColor Green "[INFO] Change ${inetpub}\${site}\Web.config ..."
 $inetpub = "C:\inetpub"
