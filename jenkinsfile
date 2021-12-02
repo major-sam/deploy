@@ -169,10 +169,9 @@ pipeline{
 				locked = false
 			}
 			if (locked){
-				echo 'VM is LOCKED. Check Lockable Resources'	
 				currentBuild.description = "VM ${params.TESTVM} is Locked. Biuld Skipped"
 				currentBuild.result = 'NOT_BUILT'
-				return
+				error('VM is LOCKED. Check Lockable Resources')
 			}
 			else{
 				def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
