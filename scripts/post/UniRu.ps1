@@ -1,1 +1,1 @@
-﻿Write-host "nothing to do"
+﻿Start-WebAppPool "UniRu"
