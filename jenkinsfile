@@ -169,7 +169,7 @@ pipeline{
 				locked = false
 			}
 			if (locked){
-				currentBuild.description = "VM ${params.TESTVM} is Locked. Biuld Skipped"
+				currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p>"
 				currentBuild.result = 'NOT_BUILT'
 				error('VM is LOCKED. Check Lockable Resources')
 			}
