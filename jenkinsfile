@@ -434,7 +434,6 @@ pipeline{
 			  src: data,
 			  nexusArtifacts: null,
 			  mvnState: false)
-			  src: data,
 			parallel map
 		  }
 	  }
