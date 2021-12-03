@@ -10,7 +10,7 @@ $source = GetSourceObject $sourceparams
 
 ## vars
 $targetDir  = 'C:\Services\MessageService'
-$release_bak_folder = '\\dev-comp49\share\DBs'
+$release_bak_folder = '\\server\tcbuild$\Testers\DB'
 
 
 $dbs = @(
@@ -34,10 +34,3 @@ RestoreSqlDb -db_params $dbs
 
 ### copy files
 
-write-host "Copy-Item -Path $($source.sourceBuildSource)  -Destination $targetDir -Recurse "
-robocopy "$($source.sourceBuildSource)"  $targetDir /e /NFL /NDL /nc /ns /np
-$global:LASTEXITCODE
-
-if ($global:LASTEXITCODE -ne 0){
-	$global:LASTEXITCODE = 0
-}

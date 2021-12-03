@@ -20,8 +20,8 @@
         "name": "UniWebApiAuth",
         "source": ".\\scripts\\post\\UniWebApiAuth.ps1 "
     }, {
-        "name": "Messageservice",
-        "source": ".\\scripts\\post\\MessageService.ps1 "
+        "name": "PersonalInfoCenter",
+        "source": ".\\scripts\\post\\PersonalInfoCenter.ps1 "
     }, {
         "name": "WebTouch",
         "source": ".\\scripts\\post\\WebTouch.ps1 "

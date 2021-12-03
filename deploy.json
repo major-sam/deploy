@@ -32,8 +32,9 @@
         "name": "ClientWorkSpace",
         "source": ".\\scripts\\deploy\\ClientWorkSpace.ps1"
     }, {
-        "name": "MessageService",
-        "source": ".\\scripts\\deploy\\MessageService.ps1"
+        "name": "PersonalInfoCenter",
+        "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1",
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "cert",
         "source": ".\\scripts\\deploy\\cert.ps1",
