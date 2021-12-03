@@ -8,7 +8,7 @@ $ProgressPreference = 'SilentlyContinue'
 
 $release_bak_folder = "\\server\tcbuild`$\Testers\DB\For WebApi"
 
-$Dbname =  "WebApiAuth"
+$Dbname =  "WebApi.Auth"
 $dbs = @(
 	@{
 		DbName = $Dbname
@@ -41,7 +41,7 @@ $query = (Get-Content -Encoding UTF8 -Raw -Path $sourceFile)|Foreach-Object {
         -replace $oldHostname, $env:COMPUTERNAME `
 		-replace $oldDbname , $Dbname
     } 
-Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -query $query -ErrorAction Stop
+Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $DbName -query $query -ErrorAction Stop
 
 ###
 #XML values replace UniRu
