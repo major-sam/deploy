@@ -31,6 +31,14 @@ $dbs = @(
 )
 ###restore DB
 RestoreSqlDb -db_params $dbs
-
-### copy files
-
+### fix logpaths
+$paths = @( 
+	"C:\Services\PersonalInfoCenter\AdminMessageService\Log.config", 
+	"C:\Services\PersonalInfoCenter\MessageService\Log.config", 
+	"C:\Services\PersonalInfoCenter\NotificationService\Log.config"
+	)
+$paths | % { 
+	$webdoc = [Xml](Get-Content $_)
+	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\"
+	$webdoc.Save($_)
+}

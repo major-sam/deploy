@@ -1,6 +1,12 @@
 import-module '.\scripts\sideFunctions.psm1'
-$serviceBin = Get-Item  "c:\Services\PersonalInfoCenter\MessageService\BaltBet.MessageService.Host.exe"
-$sname = RegisterWinService($serviceBin)
-start-Service $sname
-Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
- return 0
+$picRoot = 'c:\Services\PersonalInfoCenter'
+$serviceBins = @(
+		"$($picRoot)\MessageService\BaltBet.MessageService.Host.exe" , 
+		"$($picRoot)\AdminMessageService\AdminMessageService.exe",
+		"$($picRoot)\NotificationService\BaltBet.NotificationService.Host.exe")
+$serviceBins | % {
+	$sname = RegisterWinService(get-item -path $_)
+	start-Service $sname
+	Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
+}
+return 0
