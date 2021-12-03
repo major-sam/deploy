@@ -19,8 +19,9 @@
         "name": "UniPaymentsService",
         "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"  
     }, {
-        "name": "UniRuAndApi",
-        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1"
+        "name": "ClientWorkPlace",
+        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1",
+		"deployDir": "c:\\inetpub\\"
     },  {
         "name": "WebTouch",
         "source": ".\\scripts\\deploy\\WebTouch.ps1"
@@ -44,5 +45,13 @@
         "name": "IdentificationDocumentService",
         "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "TicketService",
+        "source": ".\\scripts\\deploy\\TicketService.ps1",
+        "deployDir": "c:\\Services\\"
+    }, {
+        "name": "WebApiAuth",
+        "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
+		"deployDir": "c:\\inetpub\\"
     }
 ]

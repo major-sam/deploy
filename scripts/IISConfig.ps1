@@ -5,6 +5,7 @@ $username = "$($ENV:SERVICE_CREDS_USR)"
 $pass =  "$($ENV:SERVICE_CREDS_PSW)"
 $RuntimeVersion ='v4.0'
 $preloader = "SitePreload"
+$wildcardDomain = "bb-webapps.com"
 $IISPools = @( 
     @{
         SiteName = 'baltbetcom'
@@ -13,7 +14,7 @@ $IISPools = @(
             }
         Bindings= @(
                 @{protocol='http';bindingInformation="*:84:"}
-                @{protocol='https';;bindingInformation="*:4444:"}
+                @{protocol='https';bindingInformation="*:4444:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 		rootDir = 'c:\inetpub'
@@ -27,7 +28,7 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8080:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\inetpub\ClientWorkPlace'
     }
     @{
         SiteName = 'UniRu'
@@ -35,10 +36,10 @@ $IISPools = @(
             userName="$username";password="$pass";identitytype=3
             }
         Bindings= @(
-                @{protocol='https';bindingInformation="*:4443:"}
+                @{protocol='https';bindingInformation="*:4443:$($env:COMPUTERNAME).$($wildcardDomain)"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\inetpub\ClientWorkPlace'
     }
     @{
         SiteName = 'UniruWebApi'
@@ -46,7 +47,18 @@ $IISPools = @(
             userName="$username";password="$pass";identitytype=3
             }
         Bindings= @(
-                @{protocol='https';bindingInformation="*:4449:"}
+                @{protocol='https';bindingInformation="*:4449:$($env:COMPUTERNAME).$($wildcardDomain)"}
+            )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
+		rootDir = 'c:\inetpub'
+    }
+    @{
+        SiteName = 'WebApiAuth'
+        DomainAuth =  @{
+            userName="$username";password="$pass";identitytype=3
+            }
+        Bindings= @(
+                @{protocol='https';bindingInformation="*:449:$($env:COMPUTERNAME).$($wildcardDomain)"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 		rootDir = 'c:\inetpub'

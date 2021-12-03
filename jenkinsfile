@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurperClassic
+import jenkins.model.Jenkins
 
-TAG_PLACEHOOLDER="Latest Commit"
 TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
@@ -14,7 +14,34 @@ DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
-nexusArtifacts = []
+
+
+def getLastSuccessfullTaskJobDescription(node){
+	def test_job = Jenkins.instance.getItemByFullName(JOB_NAME)
+		prev_sucessful_build=test_job.getLastSuccessfulBuild()
+		while (prev_sucessful_build){
+			prev_sucessful_build_descr=prev_sucessful_build.getDescription()
+			if(prev_sucessful_build_descr){
+				if (prev_sucessful_build_descr.contains("${node}")){
+					def matches = (prev_sucessful_build_descr =~ /Task\(Branch\):.*$/) 
+						return [
+							matches[0], 
+							prev_sucessful_build.getId(), 
+							prev_sucessful_build.getCauses()[0].shortDescription as String]
+				}
+				else{
+					prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
+						prev_sucessful_build_descr = false
+
+				}
+
+			}
+			else{
+				prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
+					prev_sucessful_build_descr = false
+			}
+		}
+}
 
 def getNexusArtifactList(){
 	def scriptMap = new JsonSlurperClassic().parseText(
@@ -48,8 +75,6 @@ def getVmList(int max){
 def getNexusBranch (repoName, userTask){
 	def result = 'master'
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
-	println featureTask
-	println params.Task
 	if(userTask != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
@@ -61,7 +86,6 @@ def getNexusBranch (repoName, userTask){
 			result = featureTask 
 			}	
 	}
-	println result
 	return result
 }
 
@@ -69,10 +93,9 @@ def doMavenDeploy(repo){
 	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
-    def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 	//for future usage
-	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} ${deployVersion}"
+	def deployParams = "\"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
 	configFileProvider(
 		[
 			configFile(
@@ -87,32 +110,29 @@ def doMavenDeploy(repo){
 }
 
 
-def getParralelDeliveryMap(src,stage){
-	  println "$stage is stage in parrallel ###########"
-      if (stage ==~ "Deploy" ){ 
-	  println "MAVEN_################ stage in parrallel ###########"
-		  return src.collectEntries{[ (it['name']) : deliverSources(it,true) ]}
-	  }else{
-	  println "NON!!!MAVEN_################ stage in parrallel ###########"
-		  return src.collectEntries{[ (it['name']) : deliverSources(it,false) ]}
-	  }
+def getParralelDeliveryMap(Map config = [:]){
+	return config.src.collectEntries{[ (it['name']) : deliverSources(
+														src:it,
+														state: (it['name'] in config.nexusArtifacts && config.mvnState),
+														nexusArtifacts: config.nexusArtifacts) 
+	]}
 }
 
-def deliverSources(src,state){
-  if (src['name'] in nexusArtifacts && state){
+def deliverSources(Map config = [:]){
+  if (config.state){
 	  return{
-		stage(src['name']){ 
-		  doMavenDeploy(src)
-		}
+		  stage(config.src['name']){ 
+			  doMavenDeploy(config.src)
+		  }
 	  }		
   }
   else{
 	  return{
-		stage(src['name']){ 
-		  powershell (
-			encoding:'UTF8', 
-			script:"${src['source']}"
-			)
+		  stage(config.src['name']){ 
+			  powershell (
+					  encoding:'UTF8', 
+					  script:"${config.src['source']}"
+					  )
 	  }
     }
   }
@@ -152,12 +172,12 @@ pipeline{
                      script:'git tag'
                      ).split("\\r?\\n") as List
           if (tags[0] =~ /[a-zA-Z]/){
-            tags.add(0,TAG_PLACEHOOLDER)
+            tags.add(0,"Latest Commit")
             println tags
             tag = input message: 'Choose release to deploy', ok: 'Deploy!',
                   parameters: [choice (name: '', choices: tags, description: "Choose release")]
             println tag
-            if(tag != TAG_PLACEHOOLDER){
+            if(tag != "Latest Commit"){
               powershell "git checkout tags/${tag}"
             }
           }
@@ -168,10 +188,26 @@ pipeline{
 	stage('Set Description'){
 	  steps{
 		script{
-			def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-			def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
-			def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-			currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+			def locked= true
+			lock( resource: params.TESTVM ,skipIfLocked: true) {
+				locked = false
+			}
+			if (locked){
+				def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
+				def lastBuildDescr = "Can't find any info about last successfull build"
+				if(lastDescr){
+					lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
+				}
+				currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>"
+				currentBuild.result = 'NOT_BUILT'
+				error('VM is LOCKED. Check Lockable Resources')
+			}
+			else{
+				def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+				def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
+				def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+				currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+			}
 		}
 	  }
 	}
@@ -180,7 +216,10 @@ pipeline{
       steps{
 	    script{
           def data = readJSON file: CLEAN_JSON
-          def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+          def map = getParralelDeliveryMap(
+			src: data,
+			nexusArtifacts: null,
+			mvnState: false)
           parallel map
         }
       }
@@ -203,9 +242,12 @@ pipeline{
 			   variable: 'WCFHOST'),
 			]){
 			script{
-			  nexusArtifacts = getNexusArtifactList()	
+			  def nexusArtifacts = getNexusArtifactList()	
 			  def data = readJSON file: DEPLOY_JSON 
-			  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+			  def map = getParralelDeliveryMap(
+				src: data,
+				nexusArtifacts: nexusArtifacts ,
+				mvnState: true)
 			  parallel map
 		  }
         }
@@ -221,7 +263,10 @@ pipeline{
       steps{
         script{
           def data = readJSON file: DEPLOY_MS_JSON
-          def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+		  def map = getParralelDeliveryMap(
+			src: data,
+			nexusArtifacts: null,
+			mvnState: false)
           parallel map
         }
       }
@@ -235,12 +280,12 @@ pipeline{
 	  }
       steps{
         script{
+			
 			stage('TT Maven Deploy'){
-			  def deployVersion = "\"-Ddeploy.version=LATEST\"" 
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
 			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch} ${deployVersion}"
+			  def deployParams = "\"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
 			  configFileProvider(
 				[configFile(
 				   fileId: 'mavenSettingsGlobal', 
@@ -252,9 +297,13 @@ pipeline{
 				  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 			  }
 		  }
+
 		  stage('TT settings'){
 			  def data = readJSON file: DEPLOY_TT_JSON
-			  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+			  def map = getParralelDeliveryMap(
+				src: data,
+				nexusArtifacts: null,
+				mvnState: false)
 			  withCredentials([
 				string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 				file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
@@ -272,9 +321,12 @@ pipeline{
 	  }
 		steps{
 			script{
-			  nexusArtifacts = getNexusArtifactList()	
+			  def nexusArtifacts = getNexusArtifactList()	
 			  def data = readJSON file: DEPLOY_PAY_JSON 
-			  def map = getParralelDeliveryMap(data, "Deploy")
+			  def map = getParralelDeliveryMap(
+				src: data,
+				nexusArtifacts: nexusArtifacts ,
+				mvnState: true)
 			  parallel map
 			}
 		}
@@ -320,71 +372,81 @@ pipeline{
 	  }
 	}
 
-    stage('PostDepoy'){
-	  stages{
-
-		stage('PostDeploy Payment Balancer'){
-			when{
-			  expression {
-				  params.DEPLOY_PAY
-			  }
-			}
-			steps{
-			  script{ 
-				def data = readJSON file: POST_PAY_JSON
-				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
-				parallel map
-			  }
-			}
-		}
-		
-		stage('PostDeploy Marketing service'){
-			when{
-			  expression {
-				  params.DEPLOY_MS
-			  }
-			}
-			steps{
-			  script{ 
-				def data = readJSON file: POST_MS_JSON
-				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
-				parallel map
-			  }
-			}
-		}
-		
-		stage('PostDeploy TT'){
-			when{
-			  expression {
-				  params.DEPLOY_TT
-			  }
-			}
-			steps{
-			  script{ 
-				def data = readJSON file: POST_TT_JSON
-				def map = getParralelDeliveryMap(data ,"$STAGE_NAME")
-				parallel map
-			  }
-			}
-		}
-		
-		stage('Default Post'){
-		  steps{ 
-			  script{ 
-				def data = readJSON file: POST_JSON
-				def map = getParralelDeliveryMap(data, "$STAGE_NAME")
-				parallel map
-			  }
+	stage('PostDeploy Payment Balancer'){
+		when{
+		  expression {
+			  params.DEPLOY_PAY
 		  }
-	    }
-      }
-    }
+		}
+		steps{
+		  script{ 
+			def data = readJSON file: POST_PAY_JSON
+		    def map = getParralelDeliveryMap(
+			  src: data,
+			  nexusArtifacts: null,
+			  mvnState: false)
+			parallel map
+		  }
+		}
+	}
+	
+	stage('PostDeploy Marketing service'){
+		when{
+		  expression {
+			  params.DEPLOY_MS
+		  }
+		}
+		steps{
+		  script{ 
+			def data = readJSON file: POST_MS_JSON
+		    def map = getParralelDeliveryMap(
+			  src: data,
+			  nexusArtifacts: null,
+			  mvnState: false)
+			parallel map
+		  }
+		}
+	}
+	
+	stage('PostDeploy TT'){
+		when{
+		  expression {
+			  params.DEPLOY_TT
+		  }
+		}
+		steps{
+		  script{ 
+			def data = readJSON file: POST_TT_JSON
+		    def map = getParralelDeliveryMap(
+			  src: data,
+			  nexusArtifacts: null,
+			  mvnState: false)
+			parallel map
+		  }
+		}
+	}
+	
+	stage('Default Post'){
+	  steps{ 
+		  script{ 
+			def data = readJSON file: POST_JSON
+		    def map = getParralelDeliveryMap(
+			  src: data,
+			  nexusArtifacts: null,
+			  mvnState: false)
+			parallel map
+		  }
+	  }
+	}
 
     stage('Tests'){
       steps{ 
 		script{ 
 		  def data = readJSON file: TESTS_JSON
-		  def map = getParralelDeliveryMap(data, "$STAGE_NAME")
+		  def map = getParralelDeliveryMap(
+			  src: data,
+			  nexusArtifacts: null,
+			  mvnState: false)
 		  parallel map
 		}
       }

@@ -14,8 +14,8 @@ $unisource = GetSourceObject $unisourceparams
 $apisource = GetSourceObject $unisourceparams
 
 ###vars
-$targetDir = "C:\inetpub\UniRu"
-$apiTargetDir = "C:\inetpub\UniruWebApi"
+$targetDir = "C:\inetpub\ClientWorkPlace\UniRu"
+$apiTargetDir = "C:\inetpub\ClientWorkPlace\UniruWebApi"
 
 $sourceFile = "$($env:workspace)\scripts\deploy\UniRu.sql"
 $oldIp = '#VM_IP'
@@ -49,14 +49,6 @@ Write-Host -ForegroundColor Green "[INFO] Create dbs"
 
 RestoreSqlDb -db_params $dbs
 
-### copy files /NFL /NDL /nc /ns /np
-robocopy $unisource.sourceBuildSource $targetDir /e  /NFL /NDL /nc /ns /np
-robocopy $apisource.sourceBuildSource $apiTargetDir /e  /NFL /NDL /nc /ns /np
-$global:LASTEXITCODE
-
-if ($global:LASTEXITCODE -ne 0){
-	$global:LASTEXITCODE = 0
-}
 $query = (Get-Content -Encoding UTF8 -Raw -Path $sourceFile)|Foreach-Object {
     $_ -replace $oldIp,  $IPAddress `
         -replace $oldHostname, $env:COMPUTERNAME`
@@ -100,7 +92,7 @@ $obj.connection = "data source=localhost;initial catalog=UniRu;Integrated Securi
 $ConnectionStringsAdd = $webdoc.CreateElement('add')
 $ConnectionStringsAdd.SetAttribute("name","OAuth.LastLogoutUrl")
 $ConnectionStringsAdd.SetAttribute("connectionString","https://${env:COMPUTERNAME}.gkbaltbet.local:449/account/logout/last")
- $webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
+$webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
 $webdoc.Save($apiWebConfig)
 
 Write-Host -ForegroundColor Green "[INFO] Done"
