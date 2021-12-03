@@ -15,8 +15,8 @@ $dbs = @(
 		BackupFile = "$release_bak_folder\WebApiAuth.bak" 
         RelocateFiles = @(
 			@{
-				SourceName = "WebApiAuth"
-				FileName = "WebApiAuth.mdf"
+				SourceName = "WebApi.Auth"
+				FileName = "WebApi.Auth.mdf"
 			}
 			@{
 				SourceName = "WebApi.Auth_log"
