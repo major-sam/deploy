@@ -49,5 +49,9 @@
         "name": "TicketService",
         "source": ".\\scripts\\deploy\\TicketService.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "WebApiAuth",
+        "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
+		"deployDir": "c:\\inetpub\\"
     }
 ]
