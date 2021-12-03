@@ -21,16 +21,6 @@ CREATE TABLE [qst].[QuestTypes] (
 
 
 GO
-PRINT N'Creating Table [qst].[UpdateTime]...';
-
-
-GO
-CREATE TABLE [qst].[UpdateTime] (
-    [LastUpdateTimeUtc] DATETIME NOT NULL
-);
-
-
-GO
 PRINT N'Creating Table [qst].[QBets]...';
 
 
@@ -41,6 +31,16 @@ CREATE TABLE [qst].[QBets] (
     [BetSum]    NUMERIC (12, 2) NULL,
     [BetCoef]   NUMERIC (12, 2) NULL,
     [BetCount]  INT             NULL
+);
+
+
+GO
+PRINT N'Creating Table [qst].[UpdateTime]...';
+
+
+GO
+CREATE TABLE [qst].[UpdateTime] (
+    [LastUpdateTimeUtc] DATETIME NOT NULL
 );
 
 
@@ -293,6 +293,57 @@ PRINT N'Creating Index [dbo].[ForecasterEvents].[IX_ForecasterEvents_EventId]...
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [IX_ForecasterEvents_EventId]
     ON [dbo].[ForecasterEvents]([EventId] ASC);
+
+
+GO
+PRINT N'Creating Table [dbo].[ForecasterLocations]...';
+
+
+GO
+CREATE TABLE [dbo].[ForecasterLocations] (
+    [Id]                BIGINT         IDENTITY (1, 1) NOT NULL,
+    [City]              NVARCHAR (100) NOT NULL,
+    [Stadium]           NVARCHAR (100) NOT NULL,
+    [ForecasterStageId] BIGINT         NOT NULL,
+    [ForecasterEventId] BIGINT         NOT NULL,
+    [PersistedVersion]  ROWVERSION     NULL,
+    [CreatedUtc]        DATETIME2 (7)  NOT NULL,
+    [Created]           DATETIME2 (7)  NOT NULL,
+    CONSTRAINT [PK_ForecasterLocations] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+GO
+PRINT N'Creating Index [dbo].[ForecasterLocations].[IX_ForecasterLocations_ForecasterStageId]...';
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_ForecasterLocations_ForecasterStageId]
+    ON [dbo].[ForecasterLocations]([ForecasterStageId] ASC);
+
+
+GO
+PRINT N'Creating Index [dbo].[ForecasterLocations].[IX_ForecasterLocations_ForecasterEventId]...';
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_ForecasterLocations_ForecasterEventId]
+    ON [dbo].[ForecasterLocations]([ForecasterEventId] ASC);
+
+
+GO
+PRINT N'Creating Table [dbo].[ForecasterStages]...';
+
+
+GO
+CREATE TABLE [dbo].[ForecasterStages] (
+    [Id]               BIGINT         IDENTITY (1, 1) NOT NULL,
+    [Name]             NVARCHAR (100) NULL,
+    [PersistedVersion] ROWVERSION     NULL,
+    [CreatedUtc]       DATETIME2 (7)  NOT NULL,
+    [Created]          DATETIME2 (7)  NOT NULL,
+    CONSTRAINT [PK_ForecasterStages] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 
 
 GO
@@ -1354,6 +1405,42 @@ ALTER TABLE [dbo].[ForecasterEvents]
 
 
 GO
+PRINT N'Creating Default Constraint unnamed constraint on [dbo].[ForecasterLocations]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterLocations]
+    ADD DEFAULT (sysutcdatetime()) FOR [CreatedUtc];
+
+
+GO
+PRINT N'Creating Default Constraint unnamed constraint on [dbo].[ForecasterLocations]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterLocations]
+    ADD DEFAULT (sysdatetime()) FOR [Created];
+
+
+GO
+PRINT N'Creating Default Constraint unnamed constraint on [dbo].[ForecasterStages]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterStages]
+    ADD DEFAULT (sysutcdatetime()) FOR [CreatedUtc];
+
+
+GO
+PRINT N'Creating Default Constraint unnamed constraint on [dbo].[ForecasterStages]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterStages]
+    ADD DEFAULT (sysdatetime()) FOR [Created];
+
+
+GO
 PRINT N'Creating Default Constraint unnamed constraint on [dbo].[Forecasts]...';
 
 
@@ -1975,6 +2062,24 @@ ALTER TABLE [dbo].[ForecasterEvents] WITH NOCHECK
 
 
 GO
+PRINT N'Creating Foreign Key [dbo].[FK_ForecasterLocations_ForecasterEvents_ForecasterEventId]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterLocations] WITH NOCHECK
+    ADD CONSTRAINT [FK_ForecasterLocations_ForecasterEvents_ForecasterEventId] FOREIGN KEY ([ForecasterEventId]) REFERENCES [dbo].[ForecasterEvents] ([Id]);
+
+
+GO
+PRINT N'Creating Foreign Key [dbo].[FK_ForecasterLocations_ForecasterStages_ForecasterStageId]...';
+
+
+GO
+ALTER TABLE [dbo].[ForecasterLocations] WITH NOCHECK
+    ADD CONSTRAINT [FK_ForecasterLocations_ForecasterStages_ForecasterStageId] FOREIGN KEY ([ForecasterStageId]) REFERENCES [dbo].[ForecasterStages] ([Id]);
+
+
+GO
 PRINT N'Creating Foreign Key [dbo].[FK_Forecasts_Events_EventId]...';
 
 
@@ -2362,78 +2467,6 @@ ALTER TABLE [dbo].[UserQuests] WITH NOCHECK
 
 
 GO
-PRINT N'Creating Procedure [qst].[calc_bets]...';
-
-
-GO
-
--------------------------------------------------------------------------------
--- Подсчет прогресса квестов по ставкам
--- Заменить в 5 местах название БД BaltbetM на актуальное
--------------------------------------------------------------------------------
-create procedure qst.calc_bets
-	@begin_time datetime,
-	@end_time datetime
-as
-begin
-	set nocount on;
-
-	select
-		uq.Id, count(1) as 'Amount'
-	from (
-		-- Поставленные
-		select
-			b.AccountId
-			,b.BetSum
-			,case
-				when b.BetTypeID in (0,1,2) then b.CoefValue
-				when b.BetTypeID=8 then 1
-				else 0 end as 'CoefValue'
-			,case
-				when b.BetTypeID in (0,1) then 102
-				when b.BetTypeID=8 then 103
-				when b.BetTypeID=2 then 104
-					 else 0 end as 'QuestType'
-		from BaltbetM.dbo.Bets b with(index(WorkerGroupped))
-		where
-			b.BetCreationTime>=@begin_time and b.BetCreationTime<@end_time
-			and b.BetTypeID in (0,1,2,8)
-			and b.BetDeleted=1
-			and (b.PayType not in (4,7,20,256) or b.PayType is null)
-			and b.SoldDate is null
-			and b.BetSum<>b.BetWinSum
-
-		union all
-
-		-- Выигранные (без суперэкспрессов)
-		select
-			b.AccountId
-			,b.BetSum
-			,b.CoefValue
-			,105 as 'QuestType'
-		from BaltbetM.dbo.Bets b with(index(Pribil_3))
-		where
-			b.BetResultTime>=@begin_time and b.BetResultTime<@end_time
-			and b.BetWin=1
-			and b.BetDeleted=1
-			and b.BetTypeID in (0,1,2)
-			and (b.PayType not in (4,7,20,256) or b.PayType is null)
-			and b.SoldDate is null
-			and b.BetSum<>b.BetWinSum
-	) s
-	inner join dbo.UserLinks u with(forceseek) on u.Id=s.AccountId
-	inner join qst.QBets t on t.QuestType=s.QuestType
-	inner join dbo.UserQuests uq with(forceseek) on uq.UserId=u.UserId
-	inner join dbo.Quests q with(forceseek) on q.Id=uq.QuestId
-		and q.QuestTypeId=s.QuestType
-		and t.QuestId=q.Id
-	where
-		s.BetSum>=t.BetSum
-		and s.CoefValue>=t.BetCoef
-		and uq.State=1
-	group by uq.Id
-end
-GO
 PRINT N'Creating Procedure [qst].[calc_forecasts]...';
 
 
@@ -2668,7 +2701,7 @@ GO
 
 -------------------------------------------------------------------------------
 -- Подсчет выполнения квестов по депозитам
--- Заменить в 1 месте название БД BaltbetM на актуальное
+-- Заменить название БД BaltbetM на актуальное
 -------------------------------------------------------------------------------
 create procedure qst.calc_deposits
     @begin_time datetime,
@@ -2683,7 +2716,7 @@ select
 from (
     select
         r.AccountId, r.TransactionValue
-    from BaltbetM.dbo.Transactions r -- 1/1 - BaltbetM
+    from BaltbetM.dbo.Transactions r
     where
         r.TransactionDateTime>=@begin_time and r.TransactionDateTime<@end_time
         and r.TransactionTypeId=7
@@ -2693,6 +2726,78 @@ inner join dbo.UserLinks u with(forceseek) on u.Id=s.AccountId
 inner join dbo.UserQuests uq with(forceseek) on uq.UserId=u.UserId and uq.State=1
 inner join dbo.Quests q with(forceseek) on q.Id=uq.QuestId and q.QuestTypeId=401
 group by uq.Id
+end
+GO
+PRINT N'Creating Procedure [qst].[calc_bets]...';
+
+
+GO
+
+-------------------------------------------------------------------------------
+-- Подсчет прогресса квестов по ставкам
+-- Заменить название БД BaltbetM на актуальное
+-------------------------------------------------------------------------------
+create procedure qst.calc_bets
+	@begin_time datetime,
+	@end_time datetime
+as
+begin
+	set nocount on;
+
+	select
+		uq.Id, count(1) as 'Amount'
+	from (
+		-- Поставленные
+		select
+			b.AccountId
+			,b.BetSum
+			,case
+				when b.BetTypeID in (0,1,2) then b.CoefValue
+				when b.BetTypeID=8 then 1
+				else 0 end as 'CoefValue'
+			,case
+				when b.BetTypeID in (0,1) then 102
+				when b.BetTypeID=8 then 103
+				when b.BetTypeID=2 then 104
+					 else 0 end as 'QuestType'
+		from BaltbetM.dbo.Bets b with(index(WorkerGroupped))
+		where
+			b.BetCreationTime>=@begin_time and b.BetCreationTime<@end_time
+			and b.BetTypeID in (0,1,2,8)
+			and b.BetDeleted=1
+			and (b.PayType not in (4,7,20,256) or b.PayType is null)
+			and b.SoldDate is null
+			and b.BetSum<>b.BetWinSum
+
+		union all
+
+		-- Выигранные (без суперэкспрессов)
+		select
+			b.AccountId
+			,b.BetSum
+			,b.CoefValue
+			,105 as 'QuestType'
+		from BaltbetM.dbo.Bets b with(index(Pribil_3))
+		where
+			b.BetResultTime>=@begin_time and b.BetResultTime<@end_time
+			and b.BetWin=1
+			and b.BetDeleted=1
+			and b.BetTypeID in (0,1,2)
+			and (b.PayType not in (4,7,20,256) or b.PayType is null)
+			and b.SoldDate is null
+			and b.BetSum<>b.BetWinSum
+	) s
+	inner join dbo.UserLinks u with(forceseek) on u.Id=s.AccountId
+	inner join qst.QBets t on t.QuestType=s.QuestType
+	inner join dbo.UserQuests uq with(forceseek) on uq.UserId=u.UserId
+	inner join dbo.Quests q with(forceseek) on q.Id=uq.QuestId
+		and q.QuestTypeId=s.QuestType
+		and t.QuestId=q.Id
+	where
+		s.BetSum>=t.BetSum
+		and s.CoefValue>=t.BetCoef
+		and uq.State=1
+	group by uq.Id
 end
 GO
 PRINT N'Creating Procedure [qst].[update_quests]...';
@@ -2796,6 +2901,10 @@ ALTER TABLE [dbo].[ExpressCoefs] WITH CHECK CHECK CONSTRAINT [FK_ExpressCoefs_Ex
 ALTER TABLE [dbo].[Expresses] WITH CHECK CHECK CONSTRAINT [FK_Expresses_Events_EventId];
 
 ALTER TABLE [dbo].[ForecasterEvents] WITH CHECK CHECK CONSTRAINT [FK_ForecasterEvents_Events_EventId];
+
+ALTER TABLE [dbo].[ForecasterLocations] WITH CHECK CHECK CONSTRAINT [FK_ForecasterLocations_ForecasterEvents_ForecasterEventId];
+
+ALTER TABLE [dbo].[ForecasterLocations] WITH CHECK CHECK CONSTRAINT [FK_ForecasterLocations_ForecasterStages_ForecasterStageId];
 
 ALTER TABLE [dbo].[Forecasts] WITH CHECK CHECK CONSTRAINT [FK_Forecasts_Events_EventId];
 
