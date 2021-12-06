@@ -62,3 +62,10 @@ foreach($item in $FILES){
  
     Write-Host -ForegroundColor Red " $item.target FAIL renew with transformation $item.transf"}
 }
+$LogConfig  = "C:\KernelWeb\KernelWeb.exe.config"
+Write-Host "[INFO] Edit web.config of $LogConfig"
+
+$webdoc = [Xml](Get-Content $LogConfig)
+$webdoc.configuration.log4net.appender|%{$_.file.value = "c:\logs\kernelWeb\"}
+
+$webdoc.Save($LogConfig)
