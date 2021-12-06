@@ -1,4 +1,5 @@
 import-module '.\scripts\sideFunctions.psm1'
-$dbname = 'BalancingDb'
+$dbname = 'MarketingDB'
 CreateSqlDatabase ($dbname)
-#Invoke-Sqlcmd -Database $dbname -InputFile '.\scripts\deploy\ms\InitDb.sql'
+Invoke-Sqlcmd -Database $dbname -InputFile '.\scripts\deploy\ms\InitDb.sql'
+Invoke-Sqlcmd -Database $dbname -InputFile '.\scripts\deploy\ms\DeployDB.sql'
