@@ -4,7 +4,7 @@ write-host 'marketingservice site deploy script'
 #get release params
 
 $defaultDomain = "bb-webapps.com"
-$targetDir  = "C:\Serviese\Marketing\MarketingService"
+$targetDir  = "C:\Services\Marketing\BaltBet.MarketingService"
 $ProgressPreference = 'SilentlyContinue'
 $webConfig = "$targetDir\Web.config"
 $pathtojson = "$targetDir\appSettings.json"

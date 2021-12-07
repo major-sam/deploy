@@ -18,7 +18,7 @@ $IISPools = @(
                 @{protocol='https';;bindingInformation="*:9880:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\services\marketing\BaltBet.MarketingService'
     }
     @{
         SiteName = 'MarketingImages'
@@ -42,7 +42,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:9881:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\services\marketing\BaltBet.MarketingService.Admin'
     }
     @{
         SiteName = 'MarketingServiceClient'
@@ -54,7 +54,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:9882:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\services\marketing\BaltBet.MarketingService.Client'
     }
 )  
 

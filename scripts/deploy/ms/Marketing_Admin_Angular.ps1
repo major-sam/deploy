@@ -1,8 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-
 $defaultDomain = "bb-webapps.com"
-$targetDir= "C:\Services\Marketing\MarketingServiceAdmin"
+$targetDir= "C:\Services\Marketing\BaltBet.MarketingService.Admin"
 $pathtojson = "$targetDir\config.json"
 $webConfig = "$targetDir\index.html"
 ###
