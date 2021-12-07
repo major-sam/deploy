@@ -199,3 +199,46 @@ foreach ($file in $sqlFiles) {
 	Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbs[0].DbName -InputFile $file -ErrorAction continue
 	Write-Host -ForegroundColor Green "[INFO] EXECUTED SUCCESSFULLY: " $file 
 }
+####KERNELWEB
+# vars
+$targetDir = 'C:\KernelWeb'
+$transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
+$transformFiles = @("$targetDir\settings.OctopusTestVM.xml","$targetDir\App.OctopusTestVM.config")
+
+$FILES= @(
+      @{
+        transf = "$targetDir\App.OctopusTestVM.config"
+        target = "$targetDir\KernelWeb.exe.config"
+      }
+      @{
+        transf = "$targetDir\settings.OctopusTestVM.xml"
+        target = "$targetDir\settings.xml"
+      }
+)
+##### raw replace
+foreach($transformFile in $transformFiles){
+    (Get-Content -Encoding UTF8 $transformFile) | Foreach-Object {
+        $_ -replace '#{VM[#{VMName}].ServerIp}',  $CurrentIpAddr `
+           -replace '#{KernelWeb_apconf_AddressSlotService}', 'localhost'`
+           -replace '#{KernelWeb_apconf_CertSubjectName}', 'VM1APKTEST-P0.gkbaltbet.local' 
+        } | Set-Content -Encoding UTF8 $transformFile
+        Write-Host -ForegroundColor Green "$transformFile renewed"
+    }
+
+
+##### apply xml transformation
+foreach($item in $FILES){
+ try{
+    XmlDocTransform -xml $item.target -xdt  $item.transf
+    Write-Host -ForegroundColor Green " $item.target renewed with transformation $item.transf"}
+ catch{
+ 
+    Write-Host -ForegroundColor Red " $item.target FAIL renew with transformation $item.transf"}
+}
+$LogConfig  = "C:\KernelWeb\KernelWeb.exe.config"
+Write-Host "[INFO] Edit web.config of $LogConfig"
+
+$webdoc = [Xml](Get-Content $LogConfig)
+$webdoc.configuration.log4net.appender|%{$_.file.value = "c:\logs\kernelWeb\"}
+
+$webdoc.Save($LogConfig)
