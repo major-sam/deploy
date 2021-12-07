@@ -1,19 +1,10 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-#get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'Marketing_Admin_Angular'
-}
-$source = GetSourceObject $sourceparams
 
 $defaultDomain = "bb-webapps.com"
-$targetDir= "C:\inetpub\MarketingServiceAdmin"
+$targetDir= "C:\Services\Marketing\MarketingServiceAdmin"
 $pathtojson = "$targetDir\config.json"
 $webConfig = "$targetDir\index.html"
-Write-Host -ForegroundColor Green "[INFO] Expand archive MarketingServiceAdmin"
-Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $targetDir -Verbose -Force
-Get-ChildItem -Recurse -Path "$targetDir\ClientApp" | % {Move-item -Path $_.FullName -Destination $targetDir }
 ###
 #Json values replace
 ####

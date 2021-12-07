@@ -267,7 +267,7 @@ pipeline{
 				def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
 					def nexusVersion = getNexusBranch ('Marketing', params.Task)
 					def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-					def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+					def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
 					configFileProvider(
 							[configFile(
 								fileId: 'mavenSettingsGlobal', 

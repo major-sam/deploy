@@ -1,22 +1,11 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-# 2 Сервис WebTouch
-
-#get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'Marketing_Client_Angular'
-}
-$source = GetSourceObject $sourceparams
 
 
-$targetDir= "C:\inetpub\MarketingServiceClient"
+$targetDir= "C:\Services\Marketing\MarketingServiceClient"
 $defaultDomain = "bb-webapps.com"
 $pathtojson = "$targetDir\config.json"
 $webConfig = "$targetDir\index.html"
-Write-Host -ForegroundColor Green "[INFO] Expand archive MarketingServiceAdmin"
-Expand-Archive -LiteralPath $source.sourceBuildSource -DestinationPath $targetDir -Verbose -Force
-Get-ChildItem -Recurse -Path "$targetDir\ClientApp" | % {Move-item -Path $_.FullName -Destination $targetDir }
 ###
 #Json values replace
 ####

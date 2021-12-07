@@ -3,13 +3,8 @@ import-module '.\scripts\sideFunctions.psm1'
 write-host 'marketingservice site deploy script'
 #get release params
 
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'MarketingService'
-}
-$source = GetSourceObject $sourceparams
 $defaultDomain = "bb-webapps.com"
-$targetDir  = "C:\inetpub\$($sourceparams.sourceName)"
+$targetDir  = "C:\Serviese\Marketing\MarketingService"
 $ProgressPreference = 'SilentlyContinue'
 $webConfig = "$targetDir\Web.config"
 $pathtojson = "$targetDir\appSettings.json"
@@ -17,8 +12,6 @@ $jsonDepth = 4
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 
 ### copy files
-write-host "Copy-Item -Path `"$($source.sourceBuildSource)`"  -Destination $targetDir -Recurse"
-Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse 
 
 ###
 #Json values replace
