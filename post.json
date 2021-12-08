@@ -5,9 +5,6 @@
         "name": "Kernel",
         "source": ".\\scripts\\post\\Kernel.ps1 "
     }, {
-        "name": "KernelWeb",
-        "source": ".\\scripts\\post\\KernelWeb.ps1 "
-    }, {
         "name": "PDA",
         "source": ".\\scripts\\post\\PDA.ps1 "
     }, {
