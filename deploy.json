@@ -9,10 +9,6 @@
         "source": ".\\scripts\\deploy\\kernel.ps1",
 		"deployDir": "c:\\"
     }, {
-        "name": "KernelWeb",
-        "source": ".\\scripts\\deploy\\kernelWeb.ps1",
-		"deployDir": "c:\\"
-    }, {
         "name": "PDA",
         "source": ".\\scripts\\deploy\\PDA.ps1"
     }, {
