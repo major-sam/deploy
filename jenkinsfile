@@ -24,21 +24,20 @@ def getLastSuccessfullTaskJobDescription(node){
 			if(prev_sucessful_build_descr){
 				if (prev_sucessful_build_descr.contains("${node}")){
 					def matches = (prev_sucessful_build_descr =~ /Task\(Branch\):.*$/) 
-						return [
-							matches[0], 
-							prev_sucessful_build.getId(), 
-							prev_sucessful_build.getCauses()[0].shortDescription as String]
+					return [
+						matches[0], 
+						prev_sucessful_build.getId(), 
+						prev_sucessful_build.getCauses()[0].shortDescription as String]
 				}
 				else{
 					prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-						prev_sucessful_build_descr = false
+					prev_sucessful_build_descr = false
 
 				}
-
 			}
 			else{
 				prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-					prev_sucessful_build_descr = false
+				prev_sucessful_build_descr = false
 			}
 		}
 }
@@ -75,6 +74,7 @@ def getVmList(int max){
 def getNexusBranch (repoName, userTask){
 	def result = 'master'
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
+	featureTask =  (featureTask.contains('/')) ? featureTask.replaceALL('/', '-'): featureTask
 	if(userTask != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
