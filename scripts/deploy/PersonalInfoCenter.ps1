@@ -42,3 +42,6 @@ $paths | % {
 	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\"
 	$webdoc.Save($_)
 }
+CreateSqlDatabase ("NotificationService")
+$file =	"C:\Services\PersonalInfoCenter\NotificationServiceDB\init.sql"
+Invoke-Sqlcmd -ServerInstance $env:COMPUTERNAME -Database "NotificationService" -InputFile $file -Verbose
