@@ -90,7 +90,8 @@ def getNexusBranch (repoName, userTask){
 }
 
 def doMavenDeploy(repo){
-	def deployDir = "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
+	def deployDir = (repo['name'] =='Kernel' ) ? "\"-Ddeploy.dir=${repo['deployDir']}\"" : "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
+	println deployDir
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
