@@ -74,7 +74,7 @@ def getVmList(int max){
 def getNexusBranch (repoName, userTask){
 	def result = 'master'
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
-	featureTask =  (featureTask.contains('/')) ? featureTask.replaceALL('/', '-'): featureTask
+	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
 	if(userTask != ""){
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
@@ -91,7 +91,6 @@ def getNexusBranch (repoName, userTask){
 
 def doMavenDeploy(repo){
 	def deployDir = (repo['name'] =='Kernel' ) ? "\"-Ddeploy.dir=${repo['deployDir']}\"" : "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
-	println deployDir
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
 	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
