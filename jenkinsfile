@@ -65,11 +65,12 @@ def getNexusArtifactList(){
     def text = powershell (
 			 returnStdout: true,
 			 script : """
-				curl.exe -u \$(\$env:NEXUS_CREDS_USR):\$(\$env:NEXUS_CREDS_PSW) `
+				curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
 				-X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\" `
 				-H \"accept: application/json\"
-				"""
+			 """
 			 )
+	println text
 	def scriptMap = new JsonSlurperClassic().parseText(text)
 	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
@@ -100,12 +101,13 @@ def getNexusBranch (repoName, userTask){
 	if(userTask != ""){
 		def text = powershell (
 				returnStdout: true,
-				script : '''
-					curl.exe -u \$(\$env:NEXUS_CREDS_USR):\$(\$env:NEXUS_CREDS_PSW) `
+				script : """
+					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
 					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$featureTask\" `
 					-H \"accept: application/json\"
-					'''
+				"""
 				)
+		println text
 		def repoMap = new JsonSlurperClassic().parseText(text)
 		if(repoMap.items){
 			result = featureTask 
@@ -527,10 +529,10 @@ pipeline{
 			if (binding.variables['PAYBadge']){
 				PAYBadge.setStatus('passing')
 			}
-			if (TTBadge){
+			if (binding.variables['TTBadge']){
 				TTBadge.setStatus('passing')
 			}
-			if (MarketingBadge){
+			if (binding.variables['MarketingBadge']){
 				MarketingBadge.setStatus('passing')
 			}
 		}
