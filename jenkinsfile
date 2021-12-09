@@ -64,8 +64,13 @@ def	addToDescription(Map config = [:]){
 def getNexusArtifactList(){
     def text = powershell (
 			 returnStdout: true,
-			 script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\"  -H \"accept: application/json\""
+			 script : """
+				curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+				-X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\" `
+				-H \"accept: application/json\"
+			 """
 			 )
+	println text
 	def scriptMap = new JsonSlurperClassic().parseText(text)
 	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
@@ -94,12 +99,16 @@ def getNexusBranch (repoName, userTask){
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
 	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
 	if(userTask != ""){
-		def repoMap = new JsonSlurperClassic().parseText(
-			powershell (
+		def text = powershell (
 				returnStdout: true,
-				script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET \"http://nexus:8081/service/rest/v1/search?repository=${repoName}&maven.groupId=${repoName}&maven.artifactId=${featureTask}\" -H \"accept: application/json\""
+				script : """
+					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$featureTask\" `
+					-H \"accept: application/json\"
+				"""
 				)
-			)
+		println text
+		def repoMap = new JsonSlurperClassic().parseText(text)
 		if(repoMap.items){
 			result = featureTask 
 			}	
@@ -517,27 +526,41 @@ pipeline{
 	success{
 		script{
 			win32BuildBadge.setStatus('passing')
-			if (PAYBadge){
+			if (binding.variables['PAYBadge']){
 				PAYBadge.setStatus('passing')
 			}
-			if (TTBadge){
+			if (binding.variables['TTBadge']){
 				TTBadge.setStatus('passing')
 			}
-			if (MarketingBadge){
+			if (binding.variables['MarketingBadge']){
 				MarketingBadge.setStatus('passing')
+			}
+		}
+	}
+	aborted{
+		script{
+			win32BuildBadge.setStatus('aborted')
+			if (binding.variables['PAYBadge']){
+				PAYBadge.setStatus('aborted')
+			}
+			if (binding.variables['TTBadge']){
+				TTBadge.setStatus('aborted')
+			}
+			if (binding.variables['MarketingBadge']){
+				MarketingBadge.setStatus('aborted')
 			}
 		}
 	}
 	failure{
 		script{
 			win32BuildBadge.setStatus('failing')
-			if (PAYBadge){
+			if (binding.variables['PAYBadge']){
 				PAYBadge.setStatus('failing')
 			}
-			if (TTBadge){
+			if (binding.variables['TTBadge']){
 				TTBadge.setStatus('failing')
 			}
-			if (MarketingBadge){
+			if (binding.variables['MarketingBadge']){
 				MarketingBadge.setStatus('failing')
 			}
 		}
