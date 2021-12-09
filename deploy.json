@@ -20,7 +20,8 @@
 		"deployDir": "c:\\inetpub\\"
     },  {
         "name": "WebTouch",
-        "source": ".\\scripts\\deploy\\WebTouch.ps1"
+        "source": ".\\scripts\\deploy\\WebTouch.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "baltbetcom",
         "source": ".\\scripts\\deploy\\baltbetcom.ps1"
