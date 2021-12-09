@@ -19,8 +19,11 @@ CLEAN_JSON = 'cleanup.json'
 
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
+TTBadge = false
 PAYBadgeId = 'PayBadgeId'
+PAYBadge = false
 MSBadgeId = 'MSBadgeId'
+MSBadge = false
 def win32BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def getLastSuccessfullTaskJobDescription(node){
@@ -70,7 +73,6 @@ def getNexusArtifactList(){
 				-H \"accept: application/json\"
 			 """
 			 )
-	println text
 	def scriptMap = new JsonSlurperClassic().parseText(text)
 	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
@@ -107,7 +109,6 @@ def getNexusBranch (repoName, userTask){
 					-H \"accept: application/json\"
 				"""
 				)
-		println text
 		def repoMap = new JsonSlurperClassic().parseText(text)
 		if(repoMap.items){
 			result = featureTask 
@@ -201,10 +202,8 @@ pipeline{
                      ).split("\\r?\\n") as List
           if (tags[0] =~ /[a-zA-Z]/){
             tags.add(0,"Latest Commit")
-            println tags
             tag = input message: 'Choose release to deploy', ok: 'Deploy!',
                   parameters: [choice (name: '', choices: tags, description: "Choose release")]
-            println tag
             if(tag != "Latest Commit"){
               powershell "git checkout tags/${tag}"
             }
@@ -295,8 +294,8 @@ pipeline{
       steps{
         script{
 			stage('Marketing Maven Deploy'){
-				MarketingBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
-				MarketingBadge.setStatus('running')
+				MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
+				MSBadge.setStatus('running')
 				currentBuild.description = addToDescription(
 													description: currentBuild.description,
 													html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
@@ -526,42 +525,42 @@ pipeline{
 	success{
 		script{
 			win32BuildBadge.setStatus('passing')
-			if (binding.variables['PAYBadge']){
+			if (PAYBadge){
 				PAYBadge.setStatus('passing')
 			}
-			if (binding.variables['TTBadge']){
+			if (TTBadge){
 				TTBadge.setStatus('passing')
 			}
-			if (binding.variables['MarketingBadge']){
-				MarketingBadge.setStatus('passing')
+			if (MSBadge){
+				MSBadge.setStatus('passing')
 			}
 		}
 	}
 	aborted{
 		script{
 			win32BuildBadge.setStatus('aborted')
-			if (binding.variables['PAYBadge']){
+			if (PAYBadge){
 				PAYBadge.setStatus('aborted')
 			}
-			if (binding.variables['TTBadge']){
+			if (TTBadge){
 				TTBadge.setStatus('aborted')
 			}
-			if (binding.variables['MarketingBadge']){
-				MarketingBadge.setStatus('aborted')
+			if (MSBadge){
+				MSBadge.setStatus('aborted')
 			}
 		}
 	}
 	failure{
 		script{
 			win32BuildBadge.setStatus('failing')
-			if (binding.variables['PAYBadge']){
+			if (PAYBadge){
 				PAYBadge.setStatus('failing')
 			}
-			if (binding.variables['TTBadge']){
+			if (TTBadge){
 				TTBadge.setStatus('failing')
 			}
-			if (binding.variables['MarketingBadge']){
-				MarketingBadge.setStatus('failing')
+			if (MSBadge){
+				MSBadge.setStatus('failing')
 			}
 		}
 	}
