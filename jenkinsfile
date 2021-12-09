@@ -14,7 +14,14 @@ DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
-def win32BuildBadge = addEmbeddableBadgeConfiguration(id: "win32build", subject: "Windows Deploy")
+
+
+
+mainBadgeId = 'mainBadgeId'
+TTBadgeId = 'TTBadgeId'
+PAYBadgeId = 'PayBadgeId'
+MSBadgeId = 'MSBadgeId'
+def win32BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def getLastSuccessfullTaskJobDescription(node){
 	def test_job = Jenkins.instance.getItemByFullName(JOB_NAME)
@@ -40,6 +47,18 @@ def getLastSuccessfullTaskJobDescription(node){
 				prev_sucessful_build_descr = false
 			}
 		}
+}
+def	addToDescription(Map config = [:]){
+	def String result = ""
+	if (config.position instanceof Integer){
+		def splitedDescr = config.description.split('<br>') as List
+		splitedDescr.add(config.position, config.html)
+		result = splitedDescr.join('<br>')
+	}
+	else{
+		result = "$config.description <br> $config.html"
+	}
+	return result
 }
 
 def getNexusArtifactList(){
@@ -198,7 +217,7 @@ pipeline{
 				if(lastDescr){
 					lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
 				}
-				currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>"
+				currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>${lastBuildDescr}"
 				currentBuild.result = 'NOT_BUILT'
 				error('VM is LOCKED. Check Lockable Resources')
 			}
@@ -208,6 +227,10 @@ pipeline{
 				def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
 				currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
 			}
+			currentBuild.description = addToDescription(
+													description: currentBuild.description,
+													html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
+													position: 0 )
 		}
 	  }
 	}
@@ -262,10 +285,13 @@ pipeline{
 	  }
       steps{
         script{
-
 			stage('Marketing Maven Deploy'){
-				MarketingBadge = addEmbeddableBadgeConfiguration(id: "marketingbuild", subject: "Marketing Deploy")
+				MarketingBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
 				MarketingBadge.setStatus('running')
+				currentBuild.description = addToDescription(
+													description: currentBuild.description,
+													html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+													position: 1)
 				def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
 					def nexusVersion = getNexusBranch ('Marketing', params.Task)
 					def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
@@ -301,9 +327,12 @@ pipeline{
 	  }
       steps{
         script{
-			
-			TTBadge = addEmbeddableBadgeConfiguration(id: "TTbuild", subject: "TT Deploy")
+			TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
 			TTBadge.setStatus('running')
+			currentBuild.description = addToDescription(
+												description: currentBuild.description,
+												html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+												position: 1)
 			stage('TT Maven Deploy'){
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
@@ -344,13 +373,19 @@ pipeline{
 	  }
 		steps{
 			script{
-			  def nexusArtifacts = getNexusArtifactList()	
-			  def data = readJSON file: DEPLOY_PAY_JSON 
-			  def map = getParralelDeliveryMap(
-				src: data,
-				nexusArtifacts: nexusArtifacts ,
-				mvnState: true)
-			  parallel map
+				PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
+				PAYBadge.setStatus('running')
+				currentBuild.description = addToDescription(
+						description: currentBuild.description,
+						html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+						position: 1)
+				def nexusArtifacts = getNexusArtifactList()	
+				def data = readJSON file: DEPLOY_PAY_JSON 
+				def map = getParralelDeliveryMap(
+						src: data,
+						nexusArtifacts: nexusArtifacts ,
+						mvnState: true)
+				parallel map
 			}
 		}
 	}
@@ -482,9 +517,12 @@ pipeline{
 	success{
 		script{
 			win32BuildBadge.setStatus('passing')
-				if (TTBadge){
-					TTBadge.setStatus('passing')
-				}
+			if (PAYBadge){
+				PAYBadge.setStatus('passing')
+			}
+			if (TTBadge){
+				TTBadge.setStatus('passing')
+			}
 			if (MarketingBadge){
 				MarketingBadge.setStatus('passing')
 			}
@@ -493,9 +531,12 @@ pipeline{
 	failure{
 		script{
 			win32BuildBadge.setStatus('failing')
-				if (TTBadge){
-					TTBadge.setStatus('failing')
-				}
+			if (PAYBadge){
+				PAYBadge.setStatus('failing')
+			}
+			if (TTBadge){
+				TTBadge.setStatus('failing')
+			}
 			if (MarketingBadge){
 				MarketingBadge.setStatus('failing')
 			}
