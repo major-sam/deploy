@@ -17,7 +17,8 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:$($apiPort):"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-			rootDir = 'C:\Services\TradingTool\Services'
+		rootDir = 'C:\Services\TradingTool\Services'
+		siteSubDir = $true
     }
 )  
 
