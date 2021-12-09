@@ -43,12 +43,12 @@ def getLastSuccessfullTaskJobDescription(node){
 }
 
 def getNexusArtifactList(){
-	def scriptMap = new JsonSlurperClassic().parseText(
-		 powershell (
+    def text = powershell (
 			 returnStdout: true,
 			 script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\"  -H \"accept: application/json\""
 			 )
-		 )
+	println text
+	def scriptMap = new JsonSlurperClassic().parseText(text)
 	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
 }
