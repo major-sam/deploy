@@ -62,9 +62,10 @@ def	addToDescription(Map config = [:]){
 }
 
 def getNexusArtifactList(){
+	def curlCreds = "${NEXUS_CREDS_USR}:${NEXUS_CREDS_PSW}"
     def text = powershell (
 			 returnStdout: true,
-			 script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\"  -H \"accept: application/json\""
+			 script : "curl.exe -u ${curlCreds}  -X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\"  -H \"accept: application/json\""
 			 )
 	def scriptMap = new JsonSlurperClassic().parseText(text)
 	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
@@ -94,10 +95,11 @@ def getNexusBranch (repoName, userTask){
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
 	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
 	if(userTask != ""){
+		def curlCreds = "${NEXUS_CREDS_USR}:${NEXUS_CREDS_PSW}"
 		def repoMap = new JsonSlurperClassic().parseText(
 			powershell (
 				returnStdout: true,
-				script : "curl.exe -u ${env.NEXUS_CREDS_USR}:${env.NEXUS_CREDS_PSW}  -X GET \"http://nexus:8081/service/rest/v1/search?repository=${repoName}&maven.groupId=${repoName}&maven.artifactId=${featureTask}\" -H \"accept: application/json\""
+				script : "curl.exe -u ${curlCreds}  -X GET \"http://nexus:8081/service/rest/v1/search?repository=${repoName}&maven.groupId=${repoName}&maven.artifactId=${featureTask}\" -H \"accept: application/json\""
 				)
 			)
 		if(repoMap.items){
@@ -517,7 +519,7 @@ pipeline{
 	success{
 		script{
 			win32BuildBadge.setStatus('passing')
-			if (PAYBadge){
+			if (binding.variables['PAYBadge']){
 				PAYBadge.setStatus('passing')
 			}
 			if (TTBadge){
@@ -531,7 +533,7 @@ pipeline{
 	failure{
 		script{
 			win32BuildBadge.setStatus('failing')
-			if (PAYBadge){
+			if (binding.variables['PAYBadge']){
 				PAYBadge.setStatus('failing')
 			}
 			if (TTBadge){
