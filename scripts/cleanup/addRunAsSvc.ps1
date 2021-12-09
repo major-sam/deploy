@@ -29,6 +29,8 @@ if($env:HOMEDRIVE -like 'z:') {
 #		$error[0]
 #	}
 #}
+## temp 3.1 fix
+choco install dotnetcore-3.1-windowshosting -y
 
 $fixNameQuery= "
 DECLARE @MachineName NVARCHAR(60)
