@@ -9,31 +9,32 @@
         "source": ".\\scripts\\deploy\\kernel.ps1",
 		"deployDir": "c:\\"
     }, {
-        "name": "KernelWeb",
-        "source": ".\\scripts\\deploy\\kernelWeb.ps1",
-		"deployDir": "c:\\"
-    }, {
         "name": "PDA",
         "source": ".\\scripts\\deploy\\PDA.ps1"
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"  
+        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1",
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "ClientWorkPlace",
         "source": ".\\scripts\\deploy\\UniRuAndApi.ps1",
 		"deployDir": "c:\\inetpub\\"
     },  {
+        "name": "KRM",
+        "source": ".\\scripts\\deploy\\KRM.ps1",
+		"deployDir": "c:\\inetpub\\"
+    }, {
         "name": "WebTouch",
-        "source": ".\\scripts\\deploy\\WebTouch.ps1"
+        "source": ".\\scripts\\deploy\\WebTouch.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "baltbetcom",
-        "source": ".\\scripts\\deploy\\baltbetcom.ps1"
+        "name": "WebsiteCom",
+        "source": ".\\scripts\\deploy\\baltbetcom.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "ClientWorkSpace",
-        "source": ".\\scripts\\deploy\\ClientWorkSpace.ps1"
-    }, {
-        "name": "MessageService",
-        "source": ".\\scripts\\deploy\\MessageService.ps1"
+        "name": "PersonalInfoCenter",
+        "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1",
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "cert",
         "source": ".\\scripts\\deploy\\cert.ps1",

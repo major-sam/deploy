@@ -140,7 +140,11 @@ function CreateSqlDatabase($dbname){
 function RegisterIISSite($site){
     Import-Module -Force WebAdministration
     $name =  $site.SiteName
-    $targetDir = "$($site.rootDir)\$name"
+	if ($site.siteSubDir){
+		$targetDir = "$($site.rootDir)\$name"
+	}else{
+		$targetDir = "$($site.rootDir)"
+	}
     if (Test-Path IIS:\AppPools\$name){
         Write-output "SITE EXIST!!!"
     }

@@ -17,6 +17,7 @@ $IISPools = @(
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 			rootDir = 'C:\Services\Payments\PaymentBalancing'
+		siteSubDir = $true
     }
 )  
 

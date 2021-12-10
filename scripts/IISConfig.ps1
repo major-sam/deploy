@@ -17,10 +17,11 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4444:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\inetpub\WebsiteCom'
+		siteSubDir = $false
     }
     @{
-        SiteName = 'ClientWorkSpace'
+        SiteName = 'KRM'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -28,7 +29,8 @@ $IISPools = @(
                 @{protocol='http';bindingInformation="*:8080:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub\ClientWorkPlace'
+		rootDir = 'c:\inetpub'
+		siteSubDir = $true
     }
     @{
         SiteName = 'UniRu'
@@ -40,6 +42,7 @@ $IISPools = @(
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 		rootDir = 'c:\inetpub\ClientWorkPlace'
+		siteSubDir = $true
     }
     @{
         SiteName = 'UniruWebApi'
@@ -50,7 +53,20 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4449:$($env:COMPUTERNAME).$($wildcardDomain)"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\inetpub\ClientWorkPlace'
+		siteSubDir = $true
+    }
+    @{
+        SiteName = 'AdminMessageService'
+        DomainAuth =  @{
+            userName="$username";password="$pass";identitytype=3
+            }
+        Bindings= @(
+                @{protocol='https';bindingInformation="*:44307:$($env:COMPUTERNAME).$($wildcardDomain)"}
+            )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
+		rootDir = 'C:\Services\PersonalInfoCenter'
+		siteSubDir = $true
     }
     @{
         SiteName = 'WebApiAuth'
@@ -62,6 +78,7 @@ $IISPools = @(
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 		rootDir = 'c:\inetpub'
+		siteSubDir = $true
     }
 )  
 

@@ -50,10 +50,14 @@ Get-Service *Baltbet* | ForEach-object{
 		write-output 'No service installed'}
 }
 #### cleanup Kernel
-Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse
+Remove-Item -Path C:\Kernel, C:\KernelWeb -Force -Recurse -ErrorAction SilentlyContinue
 
 #### cleanup services folders
-Remove-Item -Path C:\Services\* -Force -Recurse
+Remove-Item -Path C:\Services\* -Force -Recurse -ErrorAction SilentlyContinue
 
 #### cleanup default logs
-Remove-Item -Path C:\Logs\* -Force -Recurse
+Remove-Item -Path C:\Logs\* -Force -Recurse -ErrorAction SilentlyContinue
+
+if ($global:LASTEXITCODE -ne 0){
+	$global:LASTEXITCODE = 0
+}
