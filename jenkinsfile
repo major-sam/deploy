@@ -273,6 +273,9 @@ pipeline{
 			file (
 			   credentialsId: 'test.payment.service', 
 			   variable: 'TESTPAYMENTSERVICE'),
+			string (
+			   credentialsId: 'CupisCertPassword',
+			   variable: 'CUPIS_CERT_PASS'),
 			]){
 			script{
 			  def nexusArtifacts = getNexusArtifactList()	

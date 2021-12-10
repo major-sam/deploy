@@ -21,9 +21,27 @@ $ServiceFolderPath = "C:\Services\${ServiceName}"
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
 
 
-# Редактирование конфигов
+# Редактируем конфиг
 Write-Host -ForegroundColor Green "[INFO] Print BaltBet.CupisIntegrationService.GrpcHost configuration files..."
 Get-Content -Encoding UTF8 -Path "${ServiceFolderPath}\appsettings.json"
+
+$CupisBaseUrl = "https://demo-api.1cupis.ru/binding-api/"
+$CupisBackupBaseUrl = "https://demo-api.1cupis.ru/"
+$CupisCertPassword = $env:CUPIS_CERT_PASS
+$CupisCertThumbprint = "CHANGE_THUMBPRINT"
+$FnsBaseUrl = "http://localhost:8067"
+$FnsKey = "ENTER_KEY_IF_YOU_NEED"
+
+$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json -Depth 100
+$config.Cupis.BaseUrl = $CupisBaseUrl
+$config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
+$config.Cupis.CertPassword = $CupisCertPassword
+$config.Cupis.CertThumbprint = $CupisCertThumbprint
+$config.Fns.BaseUrl = $FnsBaseUrl
+$config.Fns.Key = $FnsKey
+
+# Сохраняем конфиг
+$config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
 
 # Регистрируем сервис
 Import-module '.\scripts\sideFunctions.psm1'
