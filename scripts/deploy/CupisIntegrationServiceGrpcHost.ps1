@@ -15,7 +15,7 @@
 #>
 
 
-$ServiceName = "CupisIntegrationService.GrpcHost"
+$ServiceName = "CupisIntegrationServiceGrpcHost"
 $ServiceFolderPath = "C:\Services\${ServiceName}"
 
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
