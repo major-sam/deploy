@@ -14,3 +14,15 @@ $Secure_String_Pwd = ConvertTo-SecureString "12345" -AsPlainText -Force
 Import-PfxCertificate -FilePath $env:WCFHOST -CertStoreLocation Cert:\LocalMachine\My -Password $Secure_String_Pwd
 
 Push-Location $env:WORKSPACE
+
+Write-Host -ForegroundColor Green "[INFO] Add new client.test.kernel.pfx certificate"
+$Secure_String_Pwd = ConvertTo-SecureString "12345" -AsPlainText -Force
+Import-PfxCertificate -FilePath $env:CLIENTTESTKERNEL -CertStoreLocation Cert:\LocalMachine\My -Password $Secure_String_Pwd
+
+Push-Location $env:WORKSPACE
+
+Write-Host -ForegroundColor Green "[INFO] Add new test.payment.service.pfx certificate"
+$Secure_String_Pwd = ConvertTo-SecureString "123456" -AsPlainText -Force
+Import-PfxCertificate -FilePath $env:CLIENTTESTKERNEL -CertStoreLocation Cert:\LocalMachine\My -Password $Secure_String_Pwd
+
+Push-Location $env:WORKSPACE
