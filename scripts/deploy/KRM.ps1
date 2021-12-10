@@ -1,15 +1,7 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-#get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'ClientWorkSpace'
-}
-$source = GetSourceObject $sourceparams
-
-
 ###vars
-$targetDir = "C:\inetpub\ClientWorkSpace"
+$targetDir = "C:\inetpub\KRM"
 $ProgressPreference = 'SilentlyContinue'
 $release_bak_folder= "\\dev-comp49\share\DBs"
 
@@ -31,7 +23,3 @@ $dbs = @(
 )
 RestoreSqlDb -db_params $dbs
 
-### copy files
-
-write-host "Copy-Item -Path `"$($source.sourceBuildSource)`"  -Destination $targetDir -Recurse"
-Copy-Item -Path $source.sourceBuildSource  -Destination $targetDir -Recurse 

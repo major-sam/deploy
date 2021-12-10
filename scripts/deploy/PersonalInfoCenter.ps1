@@ -1,11 +1,6 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 #get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'MessageService'
-}
-$source = GetSourceObject $sourceparams
 
 
 ## vars
