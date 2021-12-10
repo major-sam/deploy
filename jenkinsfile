@@ -180,6 +180,7 @@ pipeline{
 	SERVICE_CREDS = credentials('Testkernel')
 	TT_SERVICE_CREDS = credentials('kernelsvc')
 	NEXUS_CREDS = credentials('jenkinsAD')
+	CUPIS_CERT_PASS = credentials('CupisCertPassword')
   }
 
   agent {label "${TESTVM}" }
@@ -273,9 +274,6 @@ pipeline{
 			file (
 			   credentialsId: 'test.payment.service', 
 			   variable: 'TESTPAYMENTSERVICE'),
-			string (
-			   credentialsId: 'CupisCertPassword',
-			   variable: 'CUPIS_CERT_PASS'),
 			]){
 			script{
 			  def nexusArtifacts = getNexusArtifactList()	
