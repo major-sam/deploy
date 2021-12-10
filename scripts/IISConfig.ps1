@@ -21,7 +21,7 @@ $IISPools = @(
 		siteSubDir = $false
     }
     @{
-        SiteName = 'ClientWorkSpace'
+        SiteName = 'KRM'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
