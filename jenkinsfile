@@ -269,9 +269,6 @@ pipeline{
 			   credentialsId: 'wcf-host', 
 			   variable: 'WCFHOST'),
 			file (
-			   credentialsId: 'wcf-host', 
-			   variable: 'WCFHOST'),
-			file (
 			   credentialsId: 'client.test.kernel', 
 			   variable: 'CLIENTTESTKERNEL'),
 			file (
