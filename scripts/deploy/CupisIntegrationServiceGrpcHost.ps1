@@ -27,7 +27,7 @@ Get-Content -Encoding UTF8 -Path "${ServiceFolderPath}\appsettings.json"
 
 # Регистрируем сервис
 Import-module '.\scripts\sideFunctions.psm1'
-$serviceBin = Get-Item  "C:\Services\CupisIntegrationService.GrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
+$serviceBin = Get-Item  "C:\Services\CupisIntegrationServiceGrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
 $sname = RegisterWinService($serviceBin)
 Start-Service $sname
 Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
