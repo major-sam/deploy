@@ -13,7 +13,8 @@
         "source": ".\\scripts\\deploy\\PDA.ps1"
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"  
+        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1",
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "ClientWorkPlace",
         "source": ".\\scripts\\deploy\\UniRuAndApi.ps1",
