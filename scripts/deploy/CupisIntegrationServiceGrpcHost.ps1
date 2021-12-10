@@ -32,7 +32,7 @@ $CupisCertThumbprint = "CHANGE_THUMBPRINT"
 $FnsBaseUrl = "http://localhost:8067"
 $FnsKey = "ENTER_KEY_IF_YOU_NEED"
 
-$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json -Depth 100
+$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json
 $config.Cupis.BaseUrl = $CupisBaseUrl
 $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
 $config.Cupis.CertPassword = $CupisCertPassword
