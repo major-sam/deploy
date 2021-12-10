@@ -55,8 +55,8 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "CupisIntegrationService.GrpcHost",
-        "source": ".\\scripts\\deploy\\CupisIntegrationService.GrpcHost.ps1",
+        "name": "CupisIntegrationServiceGrpcHost",
+        "source": ".\\scripts\\deploy\\CupisIntegrationServiceGrpcHost.ps1",
         "deployDir": "c:\\Services\\"
     }
 ]
