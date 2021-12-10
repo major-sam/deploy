@@ -23,8 +23,9 @@
         "source": ".\\scripts\\deploy\\WebTouch.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "baltbetcom",
-        "source": ".\\scripts\\deploy\\baltbetcom.ps1"
+        "name": "WebsiteCom",
+        "source": ".\\scripts\\deploy\\baltbetcom.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "ClientWorkSpace",
         "source": ".\\scripts\\deploy\\ClientWorkSpace.ps1"
