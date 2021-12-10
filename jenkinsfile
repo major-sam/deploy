@@ -42,7 +42,6 @@ def getLastSuccessfullTaskJobDescription(node){
 				else{
 					prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
 					prev_sucessful_build_descr = false
-
 				}
 			}
 			else{

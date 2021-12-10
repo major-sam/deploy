@@ -19,15 +19,17 @@
         "source": ".\\scripts\\deploy\\UniRuAndApi.ps1",
 		"deployDir": "c:\\inetpub\\"
     },  {
+        "name": "KRM",
+        "source": ".\\scripts\\deploy\\KRM.ps1",
+		"deployDir": "c:\\inetpub\\"
+    }, {
         "name": "WebTouch",
         "source": ".\\scripts\\deploy\\WebTouch.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "baltbetcom",
-        "source": ".\\scripts\\deploy\\baltbetcom.ps1"
-    }, {
-        "name": "ClientWorkSpace",
-        "source": ".\\scripts\\deploy\\ClientWorkSpace.ps1"
+        "name": "WebsiteCom",
+        "source": ".\\scripts\\deploy\\baltbetcom.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "PersonalInfoCenter",
         "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1",
