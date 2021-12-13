@@ -56,10 +56,6 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "CupisIntegrationServiceGrpcHost",
-        "source": ".\\scripts\\deploy\\CupisIntegrationServiceGrpcHost.ps1",
-        "deployDir": "c:\\Services\\"
-    }, {
         "name": "PaymentCupisRestApiHost",
         "source": ".\\scripts\\deploy\\PaymentCupisRestApiHost.ps1",
         "deployDir": "c:\\Services\\"
