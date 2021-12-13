@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurperClassic
+import groovy.json.JsonOutput
 import jenkins.model.Jenkins
 
 MavenDeployResultList = []
@@ -21,7 +22,7 @@ mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
 PAYBadgeId = 'PayBadgeId'
 MSBadgeId = 'MSBadgeId'
-def win32BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
+def BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def getLastSuccessfullTaskJobDescription(node){
 	def test_job = Jenkins.instance.getItemByFullName(JOB_NAME)
@@ -209,7 +210,7 @@ pipeline{
 		stage('Choose release tag'){
 			steps{
 				script{
-					win32BuildBadge.setStatus('running')
+					BuildBadge.setStatus('running')
 						def tags = powershell(
 								returnStdout:true,
 								encoding:'UTF-8',
@@ -626,25 +627,38 @@ pipeline{
 				}
 			}
 		}
+		stage('Result Bundle'){
+			steps{
+				script{
+					def jsonFormat = JsonOutput.toJson(MavenDeployResultList)
+				    def prettyJSON = JsonOutput.prettyPrint(jsonFormat)
+					echo "${prettyJSON}"
+				}
+			}
+		}
 	}
 	post{
 		always{
-			echo 'alwaysPost'
-			println MavenDeployResultList
+			script{
+				MavenDeployResultList << [ 
+					Description: currentBuild.description 
+				]
+				writeJSON file: "c:\\Services\\Deploy_bundle.json", json: MavenDeployResultList
+			}
 		}
 		success{
 			script{
-				win32BuildBadge.setStatus('passing')
+				BuildBadge.setStatus('passing')
 			}
 		}
 		aborted{
 			script{
-				win32BuildBadge.setStatus('aborted')
+				BuildBadge.setStatus('aborted')
 			}
 		}
 		failure{
 			script{
-				win32BuildBadge.setStatus('failing')
+				BuildBadge.setStatus('failing')
 			}
 		}
 	}
