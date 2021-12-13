@@ -2,8 +2,9 @@
         "name": "deploy placeholder",
         "source": "echo $env:COMPUTERNAME \n systeminfo \n echo 'omg one more way'| echo 'and another one'"
     }, {
-        "name": "CIS",
-        "source": "echo 'script is bad - redo'"
+        "name": "CupisIntegrationService",
+        "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1",
+		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "Kernel",
         "source": ".\\scripts\\deploy\\kernel.ps1",
@@ -54,5 +55,9 @@
         "name": "WebApiAuth",
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
+    }, {
+        "name": "CupisIntegrationServiceGrpcHost",
+        "source": ".\\scripts\\deploy\\CupisIntegrationServiceGrpcHost.ps1",
+        "deployDir": "c:\\Services\\"
     }
 ]

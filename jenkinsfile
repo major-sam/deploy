@@ -198,6 +198,8 @@ pipeline{
 	SERVICE_CREDS = credentials('Testkernel')
 	TT_SERVICE_CREDS = credentials('kernelsvc')
 	NEXUS_CREDS = credentials('jenkinsAD')
+	CUPIS_CERT_PASS = credentials('CupisCertPassword')
+	CUPIS_FNS_KEY = credentials('CupisFnsKey')
   }
 
   agent {label "${TESTVM}" }
