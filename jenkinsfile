@@ -151,7 +151,7 @@ def doMavenDeploy(repo){
 		}
 	}
 	else{
-		prinln "${repo['name']} has no master branch"}
+		println "${repo['name']} has no master branch"}
 }
 
 
@@ -386,7 +386,7 @@ pipeline{
 				  }
 			  }
 			  else{
-				  prinln "TT has no master branch"
+				  println "TT has no master branch"
 			  }
 		  }
 
