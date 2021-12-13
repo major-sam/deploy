@@ -7,9 +7,5 @@
         "name": "UniPaymentsService",
         "sourceBuildSource": "\\\\server\\tcbuild$\\Services\\Uni.PaymentsService\\1.0.0.21",
         "sourceBuild": "1.0.0.21"
-    },{
-        "name": "CupisIntegrationServiceGrpcHost",
-        "sourceBuildSource": "\\\\server\\tcbuild$\\Services\\CupisIntegrationService.GrpcHost\\1.0.0.16",
-        "sourceBuild": "1.0.0.16"
     }
 ]
