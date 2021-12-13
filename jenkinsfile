@@ -1,6 +1,8 @@
 import groovy.json.JsonSlurperClassic
 import jenkins.model.Jenkins
 
+MavenDeployResultList = []
+
 TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
@@ -128,6 +130,10 @@ def doMavenDeploy(repo){
 			def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 				//for future usage
 				def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
+				MavenDeployResultList << [
+					Repo: repo['name'],
+					Branch: taskBranch
+					]
 				configFileProvider(
 						[
 						configFile(
@@ -317,6 +323,10 @@ pipeline{
 							if (nexusVersion){
 								def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
 									def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+									MavenDeployResultList << [
+										Repo: 'Marketing' ,
+										Branch: nexusVersion 
+									]
 									configFileProvider(
 											[configFile(
 												fileId: 'mavenSettingsGlobal', 
@@ -372,6 +382,10 @@ pipeline{
 								if (nexusVersion){
 									def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
 										def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+										MavenDeployResultList << [
+											Repo: 'Trading Tool' ,
+											Branch: nexusVersion 
+											]
 										configFileProvider(
 												[configFile(
 													fileId: 'mavenSettingsGlobal', 
@@ -411,6 +425,7 @@ pipeline{
 				aborted {script {TTBadge.setStatus('aborted')}}
 			}
 		}    
+
 		stage('Deploy Payment Balanser'){
 			when{
 				expression {
@@ -420,18 +435,18 @@ pipeline{
 			steps{
 				script{
 					PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
-						PAYBadge.setStatus('running')
-						currentBuild.description = addToDescription(
-								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
-								position: 1)
-						def nexusArtifacts = getNexusArtifactList()	
-						def data = readJSON file: DEPLOY_PAY_JSON 
-						def map = getParralelDeliveryMap(
-								src: data,
-								nexusArtifacts: nexusArtifacts ,
-								mvnState: true)
-						parallel map
+					PAYBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
+							position: 1)
+					def nexusArtifacts = getNexusArtifactList()	
+					def data = readJSON file: DEPLOY_PAY_JSON 
+					def map = getParralelDeliveryMap(
+							src: data,
+							nexusArtifacts: nexusArtifacts ,
+							mvnState: true)
+					parallel map
 				}
 			}
 			post{
@@ -615,6 +630,7 @@ pipeline{
 	post{
 		always{
 			echo 'alwaysPost'
+			println MavenDeployResultList
 		}
 		success{
 			script{
