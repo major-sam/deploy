@@ -96,7 +96,7 @@ def getVmList(int max){
 	}
 
 def getNexusBranch (repoName, userTask){
-	def result = 'master'
+	def result = false
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
 	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
 	if(userTask != ""){
@@ -112,6 +112,20 @@ def getNexusBranch (repoName, userTask){
 		if(repoMap.items){
 			result = featureTask 
 			}	
+		else{
+			def mastertext = powershell (
+				returnStdout: true,
+				script : """
+					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=master\" `
+					-H \"accept: application/json\"
+				"""
+				)
+			}
+			def MasterRepoMap = new JsonSlurperClassic().parseText(text)
+			if(MasterRepoMap.items){
+				result = 'master' 
+				}	
 	}
 	return result
 }
@@ -120,20 +134,24 @@ def doMavenDeploy(repo){
 	def deployDir = (repo['name'] =='Kernel' ) ? "\"-Ddeploy.dir=${repo['deployDir']}\"" : "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
 	taskBranch = getNexusBranch (repo['name'], params.Task)	
 	//for future usage
-	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
-	//for future usage
-	def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
-	configFileProvider(
-		[
-			configFile(
-			   fileId: 'mavenSettingsGlobal', 
-			   targetLocation: 'MAVEN_SETTINGS.xml'),
-			configFile(
-			   fileId: 'defaultPOM', 
-			   targetLocation: 'pomxml')
-		]){
-		powershell "mvn clean versions:use-latest-releases dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+	if (taskBranch){
+		def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
+		//for future usage
+		def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
+		configFileProvider(
+			[
+				configFile(
+				   fileId: 'mavenSettingsGlobal', 
+				   targetLocation: 'MAVEN_SETTINGS.xml'),
+				configFile(
+				   fileId: 'defaultPOM', 
+				   targetLocation: 'pomxml')
+			]){
+			powershell "mvn clean versions:use-latest-releases dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+		}
 	}
+	else{
+		prinln "${repo['name']} has no master branch"}
 }
 
 
@@ -304,17 +322,22 @@ pipeline{
 													position: 1)
 				def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
 					def nexusVersion = getNexusBranch ('Marketing', params.Task)
-					def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-					def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
-					configFileProvider(
-							[configFile(
-								fileId: 'mavenSettingsGlobal', 
-								targetLocation: 'MAVEN_SETTINGS.xml'),
-							configFile(
-								fileId: 'defaultPOM', 
-								targetLocation: 'pomxml')
-							]){
-						powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+					if (nexusVersion){
+						def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+						def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+						configFileProvider(
+								[configFile(
+									fileId: 'mavenSettingsGlobal', 
+									targetLocation: 'MAVEN_SETTINGS.xml'),
+								configFile(
+									fileId: 'defaultPOM', 
+									targetLocation: 'pomxml')
+								]){
+							powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+						}
+					}
+					else{
+						println "Marketing repo has no masterBranch"
 					}
 			}
 			stage('marketing settings'){
@@ -346,17 +369,22 @@ pipeline{
 			stage('TT Maven Deploy'){
 			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
 			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
-			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-			  def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
-			  configFileProvider(
-				[configFile(
-				   fileId: 'mavenSettingsGlobal', 
-				   targetLocation: 'MAVEN_SETTINGS.xml'),
-				configFile(
-				   fileId: 'defaultPOM', 
-				   targetLocation: 'pomxml')
-				]){
-				  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+			  if (nexusVersion){
+				  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+				  def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+				  configFileProvider(
+					[configFile(
+					   fileId: 'mavenSettingsGlobal', 
+					   targetLocation: 'MAVEN_SETTINGS.xml'),
+					configFile(
+					   fileId: 'defaultPOM', 
+					   targetLocation: 'pomxml')
+					]){
+					  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+				  }
+			  }
+			  else{
+				  prinln "TT has no master branch"
 			  }
 		  }
 
