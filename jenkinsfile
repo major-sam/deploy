@@ -345,81 +345,105 @@ pipeline{
 		  }
         }
       }
+	  post{
+		success{MSBadge.setStatus('passing')}
+		failure{MSBadge.setStatus('failing')}
+		unstable {
+			MSBadge.setStatus('unstable')
+			MSBadge.setColor('orange')}
+		aborted {MSBadge.setStatus('aborted')}
+	  }
     }    
 
     stage('Deploy Trading Tool'){
-	  when{
-		expression {
-		    params.DEPLOY_TT
+		when{
+			expression {
+				params.DEPLOY_TT
+			}
 		}
-	  }
-      steps{
-        script{
-			TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
-			TTBadge.setStatus('running')
-			currentBuild.description = addToDescription(
-												description: currentBuild.description,
-												html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
-												position: 1)
-			stage('TT Maven Deploy'){
-			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
-			  if (nexusVersion){
-				  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-				  def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
-				  configFileProvider(
-					[configFile(
-					   fileId: 'mavenSettingsGlobal', 
-					   targetLocation: 'MAVEN_SETTINGS.xml'),
-					configFile(
-					   fileId: 'defaultPOM', 
-					   targetLocation: 'pomxml')
-					]){
-					  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-				  }
-			  }
-			  else{
-				  println "TT has no master branch"
-			  }
-		  }
+		steps{
+			script{
+				TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
+					TTBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+							position: 1)
+					stage('TT Maven Deploy'){
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
+							def nexusVersion = getNexusBranch ('TradingTool', params.Task)
+							if (nexusVersion){
+								def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+									def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+									configFileProvider(
+											[configFile(
+												fileId: 'mavenSettingsGlobal', 
+												targetLocation: 'MAVEN_SETTINGS.xml'),
+											configFile(
+												fileId: 'defaultPOM', 
+												targetLocation: 'pomxml')
+											]){
+										powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+									}
+							}
+							else{
+								println "TT has no master branch"
+							}
+					}
 
-		  stage('TT settings'){
-			  def data = readJSON file: DEPLOY_TT_JSON
-			  def map = getParralelDeliveryMap(
-				src: data,
-				nexusArtifacts: null,
-				mvnState: false)
-			  withCredentials([
-				string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
-				file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
-				  parallel map
+				stage('TT settings'){
+					def data = readJSON file: DEPLOY_TT_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						withCredentials([
+								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
+								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
+							parallel map
+						}
 				}
-		  }
-        }
-      }
-    }    
-	stage('Deploy Payment Balanser'){
-	  when{
-		expression {
-		    params.DEPLOY_PAY
+			}
 		}
-	  }
+		post{
+			success{TTBadge.setStatus('passing')}
+			failure{TTBadge.setStatus('failing')}
+			unstable {
+				TTBadge.setStatus('unstable')
+					TTBadge.setColor('orange')}
+			aborted {TTBadge.setStatus('aborted')}
+		}
+	}    
+	stage('Deploy Payment Balanser'){
+		when{
+			expression {
+				params.DEPLOY_PAY
+			}
+		}
 		steps{
 			script{
 				PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
-				PAYBadge.setStatus('running')
-				currentBuild.description = addToDescription(
-						description: currentBuild.description,
-						html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
-						position: 1)
-				def nexusArtifacts = getNexusArtifactList()	
-				def data = readJSON file: DEPLOY_PAY_JSON 
-				def map = getParralelDeliveryMap(
-						src: data,
-						nexusArtifacts: nexusArtifacts ,
-						mvnState: true)
-				parallel map
+					PAYBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
+							position: 1)
+					def nexusArtifacts = getNexusArtifactList()	
+					def data = readJSON file: DEPLOY_PAY_JSON 
+					def map = getParralelDeliveryMap(
+							src: data,
+							nexusArtifacts: nexusArtifacts ,
+							mvnState: true)
+					parallel map
 			}
+		}
+		post{
+			success{PAYBadge.setStatus('passing')}
+			failure{PAYBadge.setStatus('failing')}
+			unstable {
+				PAYBadge.setStatus('unstable')
+				PAYBadge.setColor('orange')}
+			aborted {PAYBadge.setStatus('aborted')}
 		}
 	}
 
@@ -550,43 +574,16 @@ pipeline{
 	success{
 		script{
 			win32BuildBadge.setStatus('passing')
-			if (PAYBadge){
-				PAYBadge.setStatus('passing')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('passing')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('passing')
-			}
 		}
 	}
 	aborted{
 		script{
 			win32BuildBadge.setStatus('aborted')
-			if (PAYBadge){
-				PAYBadge.setStatus('aborted')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('aborted')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('aborted')
-			}
 		}
 	}
 	failure{
 		script{
 			win32BuildBadge.setStatus('failing')
-			if (PAYBadge){
-				PAYBadge.setStatus('failing')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('failing')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('failing')
-			}
 		}
 	}
   }
