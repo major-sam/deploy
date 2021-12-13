@@ -15,8 +15,6 @@ DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
 
-
-
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
 TTBadge = false
@@ -95,39 +93,34 @@ def getVmList(int max){
 	return VM_LIST
 	}
 
+def checkNexusBranch (repoName, task){
+	def text = powershell (
+			returnStdout: true,
+			script : """
+				curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+				-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$task\" `
+				-H \"accept: application/json\"
+			"""
+			)
+	def repoMap = new JsonSlurperClassic().parseText(text)
+	return repoMap.items
+}
+
 def getNexusBranch (repoName, userTask){
-	def result = false
 	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
 	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
-	if(userTask != ""){
-		def text = powershell (
-				returnStdout: true,
-				script : """
-					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$featureTask\" `
-					-H \"accept: application/json\"
-				"""
-				)
-		def repoMap = new JsonSlurperClassic().parseText(text)
-		if(repoMap.items){
-			result = featureTask 
-			}	
+	def hasMaster = checkNexusBranch(repoName, 'master')
+	if(featureTask){
+		if(checkNexusBranch(repoName, featureTask)){
+			return featureTask 
+		}	
 		else{
-			def mastertext = powershell (
-				returnStdout: true,
-				script : """
-					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=master\" `
-					-H \"accept: application/json\"
-				"""
-				)
+			return  (hasMaster) ? 'master' : false
 			}
-			def MasterRepoMap = new JsonSlurperClassic().parseText(text)
-			if(MasterRepoMap.items){
-				result = 'master' 
-				}	
 	}
-	return result
+	else{
+		return  (hasMaster) ? 'master' : false
+	}
 }
 
 def doMavenDeploy(repo){
