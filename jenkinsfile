@@ -17,11 +17,8 @@ CLEAN_JSON = 'cleanup.json'
 
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
-TTBadge = false
 PAYBadgeId = 'PayBadgeId'
-PAYBadge = false
 MSBadgeId = 'MSBadgeId'
-MSBadge = false
 def win32BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def getLastSuccessfullTaskJobDescription(node){
@@ -346,12 +343,12 @@ pipeline{
         }
       }
 	  post{
-		success{MSBadge.setStatus('passing')}
-		failure{MSBadge.setStatus('failing')}
-		unstable {
+		success{script {MSBadge.setStatus('passing')}}
+		failure{script {MSBadge.setStatus('failing')}}
+		unstable {script {
 			MSBadge.setStatus('unstable')
-			MSBadge.setColor('orange')}
-		aborted {MSBadge.setStatus('aborted')}
+			MSBadge.setColor('orange')}}
+		aborted {script {MSBadge.setStatus('aborted')}}
 	  }
     }    
 
@@ -406,12 +403,12 @@ pipeline{
 			}
 		}
 		post{
-			success{TTBadge.setStatus('passing')}
-			failure{TTBadge.setStatus('failing')}
-			unstable {
+			success{script {TTBadge.setStatus('passing')}}
+			failure{script {TTBadge.setStatus('failing')}}
+			unstable {script{
 				TTBadge.setStatus('unstable')
-					TTBadge.setColor('orange')}
-			aborted {TTBadge.setStatus('aborted')}
+					TTBadge.setColor('orange')}}
+			aborted {script {TTBadge.setStatus('aborted')}}
 		}
 	}    
 	stage('Deploy Payment Balanser'){
@@ -438,12 +435,12 @@ pipeline{
 			}
 		}
 		post{
-			success{PAYBadge.setStatus('passing')}
-			failure{PAYBadge.setStatus('failing')}
-			unstable {
+			success{script {PAYBadge.setStatus('passing')}}
+			failure{script {PAYBadge.setStatus('failing')}}
+			unstable {script {
 				PAYBadge.setStatus('unstable')
-				PAYBadge.setColor('orange')}
-			aborted {PAYBadge.setStatus('aborted')}
+				PAYBadge.setColor('orange')}}
+			aborted {script {PAYBadge.setStatus('aborted')}}
 		}
 	}
 
