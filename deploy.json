@@ -59,5 +59,9 @@
         "name": "CupisIntegrationServiceGrpcHost",
         "source": ".\\scripts\\deploy\\CupisIntegrationServiceGrpcHost.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "PaymentCupisGrpcHost",
+        "source": ".\\scripts\\deploy\\PaymentCupisGrpcHost.ps1",
+        "deployDir": "c:\\Services\\"
     }
 ]
