@@ -30,6 +30,7 @@ $config.Cupis.CertPassword = $CupisCertPassword
 $config.Bus.CupisCallbackBusConnectionString = "host=localhost"
 $config.Fns.BaseUrl = $FnsBaseUrl
 $config.Fns.Key = $FnsKey
+$config.VirtualMachines.EnableMultiNotification = "false"
 $config.DocumentImages.UploadServiceAddress = "http://localhost:8123"
 $config.Authorization.Realm = "https://$env:COMPUTERNAME.bb-webapps.com:4453"
 
