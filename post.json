@@ -23,6 +23,9 @@
         "name": "WebTouch",
         "source": ".\\scripts\\post\\WebTouch.ps1 "
     }, {
+        "name": "Logs",
+        "source": ".\\scripts\\post\\logs.ps1 "
+    }, {
         "name": "UniPaymentsService",
         "source": ".\\scripts\\post\\UniPaymentsService.ps1 "
     }

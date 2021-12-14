@@ -1,5 +1,8 @@
 import groovy.json.JsonSlurperClassic
+import groovy.json.JsonOutput
 import jenkins.model.Jenkins
+
+MavenDeployResultList = []
 
 TESTS_JSON = 'tests.json'
 
@@ -15,558 +18,650 @@ DEPLOY_MS_JSON = "deploy_ms.json"
 
 CLEAN_JSON = 'cleanup.json'
 
-
-
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
-TTBadge = false
 PAYBadgeId = 'PayBadgeId'
-PAYBadge = false
 MSBadgeId = 'MSBadgeId'
-MSBadge = false
-def win32BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
+def BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def getLastSuccessfullTaskJobDescription(node){
 	def test_job = Jenkins.instance.getItemByFullName(JOB_NAME)
 		prev_sucessful_build=test_job.getLastSuccessfulBuild()
 		while (prev_sucessful_build){
 			prev_sucessful_build_descr=prev_sucessful_build.getDescription()
-			if(prev_sucessful_build_descr){
-				if (prev_sucessful_build_descr.contains("${node}")){
-					def matches = (prev_sucessful_build_descr =~ /Task\(Branch\):.*$/) 
-					return [
-						matches[0], 
-						prev_sucessful_build.getId(), 
-						prev_sucessful_build.getCauses()[0].shortDescription as String]
+				if(prev_sucessful_build_descr){
+					if (prev_sucessful_build_descr.contains("${node}")){
+						def matches = (prev_sucessful_build_descr =~ /Task\(Branch\):.*$/) 
+							return [
+							matches[0], 
+							prev_sucessful_build.getId(), 
+							prev_sucessful_build.getCauses()[0].shortDescription as String]
+					}
+					else{
+						prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
+							prev_sucessful_build_descr = false
+					}
 				}
 				else{
 					prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-					prev_sucessful_build_descr = false
+						prev_sucessful_build_descr = false
 				}
-			}
-			else{
-				prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-				prev_sucessful_build_descr = false
-			}
 		}
 }
 def	addToDescription(Map config = [:]){
 	def String result = ""
-	if (config.position instanceof Integer){
-		def splitedDescr = config.description.split('<br>') as List
-		splitedDescr.add(config.position, config.html)
-		result = splitedDescr.join('<br>')
-	}
-	else{
-		result = "$config.description <br> $config.html"
-	}
+		if (config.position instanceof Integer){
+			def splitedDescr = config.description.split('<br>') as List
+				splitedDescr.add(config.position, config.html)
+				result = splitedDescr.join('<br>')
+		}
+		else{
+			result = "$config.description <br> $config.html"
+		}
 	return result
 }
 
 def getNexusArtifactList(){
-    def text = powershell (
-			 returnStdout: true,
-			 script : """
-				curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-				-X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\" `
-				-H \"accept: application/json\"
-			 """
-			 )
-	def scriptMap = new JsonSlurperClassic().parseText(text)
-	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
+	def text = powershell (
+			returnStdout: true,
+			script : """
+			curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+			-X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\" `
+			-H \"accept: application/json\"
+			"""
+			)
+		def scriptMap = new JsonSlurperClassic().parseText(text)
+		def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
 }
 
 def getVmList(int max){
-    def ints = 10..max
-    def VM_LIST = ["devops-test-vm1",
-		"devops-test-vm2", 
-		"devops-test-vm3",
-		"devops-test-vm4",
-		"devops-test-vm5",
-		"devops-test-vm6",
-		"devops-test-vm7",
-		"devops-test-vm8",
-		"devops-test-vm9"
-	]
-	for (id in ints){
-		VM_LIST += "devops-testvm${id}"
+	def ints = 10..max
+		def VM_LIST = ["devops-test-vm1",
+			"devops-test-vm2", 
+			"devops-test-vm3",
+			"devops-test-vm4",
+			"devops-test-vm5",
+			"devops-test-vm6",
+			"devops-test-vm7",
+			"devops-test-vm8",
+			"devops-test-vm9"
+		]
+		for (id in ints){
+			VM_LIST += "devops-testvm${id}"
 		}
 	return VM_LIST
-	}
+}
+
+def checkNexusBranch (repoName, task){
+	def text = powershell (
+			returnStdout: true,
+			script : """
+			curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
+			-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$task\" `
+			-H \"accept: application/json\"
+			"""
+			)
+		def repoMap = new JsonSlurperClassic().parseText(text)
+		return repoMap.items
+}
 
 def getNexusBranch (repoName, userTask){
-	def result = 'master'
-	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
-	featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
-	if(userTask != ""){
-		def text = powershell (
-				returnStdout: true,
-				script : """
-					curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-					-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$featureTask\" `
-					-H \"accept: application/json\"
-				"""
-				)
-		def repoMap = new JsonSlurperClassic().parseText(text)
-		if(repoMap.items){
-			result = featureTask 
-			}	
+	if (userTask =~ /^[A-Z]{2,}-\d+$/){
+		if (checkNexusBranch(repoName , userTask)) { return userTask }
+        if (checkNexusBranch(repoName , "feature-${userTask}")) { return  "feature-${userTask}" }
 	}
-	return result
+	def NotFeatureTask =  (userTask.contains('/')) ? userTask.replace('/', '-'): userTask
+	def hasMaster = checkNexusBranch(repoName, 'master')
+	if(NotFeatureTask){
+		if (checkNexusBranch(repoName, NotFeatureTask)) {
+			return NotFeatureTask
+		}else{
+			return  (hasMaster) ? 'master' : false
+		}
+	}
+	else{
+		return  (hasMaster) ? 'master' : false
+	}
 }
 
 def doMavenDeploy(repo){
 	def deployDir = (repo['name'] =='Kernel' ) ? "\"-Ddeploy.dir=${repo['deployDir']}\"" : "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
-	taskBranch = getNexusBranch (repo['name'], params.Task)	
-	//for future usage
-	def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
-	//for future usage
-	def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
-	configFileProvider(
-		[
-			configFile(
-			   fileId: 'mavenSettingsGlobal', 
-			   targetLocation: 'MAVEN_SETTINGS.xml'),
-			configFile(
-			   fileId: 'defaultPOM', 
-			   targetLocation: 'pomxml')
-		]){
-		powershell "mvn clean versions:use-latest-releases dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-	}
+		taskBranch = getNexusBranch (repo['name'], params.Task)	
+		//for future usage
+		if (taskBranch){
+			def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
+				//for future usage
+				def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
+				MavenDeployResultList << [
+					Repo: repo['name'],
+					Branch: taskBranch
+					]
+				configFileProvider(
+						[
+						configFile(
+							fileId: 'mavenSettingsGlobal', 
+							targetLocation: 'MAVEN_SETTINGS.xml'),
+						configFile(
+							fileId: 'defaultPOM', 
+							targetLocation: 'pomxml')
+						]){
+					powershell "mvn clean versions:use-latest-releases dependency:unpack  exec:exec -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+				}
+		}
+		else{
+			println "${repo['name']} has no master branch"}
 }
 
 
 def getParralelDeliveryMap(Map config = [:]){
 	return config.src.collectEntries{[ (it['name']) : deliverSources(
-														src:it,
-														state: (it['name'] in config.nexusArtifacts && config.mvnState),
-														nexusArtifacts: config.nexusArtifacts) 
+			src:it,
+			state: (it['name'] in config.nexusArtifacts && config.mvnState),
+			nexusArtifacts: config.nexusArtifacts) 
 	]}
 }
 
 def deliverSources(Map config = [:]){
-  if (config.state){
-	  return{
-		  stage(config.src['name']){ 
-			  doMavenDeploy(config.src)
-		  }
-	  }		
-  }
-  else{
-	  return{
-		  stage(config.src['name']){ 
-			  powershell (
-					  encoding:'UTF8', 
-					  script:"${config.src['source']}"
-					  )
-	  }
-    }
-  }
+	if (config.state){
+		return{
+			stage(config.src['name']){ 
+				doMavenDeploy(config.src)
+			}
+		}		
+	}
+	else{
+		return{
+			stage(config.src['name']){ 
+				powershell (
+						encoding:'UTF8', 
+						script:"${config.src['source']}"
+						)
+			}
+		}
+	}
 }
 
 
 pipeline{
 
-  parameters {
-      string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
-      choice name:"TESTVM", choices: getVmList(100)
-	  booleanParam name: "DEPLOY_MS", description:'Deploy Marketing Service', defaultValue: false
-	  booleanParam name: "DEPLOY_PAY", description:'Deploy Payment Balanser', defaultValue: false
-	  booleanParam name: "DEPLOY_TT", description:'Deploy Trading Tool', defaultValue: false
-  }
-
-  environment {
-	SERVICE_CREDS = credentials('Testkernel')
-	TT_SERVICE_CREDS = credentials('kernelsvc')
-	NEXUS_CREDS = credentials('jenkinsAD')
-	CUPIS_CERT_PASS = credentials('CupisCertPassword')
-	CUPIS_FNS_KEY = credentials('CupisFnsKey')
-  }
-
-  agent {label "${TESTVM}" }
-  
-  tools {
-	maven 'maven382'
-  }
-
-  stages{
-
-    stage('Choose release tag'){
-      steps{
-        script{
-		  win32BuildBadge.setStatus('running')
-          def tags = powershell(
-                     returnStdout:true,
-                     encoding:'UTF-8',
-                     script:'git tag'
-                     ).split("\\r?\\n") as List
-          if (tags[0] =~ /[a-zA-Z]/){
-            tags.add(0,"Latest Commit")
-            tag = input message: 'Choose release to deploy', ok: 'Deploy!',
-                  parameters: [choice (name: '', choices: tags, description: "Choose release")]
-            if(tag != "Latest Commit"){
-              powershell "git checkout tags/${tag}"
-            }
-          }
-        }
-      }
-    }
-
-	stage('Set Description'){
-	  steps{
-		script{
-			def locked= true
-			lock( resource: params.TESTVM ,skipIfLocked: true) {
-				locked = false
-			}
-			if (locked){
-				def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
-				def lastBuildDescr = "Can't find any info about last successfull build"
-				if(lastDescr){
-					lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
-				}
-				currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>${lastBuildDescr}"
-				currentBuild.result = 'NOT_BUILT'
-				error('VM is LOCKED. Check Lockable Resources')
-			}
-			else{
-				def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-				def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
-				def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-				currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
-			}
-			currentBuild.description = addToDescription(
-													description: currentBuild.description,
-													html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
-													position: 0 )
-		}
-	  }
+	parameters {
+		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
+			choice name:"TESTVM", choices: getVmList(100)
+			booleanParam name: "DEPLOY_MS", description:'Deploy Marketing Service', defaultValue: false
+			booleanParam name: "DEPLOY_PAY", description:'Deploy Payment Balanser', defaultValue: false
+			booleanParam name: "DEPLOY_TT", description:'Deploy Trading Tool', defaultValue: false
 	}
 
-    stage('Cleanup'){
-      steps{
-	    script{
-          def data = readJSON file: CLEAN_JSON
-          def map = getParralelDeliveryMap(
-			src: data,
-			nexusArtifacts: null,
-			mvnState: false)
-          parallel map
-        }
-      }
-    }
+	environment {
+		SERVICE_CREDS = credentials('Testkernel')
+			TT_SERVICE_CREDS = credentials('kernelsvc')
+			NEXUS_CREDS = credentials('jenkinsAD')
+			CUPIS_CERT_PASS = credentials('CupisCertPassword')
+			CUPIS_FNS_KEY = credentials('CupisFnsKey')
+	}
 
-    stage('Deploy'){ 
-      steps{
-		 withCredentials([
-			file ( 
-			   credentialsId: 'bb-webapps', 
-			   variable: 'BBWEBAPPS'),
-			file (
-			   credentialsId: 'gkbaltbet-ca', 
-			   variable: 'GKBALTBETCA'),
-			file (
-			   credentialsId: 'wcf-host', 
-			   variable: 'WCFHOST'),
-			file (
-			   credentialsId: 'client.test.kernel', 
-			   variable: 'CLIENTTESTKERNEL'),
-			file (
-			   credentialsId: 'test.payment.service', 
-			   variable: 'TESTPAYMENTSERVICE'),
-			]){
-			script{
-			  def nexusArtifacts = getNexusArtifactList()	
-			  def data = readJSON file: DEPLOY_JSON 
-			  def map = getParralelDeliveryMap(
-				src: data,
-				nexusArtifacts: nexusArtifacts ,
-				mvnState: true)
-			  parallel map
-		  }
-        }
-      }
-    }    
+	agent {label "${TESTVM}" }
 
-    stage('Deploy Marketing Service'){
-	  when{
-		expression {
-		    params.DEPLOY_MS
+	tools {
+		maven 'maven382'
+	}
+
+	stages{
+
+		stage('Choose release tag'){
+			steps{
+				script{
+					BuildBadge.setStatus('running')
+						def tags = powershell(
+								returnStdout:true,
+								encoding:'UTF-8',
+								script:'git tag'
+								).split("\\r?\\n") as List
+						if (tags[0] =~ /[a-zA-Z]/){
+							tags.add(0,"Latest Commit")
+								tag = input message: 'Choose release to deploy', ok: 'Deploy!',
+							parameters: [choice (name: '', choices: tags, description: "Choose release")]
+								if(tag != "Latest Commit"){
+									powershell "git checkout tags/${tag}"
+								}
+						}
+				}
+			}
 		}
-	  }
-      steps{
-        script{
-			stage('Marketing Maven Deploy'){
-				MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
-				MSBadge.setStatus('running')
-				currentBuild.description = addToDescription(
-													description: currentBuild.description,
-													html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
-													position: 1)
-				def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
-					def nexusVersion = getNexusBranch ('Marketing', params.Task)
-					def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-					def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
-					configFileProvider(
-							[configFile(
-								fileId: 'mavenSettingsGlobal', 
-								targetLocation: 'MAVEN_SETTINGS.xml'),
-							configFile(
-								fileId: 'defaultPOM', 
-								targetLocation: 'pomxml')
-							]){
-						powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+
+		stage('Set Description'){
+			steps{
+				script{
+					def locked= true
+						lock( resource: params.TESTVM ,skipIfLocked: true) {
+							locked = false
+						}
+					if (locked){
+						def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
+							def lastBuildDescr = "Can't find any info about last successfull build"
+							if(lastDescr){
+								lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
+							}
+						currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>${lastBuildDescr}"
+							currentBuild.result = 'NOT_BUILT'
+							error('VM is LOCKED. Check Lockable Resources')
 					}
-			}
-			stage('marketing settings'){
-				def data = readJSON file: DEPLOY_MS_JSON
-				def map = getParralelDeliveryMap(
-						src: data,
-						nexusArtifacts: null,
-						mvnState: false)
-				parallel map
-		  }
-        }
-      }
-    }    
-
-    stage('Deploy Trading Tool'){
-	  when{
-		expression {
-		    params.DEPLOY_TT
-		}
-	  }
-      steps{
-        script{
-			TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
-			TTBadge.setStatus('running')
-			currentBuild.description = addToDescription(
-												description: currentBuild.description,
-												html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
-												position: 1)
-			stage('TT Maven Deploy'){
-			  def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-			  def nexusVersion = getNexusBranch ('TradingTool', params.Task)
-			  def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-			  def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
-			  configFileProvider(
-				[configFile(
-				   fileId: 'mavenSettingsGlobal', 
-				   targetLocation: 'MAVEN_SETTINGS.xml'),
-				configFile(
-				   fileId: 'defaultPOM', 
-				   targetLocation: 'pomxml')
-				]){
-				  powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-			  }
-		  }
-
-		  stage('TT settings'){
-			  def data = readJSON file: DEPLOY_TT_JSON
-			  def map = getParralelDeliveryMap(
-				src: data,
-				nexusArtifacts: null,
-				mvnState: false)
-			  withCredentials([
-				string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
-				file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
-				  parallel map
+					else{
+						def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+							def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
+							def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+							currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+					}
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
+							position: 0 )
 				}
-		  }
-        }
-      }
-    }    
-	stage('Deploy Payment Balanser'){
-	  when{
-		expression {
-		    params.DEPLOY_PAY
+			}
 		}
-	  }
-		steps{
+
+		stage('Cleanup'){
+			steps{
+				script{
+					def data = readJSON file: CLEAN_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+		}
+
+		stage('Deploy'){ 
+			steps{
+				withCredentials([
+						file ( 
+							credentialsId: 'bb-webapps', 
+							variable: 'BBWEBAPPS'),
+						file (
+							credentialsId: 'gkbaltbet-ca', 
+							variable: 'GKBALTBETCA'),
+						file (
+							credentialsId: 'wcf-host', 
+							variable: 'WCFHOST'),
+						file (
+							credentialsId: 'client.test.kernel', 
+							variable: 'CLIENTTESTKERNEL'),
+						file (
+							credentialsId: 'test.payment.service', 
+							variable: 'TESTPAYMENTSERVICE'),
+				]){
+					script{
+						def nexusArtifacts = getNexusArtifactList()	
+							def data = readJSON file: DEPLOY_JSON 
+							def map = getParralelDeliveryMap(
+									src: data,
+									nexusArtifacts: nexusArtifacts ,
+									mvnState: true)
+							parallel map
+					}
+				}
+			}
+		}    
+
+		stage('Deploy Marketing Service'){
+			when{
+				expression {
+					params.DEPLOY_MS
+				}
+			}
+			steps{
+				script{
+					stage('Marketing Maven Deploy'){
+						MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
+							MSBadge.setStatus('running')
+							currentBuild.description = addToDescription(
+									description: currentBuild.description,
+									html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+									position: 1)
+							def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
+							def nexusVersion = getNexusBranch ('Marketing', params.Task)
+							if (nexusVersion){
+								def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+									def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+									MavenDeployResultList << [
+										Repo: 'Marketing' ,
+										Branch: nexusVersion 
+									]
+									configFileProvider(
+											[configFile(
+												fileId: 'mavenSettingsGlobal', 
+												targetLocation: 'MAVEN_SETTINGS.xml'),
+											configFile(
+												fileId: 'defaultPOM', 
+												targetLocation: 'pomxml')
+											]){
+										powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+									}
+							}
+							else{
+								println "Marketing repo has no masterBranch"
+							}
+					}
+					stage('marketing settings'){
+						def data = readJSON file: DEPLOY_MS_JSON
+							def map = getParralelDeliveryMap(
+									src: data,
+									nexusArtifacts: null,
+									mvnState: false)
+							parallel map
+					}
+				}
+			}
+			post{
+				success{script {MSBadge.setStatus('passing')}}
+				failure{script {MSBadge.setStatus('failing')}}
+				unstable {script {
+					MSBadge.setStatus('unstable')
+						MSBadge.setColor('orange')}}
+				aborted {script {MSBadge.setStatus('aborted')}}
+			}
+		}    
+
+		stage('Deploy Trading Tool'){
+			when{
+				expression {
+					params.DEPLOY_TT
+				}
+			}
+			steps{
+				script{
+					TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
+						TTBadge.setStatus('running')
+						currentBuild.description = addToDescription(
+								description: currentBuild.description,
+								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+								position: 1)
+						stage('TT Maven Deploy'){
+							def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
+								def nexusVersion = getNexusBranch ('TradingTool', params.Task)
+								if (nexusVersion){
+									def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+										def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+										MavenDeployResultList << [
+											Repo: 'Trading Tool' ,
+											Branch: nexusVersion 
+											]
+										configFileProvider(
+												[configFile(
+													fileId: 'mavenSettingsGlobal', 
+													targetLocation: 'MAVEN_SETTINGS.xml'),
+												configFile(
+													fileId: 'defaultPOM', 
+													targetLocation: 'pomxml')
+												]){
+											powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+										}
+								}
+								else{
+									println "TT has no master branch"
+								}
+						}
+
+					stage('TT settings'){
+						def data = readJSON file: DEPLOY_TT_JSON
+							def map = getParralelDeliveryMap(
+									src: data,
+									nexusArtifacts: null,
+									mvnState: false)
+							withCredentials([
+									string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
+									file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
+								parallel map
+							}
+					}
+				}
+			}
+			post{
+				success{script {TTBadge.setStatus('passing')}}
+				failure{script {TTBadge.setStatus('failing')}}
+				unstable {script{
+					TTBadge.setStatus('unstable')
+						TTBadge.setColor('orange')}}
+				aborted {script {TTBadge.setStatus('aborted')}}
+			}
+		}    
+
+		stage('Deploy Payment Balanser'){
+			when{
+				expression {
+					params.DEPLOY_PAY
+				}
+			}
+			steps{
+				script{
+					PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
+					PAYBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
+							position: 1)
+					def nexusArtifacts = getNexusArtifactList()	
+					def data = readJSON file: DEPLOY_PAY_JSON 
+					def map = getParralelDeliveryMap(
+							src: data,
+							nexusArtifacts: nexusArtifacts ,
+							mvnState: true)
+					parallel map
+				}
+			}
+			post{
+				success{script {PAYBadge.setStatus('passing')}}
+				failure{script {PAYBadge.setStatus('failing')}}
+				unstable {script {
+					PAYBadge.setStatus('unstable')
+						PAYBadge.setColor('orange')}}
+				aborted {script {PAYBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('Config IIS'){
+			steps{
+				powershell '.\\scripts\\IISConfig.ps1'
+			}
+		}
+
+		stage('Config IIS for Marketing Service'){
+			when{
+				expression {
+					params.DEPLOY_MS
+				}
+			}
+			steps{
+				powershell '.\\scripts\\IISconfigMS.ps1'
+			}
+			post{
+				success{script {MSBadge.setStatus('passing')}}
+				failure{script {MSBadge.setStatus('failing')}}
+				unstable {script {
+					MSBadge.setStatus('unstable')
+						MSBadge.setColor('orange')}}
+				aborted {script {MSBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('Config IIS For Payment Balancer Blazor'){
+			when{
+				expression {
+					params.DEPLOY_PAY
+				}
+
+			}
+			steps{
+				powershell '.\\scripts\\IISConfigPAY.ps1'
+			}
+			post{
+				success{script {PAYBadge.setStatus('passing')}}
+				failure{script {PAYBadge.setStatus('failing')}}
+				unstable {script {
+					PAYBadge.setStatus('unstable')
+						PAYBadge.setColor('orange')}}
+				aborted {script {PAYBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('Config IIS For Trading Tool'){
+			when{
+				expression {
+					params.DEPLOY_TT
+				}
+			}
+			steps{
+				powershell '.\\scripts\\IISConfigTT.ps1'
+			}
+			post{
+				success{script {TTBadge.setStatus('passing')}}
+				failure{script {TTBadge.setStatus('failing')}}
+				unstable {script{
+					TTBadge.setStatus('unstable')
+						TTBadge.setColor('orange')}}
+				aborted {script {TTBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('PostDeploy Payment Balancer'){
+			when{
+				expression {
+					params.DEPLOY_PAY
+				}
+			}
+			steps{
+				script{ 
+					def data = readJSON file: POST_PAY_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+			post{
+				success{script {PAYBadge.setStatus('passing')}}
+				failure{script {PAYBadge.setStatus('failing')}}
+				unstable {script {
+					PAYBadge.setStatus('unstable')
+						PAYBadge.setColor('orange')}}
+				aborted {script {PAYBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('PostDeploy Marketing service'){
+			when{
+				expression {
+					params.DEPLOY_MS
+				}
+			}
+			steps{
+				script{ 
+					def data = readJSON file: POST_MS_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+			post{
+				success{script {MSBadge.setStatus('passing')}}
+				failure{script {MSBadge.setStatus('failing')}}
+				unstable {script {
+					MSBadge.setStatus('unstable')
+						MSBadge.setColor('orange')}}
+				aborted {script {MSBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('PostDeploy TT'){
+			when{
+				expression {
+					params.DEPLOY_TT
+				}
+			}
+			steps{
+				script{ 
+					def data = readJSON file: POST_TT_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+			post{
+				success{script {TTBadge.setStatus('passing')}}
+				failure{script {TTBadge.setStatus('failing')}}
+				unstable {script{
+					TTBadge.setStatus('unstable')
+						TTBadge.setColor('orange')}}
+				aborted {script {TTBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('Default Post'){
+			steps{ 
+				script{ 
+					def data = readJSON file: POST_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+		}
+
+		stage('Tests'){
+			steps{ 
+				script{ 
+					def data = readJSON file: TESTS_JSON
+						def map = getParralelDeliveryMap(
+								src: data,
+								nexusArtifacts: null,
+								mvnState: false)
+						parallel map
+				}
+			}
+		}
+		stage('Result Bundle'){
+			steps{
+				script{
+					def jsonFormat = JsonOutput.toJson(MavenDeployResultList)
+				    def prettyJSON = JsonOutput.prettyPrint(jsonFormat)
+					echo "${prettyJSON}"
+				}
+			}
+		}
+	}
+	post{
+		always{
 			script{
-				PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
-				PAYBadge.setStatus('running')
-				currentBuild.description = addToDescription(
-						description: currentBuild.description,
-						html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
-						position: 1)
-				def nexusArtifacts = getNexusArtifactList()	
-				def data = readJSON file: DEPLOY_PAY_JSON 
-				def map = getParralelDeliveryMap(
-						src: data,
-						nexusArtifacts: nexusArtifacts ,
-						mvnState: true)
-				parallel map
+				MavenDeployResultList << [ 
+					Description: currentBuild.description 
+				]
+				writeJSON file: "c:\\Services\\Deploy_bundle.json", json: MavenDeployResultList
+			}
+		}
+		success{
+			script{
+				BuildBadge.setStatus('passing')
+			}
+		}
+		aborted{
+			script{
+				BuildBadge.setStatus('aborted')
+			}
+		}
+		failure{
+			script{
+				BuildBadge.setStatus('failing')
 			}
 		}
 	}
-
-    stage('Config IIS'){
-	  steps{
-		powershell '.\\scripts\\IISConfig.ps1'
-	  }
-	}
-
-    stage('Config IIS for Marketing Service'){
-	  when{
-		expression {
-			params.DEPLOY_MS
-		}
-	  }
-	  steps{
-		powershell '.\\scripts\\IISconfigMS.ps1'
-	  }
-	}
-
-    stage('Config IIS For Payment Balancer Blazor'){
-	  when{
-		expression {
-			params.DEPLOY_PAY
-		}
-		
-	  }
-	  steps{
-		powershell '.\\scripts\\IISConfigPAY.ps1'
-	  }
-	}
-
-    stage('Config IIS For Trading Tool'){
-	  when{
-		expression {
-			params.DEPLOY_TT
-		}
-	  }
-	  steps{
-		powershell '.\\scripts\\IISConfigTT.ps1'
-	  }
-	}
-
-	stage('PostDeploy Payment Balancer'){
-		when{
-		  expression {
-			  params.DEPLOY_PAY
-		  }
-		}
-		steps{
-		  script{ 
-			def data = readJSON file: POST_PAY_JSON
-		    def map = getParralelDeliveryMap(
-			  src: data,
-			  nexusArtifacts: null,
-			  mvnState: false)
-			parallel map
-		  }
-		}
-	}
-	
-	stage('PostDeploy Marketing service'){
-		when{
-		  expression {
-			  params.DEPLOY_MS
-		  }
-		}
-		steps{
-		  script{ 
-			def data = readJSON file: POST_MS_JSON
-		    def map = getParralelDeliveryMap(
-			  src: data,
-			  nexusArtifacts: null,
-			  mvnState: false)
-			parallel map
-		  }
-		}
-	}
-	
-	stage('PostDeploy TT'){
-		when{
-		  expression {
-			  params.DEPLOY_TT
-		  }
-		}
-		steps{
-		  script{ 
-			def data = readJSON file: POST_TT_JSON
-		    def map = getParralelDeliveryMap(
-			  src: data,
-			  nexusArtifacts: null,
-			  mvnState: false)
-			parallel map
-		  }
-		}
-	}
-	
-	stage('Default Post'){
-	  steps{ 
-		  script{ 
-			def data = readJSON file: POST_JSON
-		    def map = getParralelDeliveryMap(
-			  src: data,
-			  nexusArtifacts: null,
-			  mvnState: false)
-			parallel map
-		  }
-	  }
-	}
-
-    stage('Tests'){
-      steps{ 
-		script{ 
-		  def data = readJSON file: TESTS_JSON
-		  def map = getParralelDeliveryMap(
-			  src: data,
-			  nexusArtifacts: null,
-			  mvnState: false)
-		  parallel map
-		}
-      }
-    }
-  }
-  post{
-	always{
-		echo 'alwaysPost'
-		}
-	success{
-		script{
-			win32BuildBadge.setStatus('passing')
-			if (PAYBadge){
-				PAYBadge.setStatus('passing')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('passing')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('passing')
-			}
-		}
-	}
-	aborted{
-		script{
-			win32BuildBadge.setStatus('aborted')
-			if (PAYBadge){
-				PAYBadge.setStatus('aborted')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('aborted')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('aborted')
-			}
-		}
-	}
-	failure{
-		script{
-			win32BuildBadge.setStatus('failing')
-			if (PAYBadge){
-				PAYBadge.setStatus('failing')
-			}
-			if (TTBadge){
-				TTBadge.setStatus('failing')
-			}
-			if (MSBadge){
-				MSBadge.setStatus('failing')
-			}
-		}
-	}
-  }
 }

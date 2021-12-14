@@ -4,7 +4,7 @@
     }, {
         "name": "CupisIntegrationService",
         "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1",
-		"deployDir": "c:\\inetpub\\"
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "Kernel",
         "source": ".\\scripts\\deploy\\kernel.ps1",
@@ -56,8 +56,8 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "CupisIntegrationServiceGrpcHost",
-        "source": ".\\scripts\\deploy\\CupisIntegrationServiceGrpcHost.ps1",
+        "name": "PaymentCupisRestApiHost",
+        "source": ".\\scripts\\deploy\\PaymentCupisRestApiHost.ps1",
         "deployDir": "c:\\Services\\"
     }, {
         "name": "PaymentCupisGrpcHost",
