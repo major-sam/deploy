@@ -636,8 +636,10 @@ pipeline{
 		stage('Result Bundle'){
 			steps{
 				script{
-					def jsonFormat = JsonOutput.toJson(MavenDeployResultList)
-				    def prettyJSON = JsonOutput.prettyPrint(jsonFormat)
+					def jsonFormat = JsonOutput.toJson(
+							MavenDeployResultList << [User: "${currentBuild.getBuildCauses()[0].userId}"]	)
+							
+				    prettyJSON = JsonOutput.prettyPrint(jsonFormat)
 					echo "${prettyJSON}"
 				}
 			}
@@ -646,10 +648,7 @@ pipeline{
 	post{
 		always{
 			script{
-				MavenDeployResultList << [ 
-					Description: currentBuild.description 
-				]
-				writeJSON file: "c:\\Services\\Deploy_bundle.json", json: MavenDeployResultList
+				writeJSON file: "c:\\Services\\Deploy_bundle.json", json: prettyJSON, pritty: 4
 			}
 		}
 		success{
