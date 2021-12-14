@@ -80,7 +80,7 @@ $IISPools = @(
 		siteSubDir = $true
     }
     @{
-        SiteName = 'CupisIntegrationService'
+        SiteName = 'BaltBet.CupisIntegrationService.Host'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }

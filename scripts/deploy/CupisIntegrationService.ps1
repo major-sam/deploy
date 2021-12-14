@@ -3,13 +3,13 @@
     Скрипт для разворота CupisIntegrationService
     Разворачивается в IIS
     Порт :4453
-    c:\services\CupisIntegrationService\
+    c:\services\BaltBet.CupisIntegrationService.Host\
 
     Конфиг: appsettings.json
 #>
 
 
-$ServiceName = "CupisIntegrationService"
+$ServiceName = "BaltBet.CupisIntegrationService.Host"
 $ServiceFolderPath = "C:\Services\${ServiceName}"
 
 
@@ -53,7 +53,7 @@ Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTER
 <#
     BaltBet.CupisIntegrationService.GrpcHost
     Скрипт для разворота BaltBet.CupisIntegrationService.GrpcHost.
-    c:\Services\CupisIntegrationService.GrpcHost\
+    c:\Services\BaltBet.CupisIntegrationService.GrpcHost\
 
     Конфиг: appsettings.json
 
@@ -67,7 +67,7 @@ Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTER
 #>
 
 
-$ServiceName = "CupisIntegrationServiceGrpcHost"
+$ServiceName = "BaltBet.CupisIntegrationService.GrpcHost"
 $ServiceFolderPath = "C:\Services\${ServiceName}"
 
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
@@ -97,7 +97,7 @@ $config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsetti
 
 # Регистрируем сервис
 Import-module '.\scripts\sideFunctions.psm1'
-$serviceBin = Get-Item  "C:\Services\CupisIntegrationServiceGrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
+$serviceBin = Get-Item  "C:\Services\BaltBet.CupisIntegrationService.GrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
 $sname = RegisterWinService($serviceBin)
 Start-Service $sname
 Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
