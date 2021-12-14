@@ -3,14 +3,14 @@
     Скрипт для разворота CupisIntegrationService
     Разворачивается в IIS
     Порт :4453
-    c:\services\BaltBet.CupisIntegrationService.Host\
+    c:\services\CupisIntegrationService\BaltBet.CupisIntegrationService.Host\
 
     Конфиг: appsettings.json
 #>
 
 
 $ServiceName = "BaltBet.CupisIntegrationService.Host"
-$ServiceFolderPath = "C:\Services\${ServiceName}"
+$ServiceFolderPath = "C:\Services\CupisIntegrationService\${ServiceName}"
 
 
 # Редактируем конфиг
@@ -39,7 +39,7 @@ $config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsetti
 
 # Создаем БД CupisIntegrationService
 $queryTimeout = 720
-$file = "C:\Services\DB\init.sql"
+$file = "C:\Services\CupisIntegrationService\DB\init.sql"
 $dbname = "CupisIntegrationService"
 
 Write-Host -ForegroundColor Green "[INFO] Create database $dbname"
@@ -53,7 +53,7 @@ Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTER
 <#
     BaltBet.CupisIntegrationService.GrpcHost
     Скрипт для разворота BaltBet.CupisIntegrationService.GrpcHost.
-    c:\Services\BaltBet.CupisIntegrationService.GrpcHost\
+    c:\Services\CupisIntegrationService\BaltBet.CupisIntegrationService.GrpcHost\
 
     Конфиг: appsettings.json
 
@@ -68,7 +68,7 @@ Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTER
 
 
 $ServiceName = "BaltBet.CupisIntegrationService.GrpcHost"
-$ServiceFolderPath = "C:\Services\${ServiceName}"
+$ServiceFolderPath = "C:\Services\CupisIntegrationService\${ServiceName}"
 
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
 
@@ -97,7 +97,7 @@ $config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsetti
 
 # Регистрируем сервис
 Import-module '.\scripts\sideFunctions.psm1'
-$serviceBin = Get-Item  "C:\Services\BaltBet.CupisIntegrationService.GrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
+$serviceBin = Get-Item  "C:\Services\CupisIntegrationService\BaltBet.CupisIntegrationService.GrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
 $sname = RegisterWinService($serviceBin)
 Start-Service $sname
 Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
