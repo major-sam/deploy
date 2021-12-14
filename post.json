@@ -1,7 +1,6 @@
 [{
         "name": "CIS",
-        "source": "echo Redo",
-        "old_source": ".\\scripts\\post\\CIS.ps1 "
+        "source": ".\\scripts\\post\\CIS.ps1 "
     }, {
         "name": "Kernel",
         "source": ".\\scripts\\post\\Kernel.ps1 "
