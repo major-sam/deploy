@@ -1,3 +1,5 @@
+@Library("JenkinsCI") _
+
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
 import jenkins.model.Jenkins
@@ -111,7 +113,7 @@ def getNexusBranch (repoName, userTask){
 		if (checkNexusBranch(repoName , userTask)) { return userTask }
         if (checkNexusBranch(repoName , "feature-${userTask}")) { return  "feature-${userTask}" }
 	}
-	def NotFeatureTask =  (userTask.contains('/')) ? userTask.replace('/', '-'): userTask
+	def NotFeatureTask =  (userTask.contains('/')) ? defaultNexusNaming(userTask): userTask
 	def hasMaster = checkNexusBranch(repoName, 'master')
 	if(NotFeatureTask){
 		if (checkNexusBranch(repoName, NotFeatureTask)) {
