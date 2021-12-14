@@ -7,6 +7,8 @@
 }
 #>
 
+Import-module '.\scripts\sideFunctions.psm1'
+
 $DownloadFolderPath = "C:\DownloadsCPS"
 $ConfigFilePath = "C:\Services\IdentificationDocumentService\IdentificationDocumentService.exe.config"
 
@@ -41,7 +43,6 @@ $conf.Save($ConfigFilePath)
 
 
 # Регистрируем сервис
-Import-module '.\scripts\sideFunctions.psm1'
 $serviceBin = Get-Item  "C:\Services\IdentificationDocumentService\IdentificationDocumentService.exe"
 $sname = RegisterWinService($serviceBin)
 Start-Service $sname
