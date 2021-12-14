@@ -119,23 +119,8 @@ def getNexusBranch (repoName, userTask){
 	}
 	def NotFeatureTask =  (userTask.contains('/')) ? defaultNexusNaming(userTask): userTask
 	def hasMaster = checkNexusBranch(repoName, 'master')
-	if (hasMaster){
-		print hasMaster
-		print "true hasMaster"}
-	else{
-		print hasMaster
-		print "false hasMaster"}
-	if(NotFeatureTask && checkNexusBranch(repoName, NotFeatureTask)){
-print true
-print "true $repoName"
-		} else{print false
-	print "false $repoName"}
-	if(NotFeatureTask){
-		if (checkNexusBranch(repoName, NotFeatureTask)) {
-			return NotFeatureTask
-		}else{
-			return  (hasMaster) ? 'master' : false
-		}
+	if(NotFeatureTask && (checkNexusBranch(repoName, NotFeatureTask)) ){
+		return NotFeatureTask
 	}
 	else{
 		return  (hasMaster) ? 'master' : false
@@ -145,11 +130,9 @@ print "true $repoName"
 def doMavenDeploy(repo){
 	def deployDir = (repo['name'] =='Kernel' ) ? "\"-Ddeploy.dir=${repo['deployDir']}\"" : "\"-Ddeploy.dir=${repo['deployDir']}${repo['name']}\""
 		taskBranch = getNexusBranch (repo['name'], params.Task)	
-		//for future usage
 		if (taskBranch){
 			println  taskBranch
 			def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
-				//for future usage
 				def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
 				MavenDeployResultList << [
 					Repo: repo['name'],
