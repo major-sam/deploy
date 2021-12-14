@@ -4,7 +4,7 @@
     }, {
         "name": "CupisIntegrationService",
         "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1",
-		"deployDir": "c:\\inetpub\\"
+		"deployDir": "c:\\Services\\"
     }, {
         "name": "Kernel",
         "source": ".\\scripts\\deploy\\kernel.ps1",

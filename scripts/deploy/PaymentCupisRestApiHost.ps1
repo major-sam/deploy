@@ -1,3 +1,5 @@
+Import-module '.\scripts\sideFunctions.psm1'
+
 # Редактируем конфиг
 $ServiceName = "PaymentCupisRestApiHost"
 $ServiceFolderPath = "C:\Services\${ServiceName}"

@@ -80,7 +80,7 @@ $IISPools = @(
 		siteSubDir = $true
     }
     @{
-        SiteName = 'CupisIntegrationService'
+        SiteName = 'BaltBet.CupisIntegrationService.Host'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -88,7 +88,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4453:$($env:COMPUTERNAME).$($wildcardDomain)"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
+		rootDir = 'c:\services\CupisIntegrationService'
 		siteSubDir = $true
     }
 )  
