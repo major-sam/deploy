@@ -24,7 +24,7 @@ $CupisCertPassword = $env:CUPIS_CERT_PASS
 $FnsBaseUrl = "https://api-fns.ru/api/"
 $FnsKey = $env:CUPIS_FNS_KEY
 
-$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | Format-Json | ConvertFrom-Json
+$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json
 $config.Cupis.BaseUrl = $CupisBaseUrl
 $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
 $config.Cupis.CertPassword = $CupisCertPassword
@@ -83,7 +83,7 @@ $FnsBaseUrl = "https://api-fns.ru/api/"
 $FnsKey = $env:CUPIS_FNS_KEY
 
 
-$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | Format-Json | ConvertFrom-Json
+$config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json
 $config.Cupis.BaseUrl = $CupisBaseUrl
 $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
 $config.Cupis.CertPassword = $CupisCertPassword
