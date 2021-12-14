@@ -59,5 +59,9 @@
         "name": "PaymentCupisRestApiHost",
         "source": ".\\scripts\\deploy\\PaymentCupisRestApiHost.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "PaymentCupisGrpcHost",
+        "source": ".\\scripts\\deploy\\PaymentCupisGrpcHost.ps1",
+        "deployDir": "c:\\Services\\"
     }
 ]
