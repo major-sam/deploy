@@ -1,16 +1,10 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 #get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'Kernel'
-}
-$source = GetSourceObject $sourceparams
 #vars
 
 $ProgressPreference = 'SilentlyContinue'
 $targetDir = 'C:\Kernel'
-$netVersion = (Get-ChildItem -path $source.sourceBuildSource -Recurse -Force |Select-Object -First 1).Name
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $pathtojson = "$targetDir\appsettings.json "
 $transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
@@ -95,23 +89,6 @@ $FILES= @(
         target = "$targetDir\Config\Log.config"
       } 
 )
-#if ($DEPLOY_BY_MAVEN ){
-#	Write-host "####################"
-#	Write-host "robocopy replaced by maven"
-#	Write-host "####################"
-#}
-#else{
-#### copy files
-#	robocopy "$($source.sourceBuildSource)\$netVersion\" $targetDir /e /NFL /NDL /nc /ns /np
-#
-#	$global:LASTEXITCODE
-#
-#	if ($global:LASTEXITCODE -ne 0){
-#		$global:LASTEXITCODE = 0
-#	}
-#}
-##### raw replace
-
 $transformFiles = @("$targetDir\settings.OctopusTestVM.xml")
 foreach($transformFile in $transformFiles){
     (Get-Content -Encoding UTF8 $transformFile) | Foreach-Object {
