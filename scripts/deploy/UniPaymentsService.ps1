@@ -2,13 +2,6 @@ import-module '.\scripts\sideFunctions.psm1'
 
 # 4.2 Обновляем Uni.PaymentsService
 
-#get release params
-$sourceparams = @{
-	sourceFile = '.\Release.json'
-	sourceName = 'UniPaymentsService'
-}
-$source = GetSourceObject $sourceparams
-
 $targetDir = "C:\inetpub\Uni.PaymentsService"
 
 Write-Host -ForegroundColor Green "[INFO] Change settings $targetDir\appsettings.json"

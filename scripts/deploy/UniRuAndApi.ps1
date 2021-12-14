@@ -1,18 +1,6 @@
 ﻿import-module '.\scripts\sideFunctions.psm1'
 
 #get release params
-$sf = '.\Release.json'
-$unisourceparams = @{
-	sourceFile = $sf
-	sourceName = 'UniRu'
-}
-$apisourceparams = @{
-	sourceFile = $sf
-	sourceName = 'UniWebApiAuth'
-}
-$unisource = GetSourceObject $unisourceparams
-$apisource = GetSourceObject $unisourceparams
-
 ###vars
 $targetDir = "C:\inetpub\ClientWorkPlace\UniRu"
 $apiTargetDir = "C:\inetpub\ClientWorkPlace\UniruWebApi"
@@ -22,7 +10,6 @@ $oldIp = '#VM_IP'
 $oldHostname = '#VM_HOSTNAME'
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
 $ProgressPreference = 'SilentlyContinue'
-$RuntimeVersion ='v4.0'
 $release_bak_folder = "\\dev-comp49\share\DBs"
 $queryTimeout = 720
 $webConfig = "$targetDir\Web.config"

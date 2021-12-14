@@ -107,20 +107,22 @@ def checkNexusBranch (repoName, task){
 }
 
 def getNexusBranch (repoName, userTask){
-	def featureTask =  (userTask =~ /^[A-Z]{2,}-\d+$/) ? "feature-${userTask}": userTask 
-		featureTask =  (featureTask.contains('/')) ? featureTask.replace('/', '-'): featureTask
-		def hasMaster = checkNexusBranch(repoName, 'master')
-		if(featureTask){
-			if(checkNexusBranch(repoName, featureTask)){
-				return featureTask 
-			}	
-			else{
-				return  (hasMaster) ? 'master' : false
-			}
-		}
-		else{
+	if (userTask =~ /^[A-Z]{2,}-\d+$/){
+		if (checkNexusBranch(repoName , userTask)) { return userTask }
+        if (checkNexusBranch(repoName , "feature-${userTask}")) { return  "feature-${userTask}" }
+	}
+	def NotFeatureTask =  (userTask.contains('/')) ? userTask.replace('/', '-'): userTask
+	def hasMaster = checkNexusBranch(repoName, 'master')
+	if(NotFeatureTask){
+		if (checkNexusBranch(repoName, NotFeatureTask)) {
+			return NotFeatureTask
+		}else{
 			return  (hasMaster) ? 'master' : false
 		}
+	}
+	else{
+		return  (hasMaster) ? 'master' : false
+	}
 }
 
 def doMavenDeploy(repo){
