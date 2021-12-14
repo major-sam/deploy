@@ -66,14 +66,14 @@ def	addToDescription(Map config = [:]){
 def getNexusArtifactList(){
 	def text = powershell (
 			returnStdout: true,
-			script : """
-			curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-			-X GET  \"http://nexus:8081/service/rest/v1/repositories?type=hosted\" `
-			-H \"accept: application/json\"
-			"""
+			script :  '''
+			curl.exe -u  "$env:NEXUS_CREDS_USR":"$env:NEXUS_CREDS_PSW" `
+			-X GET  "http://nexus:8081/service/rest/v1/repositories?type=hosted" `
+			-H "accept: application/json"
+			'''
 			)
-		def scriptMap = new JsonSlurperClassic().parseText(text)
-		def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
+	def scriptMap = new JsonSlurperClassic().parseText(text)
+	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
 	return repos*.name
 }
 
@@ -98,11 +98,11 @@ def getVmList(int max){
 def checkNexusBranch (repoName, task){
 	def text = powershell (
 			returnStdout: true,
-			script : """
-			curl.exe -u  $NEXUS_CREDS_USR:$NEXUS_CREDS_PSW `
-			-X GET \"http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$task\" `
-			-H \"accept: application/json\"
-			"""
+			script : '''
+			curl.exe -u  "$env:NEXUS_CREDS_USR":"$env:NEXUS_CREDS_PSW" `
+			-X GET "http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$task" `
+			-H "accept: application/json"
+			'''
 			)
 		def repoMap = new JsonSlurperClassic().parseText(text)
 		return repoMap.items
