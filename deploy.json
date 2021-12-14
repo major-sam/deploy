@@ -33,6 +33,18 @@
         "source": ".\\scripts\\deploy\\baltbetcom.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
+        "name": "Webtouch-Public",
+        "source": "echo 'no deploy script'",
+		"deployDir": "c:\\inetpub\\"
+    }, {
+        "name": "WebsiteCom-Public",
+        "source": "echo 'no deploy script'",
+		"deployDir": "c:\\inetpub\\"
+    }, {
+        "name": "Website",
+        "source": "echo 'no deploy script'",
+		"deployDir": "c:\\inetpub\\"
+    }, {
         "name": "PersonalInfoCenter",
         "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1",
 		"deployDir": "c:\\Services\\"
