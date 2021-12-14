@@ -37,6 +37,18 @@ $config.Authorization.Realm = "https://vm4-p0.bb-webapps.com:4453/"
 # Сохраняем конфиг
 $config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
 
+# Создаем БД CupisIntegrationService
+$queryTimeout = 720
+$file = "C:\Services\DB\init.sql"
+$dbname = "CupisIntegrationService"
+
+Write-Host -ForegroundColor Green "[INFO] Create database $dbname"
+Invoke-sqlcmd -ServerInstance $env:COMPUTERNAME -Query "CREATE DATABASE [$dbname]" -Verbose
+
+# Выполняем инит скрипт на БД CupisIntegrationService
+Write-Host -ForegroundColor Green "[INFO] Execute $file on $dbname"
+Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile $file -ErrorAction continue
+
 
 <#
     BaltBet.CupisIntegrationService.GrpcHost
