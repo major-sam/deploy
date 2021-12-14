@@ -64,17 +64,19 @@ def	addToDescription(Map config = [:]){
 }
 
 def getNexusArtifactList(){
-	def text = powershell (
-			returnStdout: true,
-			script :  '''
-			curl.exe -u  "$env:NEXUS_CREDS_USR":"$env:NEXUS_CREDS_PSW" `
-			-X GET  "http://nexus:8081/service/rest/v1/repositories?type=hosted" `
-			-H "accept: application/json"
-			'''
-			)
-	def scriptMap = new JsonSlurperClassic().parseText(text)
-	def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
-	return repos*.name
+	withCredentials([file(credentialsId: 'NexusNetRC', variable: 'NexusNetRC')]){
+		def text = powershell (
+				returnStdout: true,
+				script :  '''
+				curl.exe --netrc-file "$env:NexusNetRC" `
+				-X GET  "http://nexus:8081/service/rest/v1/repositories?type=hosted" `
+				-H "accept: application/json"
+				'''
+				)
+		def scriptMap = new JsonSlurperClassic().parseText(text)
+		def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
+		return repos*.name
+	}
 }
 
 def getVmList(int max){
@@ -96,16 +98,18 @@ def getVmList(int max){
 }
 
 def checkNexusBranch (repoName, task){
-	def text = powershell (
-			returnStdout: true,
-			script : '''
-			curl.exe -u  "$env:NEXUS_CREDS_USR":"$env:NEXUS_CREDS_PSW" `
-			-X GET "http://nexus:8081/service/rest/v1/search?repository=$repoName&maven.groupId=$repoName&maven.artifactId=$task" `
-			-H "accept: application/json"
-			'''
-			)
+	withCredentials([file(credentialsId: 'NexusNetRC', variable: 'NexusNetRC')]){
+		def text = powershell (
+				returnStdout: true,
+				script : '''
+				curl.exe --netrc-file "$env:NexusNetRC" `
+				-X GET "http://nexus:8081/service/rest/v1/search?repository=''' + repoName+'''&maven.groupId='''+repoName+'''&maven.artifactId='''+task+'''" `
+				-H "accept: application/json"
+				'''
+				)
 		def repoMap = new JsonSlurperClassic().parseText(text)
 		return repoMap.items
+	}
 }
 
 def getNexusBranch (repoName, userTask){
@@ -115,6 +119,17 @@ def getNexusBranch (repoName, userTask){
 	}
 	def NotFeatureTask =  (userTask.contains('/')) ? defaultNexusNaming(userTask): userTask
 	def hasMaster = checkNexusBranch(repoName, 'master')
+	if (hasMaster){
+		print hasMaster
+		print "true hasMaster"}
+	else{
+		print hasMaster
+		print "false hasMaster"}
+	if(NotFeatureTask && checkNexusBranch(repoName, NotFeatureTask)){
+print true
+print "true $repoName"
+		} else{print false
+	print "false $repoName"}
 	if(NotFeatureTask){
 		if (checkNexusBranch(repoName, NotFeatureTask)) {
 			return NotFeatureTask
@@ -132,6 +147,7 @@ def doMavenDeploy(repo){
 		taskBranch = getNexusBranch (repo['name'], params.Task)	
 		//for future usage
 		if (taskBranch){
+			println  taskBranch
 			def deployExec = "\"-Ddeploy.exec=${repo['source']}\""
 				//for future usage
 				def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\${repo['name']}\\\" \"-Ddeploy.groupid=${repo['name']}\"  \"-Ddeploy.branch=${taskBranch}\" ${deployDir} ${deployExec} "
@@ -207,6 +223,9 @@ pipeline{
 
 	tools {
 		maven 'maven382'
+	}
+	options {
+		parallelsAlwaysFailFast()
 	}
 
 	stages{
