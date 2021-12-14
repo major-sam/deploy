@@ -648,7 +648,8 @@ pipeline{
 	post{
 		always{
 			script{
-				writeJSON file: "c:\\Services\\Deploy_bundle.json", json: prettyJSON, pritty: 4
+				touch file: "c:\\Services\\Deploy_bundle.json"
+				writeFile file: "c:\\Services\\Deploy_bundle.json", text: prettyJSON
 			}
 		}
 		success{
