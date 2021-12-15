@@ -1,6 +1,7 @@
 <#
 Хостится как приложение в IIS https:8004
 Необходимо создать БД BaltBetDomain
+Настроить ConnectionStrings
 #>
 
 
@@ -20,7 +21,6 @@ $config.ConnectionStrings.KernelDb = $CSKernelDb
 Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
 
 # Создаем БД BaltBetDomain
-$queryTimeout = 720
 $dbname = "BaltBetDomain"
 
 Write-Host -ForegroundColor Green "[INFO] Create database $dbname"
