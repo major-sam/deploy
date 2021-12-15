@@ -93,9 +93,3 @@ $config.Fns.Key = $FnsKey
 
 # Сохраняем конфиг
 $config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
-
-# Регистрируем сервис
-$serviceBin = Get-Item "C:\Services\CupisIntegrationService\BaltBet.CupisIntegrationService.GrpcHost\BaltBet.CupisIntegrationService.GrpcHost.exe"
-$sname = RegisterWinService($serviceBin)
-Start-Service $sname
-Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME

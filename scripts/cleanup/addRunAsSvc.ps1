@@ -82,3 +82,12 @@ if($qw.Message.Contains("Server name already matches actual machine name")){
 else{
 Restart-Service MSSQLSERVER -Force
 }
+
+# Удаляем старый сертификат test.wcf.host.pfx с отпечатком A79B6EC79FCC529D73ABC686D041C402D638CFCF
+Write-Host -ForegroundColor Green "[INFO] Remove old test.wcf.host.pfx certificate..."
+$cert_old = Test-Path -Path Cert:\LocalMachine\My\A79B6EC79FCC529D73ABC686D041C402D638CFCF
+if ($cert_old) {
+    Get-ChildItem Cert:\LocalMachine\My\A79B6EC79FCC529D73ABC686D041C402D638CFCF | Remove-Item
+} else {
+    Write-Host -ForegroundColor Green "[INFO] Old test.wcf.host.pfx certificate doesn't exist"
+}
