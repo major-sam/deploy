@@ -2,9 +2,17 @@ Import-module '.\scripts\sideFunctions.psm1'
 
 # Создаем БД Cupis.GrpcHost
 $dbname = "Cupis.GrpcHost"
+$queryTimeout = 720
+$sqlfolder = "$($env:workspace)\scripts\deploy\paymentCupisGrpcSql"
 
 Write-Host -ForegroundColor Green "[INFO] Create database Cupis.GrpcHost"
 Invoke-sqlcmd -ServerInstance $env:COMPUTERNAME -Query "CREATE DATABASE [$dbname]" -Verbose
+
+# Выполняем скрипты миграции
+foreach ($script in (Get-Item -Path $sqlfolder\* -Include "*.sql").FullName | Sort-Object ) {    
+    Write-Host -ForegroundColor Green "[INFO] Execute $script on $dbname"
+    Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile $script -ErrorAction continue
+}
 
 
 # Редактируем конфиг
