@@ -75,5 +75,9 @@
         "name": "PaymentCupisGrpcHost",
         "source": ".\\scripts\\deploy\\PaymentCupisGrpcHost.ps1",
         "deployDir": "c:\\Services\\"
+    }, {
+        "name": "BaltBetDomainService",
+        "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1",
+		"deployDir": "c:\\inetpub\\"
     }
 ]
