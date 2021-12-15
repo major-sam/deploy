@@ -22,3 +22,4 @@ $SiteServerAddress = $webdoc.configuration.appSettings.add | Where-Object key -e
 $SiteServerAddress.value = "$($CurrentIpAddr):8088"
 $ServerAddress = $webdoc.configuration.appSettings.add | Where-Object key -eq "ServerAddress"
 $ServerAddress.value = "$($CurrentIpAddr):8082"
+$webdoc.Save($WebConfig)
