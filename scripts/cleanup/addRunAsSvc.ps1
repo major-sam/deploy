@@ -83,6 +83,11 @@ else{
 Restart-Service MSSQLSERVER -Force
 }
 
-# Удаляем старый сертификат CN = test.wcf.host c отпечатком a79b6ec79fcc529d73abc686d041c402d638cfcf
-Write-Host -ForegroundColor Green "[INFO] Remowe old test.wcf.host certificate"
-Get-ChildItem Cert:\LocalMachine\My\a79b6ec79fcc529d73abc686d041c402d638cfcf | Remove-Item
+# Удаляем старый сертификат test.wcf.host.pfx с отпечатком A79B6EC79FCC529D73ABC686D041C402D638CFCF
+Write-Host -ForegroundColor Green "[INFO] Remove old test.wcf.host.pfx certificate..."
+$cert_old = Test-Path -Path Cert:\LocalMachine\My\A79B6EC79FCC529D73ABC686D041C402D638CFCF
+if ($cert_old) {
+    Get-ChildItem Cert:\LocalMachine\My\A79B6EC79FCC529D73ABC686D041C402D638CFCF | Remove-Item
+} else {
+    Write-Host -ForegroundColor Green "[INFO] Old test.wcf.host.pfx certificate doesn't exist"
+}
