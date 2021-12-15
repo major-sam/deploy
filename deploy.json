@@ -10,8 +10,9 @@
         "source": ".\\scripts\\deploy\\kernel.ps1",
 		"deployDir": "c:\\"
     }, {
-        "name": "PDA",
-        "source": ".\\scripts\\deploy\\PDA.ps1"
+        "name": "WebMobile",
+        "source": ".\\scripts\\deploy\\WebMobile.ps1",
+        "deployDir": "c:\\inetpub\\"
     }, {
         "name": "UniPaymentsService",
         "source": ".\\scripts\\deploy\\UniPaymentsService.ps1",
