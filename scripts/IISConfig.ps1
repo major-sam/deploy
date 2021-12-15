@@ -20,7 +20,7 @@ $IISPools = @(
 		siteSubDir = $true
     }
     @{
-        SiteName = 'WebsiteCom-Hide'
+        SiteName = 'WebsiteCom-Public'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
