@@ -82,3 +82,7 @@ if($qw.Message.Contains("Server name already matches actual machine name")){
 else{
 Restart-Service MSSQLSERVER -Force
 }
+
+# Удаляем старый сертификат CN = test.wcf.host c отпечатком a79b6ec79fcc529d73abc686d041c402d638cfcf
+Write-Host -ForegroundColor Green "[INFO] Remowe old test.wcf.host certificate"
+Get-ChildItem Cert:\LocalMachine\My\a79b6ec79fcc529d73abc686d041c402d638cfcf | Remove-Item
