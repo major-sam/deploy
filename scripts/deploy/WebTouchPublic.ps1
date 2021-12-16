@@ -1,6 +1,6 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-# 2 Сервис WebTouch
+# 2 Сервис WebTouch-Public
 
 #get release params
 $SiteFolder = "C:\inetpub\WebTouch-Public"
