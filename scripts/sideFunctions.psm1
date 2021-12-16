@@ -189,20 +189,21 @@ function RegisterWinService($serviceBin){
 	return $sname
 }
 
-	function Stop-ServiceWithTimeout ($name) {
-		$timespan = New-Object -TypeName System.Timespan -ArgumentList 0,0,10
-		$svc = Get-Service -Name $name
-		if ($svc -eq $null) { return $false }
-		if ($svc.Status -eq [ServiceProcess.ServiceControllerStatus]::Stopped) { return $true }
-		$svc.Stop()
-		try {
-			$svc.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timespan)
-		}
-		catch [ServiceProcess.TimeoutException] {
-			Write-Verbose "Timeout stopping service $($svc.Name)"
-			Stop-Process -Name $name -Force
-		}
+function Stop-ServiceWithTimeout ($name) {
+	$timespan = New-Object -TypeName System.Timespan -ArgumentList 0,0,10
+	$svc = Get-Service -Name $name
+	if ($svc -eq $null) { return $false }
+	if ($svc.Status -eq [ServiceProcess.ServiceControllerStatus]::Stopped) { return $true }
+	$svc.Stop()
+	try {
+		$svc.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timespan)
 	}
+	catch [ServiceProcess.TimeoutException] {
+		Write-Verbose "Timeout stopping service $($svc.Name)"
+		Stop-Process -Name $name -Force
+	}
+}
+
 function Set-Recovery{
 	param
 		(

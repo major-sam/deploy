@@ -16,7 +16,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4444:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub\'
+		rootDir = 'c:\inetpub'
 		siteSubDir = $true
     }
     @{
@@ -28,7 +28,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4446:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub\'
+		rootDir = 'c:\inetpub'
 		siteSubDir = $true
     }
     @{
@@ -41,7 +41,7 @@ $IISPools = @(
                 @{protocol='https';bindingInformation="*:4445:"}
             )
 		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub\'
+		rootDir = 'c:\inetpub'
 		siteSubDir = $true
     }
     @{
