@@ -14,6 +14,9 @@
         "name": "UniRu",
         "source": ".\\scripts\\post\\UniRu.ps1 "
     }, {
+        "name": "Memurai",
+        "source": ".\\scripts\\post\\Memurai.ps1 "
+    }, {
         "name": "UniWebApiAuth",
         "source": ".\\scripts\\post\\UniWebApiAuth.ps1 "
     }, {

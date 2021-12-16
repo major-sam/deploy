@@ -200,6 +200,7 @@ pipeline{
 			NEXUS_CREDS = credentials('jenkinsAD')
 			CUPIS_CERT_PASS = credentials('CupisCertPassword')
 			CUPIS_FNS_KEY = credentials('CupisFnsKey')
+			CUPIS_CERT_THUMBPRINT = credentials('CupisCertThumbprint')
 	}
 
 	agent {label "${TESTVM}" }
