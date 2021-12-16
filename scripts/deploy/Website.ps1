@@ -12,15 +12,21 @@ $webdoc.configuration.rabbitMqConfig.isEnabled = "true"
 $webdoc.configuration.rabbitMqConfig.connectionString = "host=localhost:5672"
 $webdoc.configuration.cache.redis.add.name = "account"
 $webdoc.configuration.cache.redis.add.connection = "localhost:6379"
+
 $ClientId = $webdoc.configuration.appSettings.add | Where-Object key -eq "ClientId"
 $ClientId.value = "7773" 
+
 $ServerAddress = $webdoc.configuration.appSettings.add | Where-Object key -eq "ServerAddress"
 $ServerAddress.value = "$($CurrentIpAddr):8082"
-$Captcha = $webdoc.configuration.appSettings.add | Where-Object key -eq "Captcha"
+
+$Captcha = $webdoc.configuration.appSettings.add | Where-Object key -eq "IsCaptchaEnabled"
 $Captcha.value = "false"
+
 $RegCaptcha = $webdoc.configuration.appSettings.add | Where-Object key -eq "IsRegistrationCaptchaEnabled"
 $RegCaptcha.value = "false"
+
 $UniPaymentUrl = $webdoc.configuration.connectionStrings.add | Where-Object name -eq "UniPaymentsServiceUrl"
 $UniPaymentUrl.connectionString = "https://${env:COMPUTERNAME}.$($wildcardDomain):54381"
+
 $webdoc.configuration.'system.serviceModel'.client.endpoint.address = "net.tcp://$($CurrentIpAddr):8150/PromoManager"
 $webdoc.Save($SiteConfig)
