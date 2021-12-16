@@ -16,6 +16,7 @@ $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace
 $json_appsetings.Services.TradingToolBaseAddress =  "http://$($apiAddr):$($apiPort)/"
 $json_appsetings.Auth.AdfsOptions.Authority = "https://adfs-next.gkbaltbet.local/adfs"
 $json_appsetings.Auth.AdfsOptions.ClientId = $env:ADFSClientId
+$json_appsetings.Auth.Authenticate = $true
 
 ConvertTo-Json $json_appsetings -Depth $jsonDepth  | Format-Json | Set-Content $pathtojson -Encoding UTF8
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDepth"
