@@ -31,7 +31,7 @@
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "WebsiteCom",
-        "source": ".\\scripts\\deploy\\baltbetcom.ps1",
+        "source": ".\\scripts\\deploy\\WebsiteCom.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "WebTouch-Public",
