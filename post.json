@@ -25,5 +25,8 @@
     }, {
         "name": "UniPaymentsService",
         "source": ".\\scripts\\post\\UniPaymentsService.ps1 "
+    }, {
+        "name": "ReportService",
+        "source": ".\\scripts\\post\\ReportService.ps1 "
     }
 ]

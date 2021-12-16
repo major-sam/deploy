@@ -80,5 +80,9 @@
         "name": "BaltBetDomainService",
         "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1",
 		"deployDir": "c:\\inetpub\\"
+    }, {
+        "name": "ReportService",
+        "source": ".\\scripts\\deploy\\ReportService.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]
