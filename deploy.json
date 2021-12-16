@@ -34,8 +34,8 @@
         "source": ".\\scripts\\deploy\\baltbetcom.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "Webtouch-Public",
-        "source": "echo 'no deploy script'",
+        "name": "WebTouch-Public",
+        "source": ".\\scripts\\deploy\\WebTouchPublic.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "WebsiteCom-Public",

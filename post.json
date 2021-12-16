@@ -5,9 +5,6 @@
         "name": "Kernel",
         "source": ".\\scripts\\post\\Kernel.ps1 "
     }, {
-        "name": "PDA",
-        "source": ".\\scripts\\post\\PDA.ps1 "
-    }, {
         "name": "rabbitmq",
         "source": ".\\scripts\\post\\rabbitmq.ps1 "
     }, {
@@ -22,9 +19,6 @@
     }, {
         "name": "PersonalInfoCenter",
         "source": ".\\scripts\\post\\PersonalInfoCenter.ps1 "
-    }, {
-        "name": "WebTouch",
-        "source": ".\\scripts\\post\\WebTouch.ps1 "
     }, {
         "name": "Logs",
         "source": ".\\scripts\\post\\logs.ps1 "
