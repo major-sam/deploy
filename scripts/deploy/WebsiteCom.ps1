@@ -13,6 +13,9 @@ $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScr
 $webdoc = [Xml](Get-Content -Encoding UTF8 $webConfig)
 $obj = $webdoc.configuration.appSettings.add | where {$_.key -like "ServerAddress" }
 $obj.value = $CurrentIpAddr+":8082"
-$obj = $webdoc.configuration.appSettings.add | where {$_.key -eq "SiteServerAddress" -and $_.value -like '172*'} 
+$obj = $webdoc.configuration.appSettings.add | where {$_.key -like "SiteServerAddress"} 
+$obj.value = $CurrentIpAddr+":8088"
+$obj = $webdoc.configuration.appSettings.add | where {$_.key -like "SiteServerAddressLogin"} 
+$obj.value = $CurrentIpAddr+":8088"
 $webdoc.configuration.'system.serviceModel'.client.endpoint | ForEach-Object { $_.address = ($_.address).replace("localhost","$($CurrentIpAddr)") }
 $webdoc.Save($webConfig)
