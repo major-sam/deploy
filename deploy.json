@@ -39,7 +39,7 @@
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "WebsiteCom-Public",
-        "source": "echo 'no deploy script'",
+        "source": ".\\scripts\\deploy\\WebsiteCom-public.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "Website",
