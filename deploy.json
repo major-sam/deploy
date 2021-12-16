@@ -43,7 +43,7 @@
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "Website",
-        "source": "\\scripts\\deploy\\Website.ps1",
+        "source": ".\\scripts\\deploy\\Website.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
         "name": "PersonalInfoCenter",
