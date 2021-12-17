@@ -84,5 +84,9 @@
         "name": "ReportService",
         "source": ".\\scripts\\deploy\\ReportService.ps1",
 		"deployDir": "c:\\Services\\"
+    }, {
+        "name": "ActionLogService",
+        "source": ".\\scripts\\deploy\\ActionLogService.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]
