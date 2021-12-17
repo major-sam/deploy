@@ -1,20 +1,5 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-<<<<<<< HEAD
-=======
-$serviceBin = Get-Item  "C:\Kernel\Kernel.exe"
-$sname = RegisterWinService($serviceBin)
-start-Service $sname
-Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
-$serviceBin = Get-Item  "C:\KernelWeb\KernelWeb.exe"
-$sname = RegisterWinService($serviceBin)
-start-Service $sname
-Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
- return 0
-<<<<<<< Updated upstream
-=======
->>>>>>> master
->>>>>>> Stashed changes
 if (test-path "c:\kernel\TasksDB"){
 	write-host "Exec tasks"
 	get-ChildItem "c:\kernel\taskdb\" -include "*.sql" | % {
