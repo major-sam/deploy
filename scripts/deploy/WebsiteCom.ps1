@@ -9,6 +9,16 @@ $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScr
 $db = (@{
 	DbName = "SiteCom"
 	BackupFile = "\\server\tcbuild$\Testers\DB\SiteCom.bak"
+	RelocateFiles = @(
+			@{
+				SourceName = "SiteCom"
+				FileName = "SiteCom.mdf"
+			}
+			@{
+				SourceName = "SiteCom_log"
+				FileName = "SiteCom.ldf"
+			}
+		)
 	})
 RestoreSqlDb -db_params $db
 ###
