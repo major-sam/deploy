@@ -88,5 +88,9 @@
         "name": "SuperExpressService",
         "source": ".\\scripts\\deploy\\SuperExpressService.ps1",
 		"deployDir": "c:\\Services\\"
+    }, {
+        "name": "CoefService",
+        "source": ".\\scripts\\deploy\\CoefService.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]
