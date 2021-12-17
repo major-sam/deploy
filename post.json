@@ -28,5 +28,8 @@
     }, {
         "name": "ReportService",
         "source": ".\\scripts\\post\\ReportService.ps1 "
+    }, {
+        "name": "ActionLogService",
+        "source": ".\\scripts\\post\\ActionLogService.ps1 "
     }
 ]
