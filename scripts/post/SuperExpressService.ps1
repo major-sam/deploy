@@ -1,3 +1,5 @@
+Import-module '.\scripts\sideFunctions.psm1'
+
 # Регистрируем сервис
 $ServiceName = "SuperExpressService"
 $serviceBin = Get-Item  "C:\Services\${ServiceName}\BaltBet.SuperExpress.Service.exe"
