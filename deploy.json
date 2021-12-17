@@ -69,6 +69,10 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
+        "name": "PaymenSystemHandlers",
+        "source": ".\\scripts\\deploy\\PaymenSystemHandlers.ps1",
+		"deployDir": "c:\\inetpub\\"
+    }, {
         "name": "PaymentCupisService",
         "source": ".\\scripts\\deploy\\PaymentCupis.ps1",
         "deployDir": "c:\\Services\\Payments\\"
