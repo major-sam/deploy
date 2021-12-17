@@ -69,13 +69,9 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "PaymentCupisRestApiHost",
-        "source": ".\\scripts\\deploy\\PaymentCupisRestApiHost.ps1",
-        "deployDir": "c:\\Services\\"
-    }, {
-        "name": "PaymentCupisGrpcHost",
-        "source": ".\\scripts\\deploy\\PaymentCupisGrpcHost.ps1",
-        "deployDir": "c:\\Services\\"
+        "name": "PaymentCupis",
+        "source": ".\\scripts\\deploy\\PaymentCupis.ps1",
+        "deployDir": "c:\\Services\\Payments\\"
     }, {
         "name": "BaltBetDomainService",
         "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1",
