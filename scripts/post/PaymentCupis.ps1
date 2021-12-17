@@ -1,4 +1,5 @@
 
+import-module '.\scripts\sideFunctions.psm1'
 
 $ServiceFolderPath = "C:\Services\Payments\PaymentCupisService\BaltBet.PaymentCupis.Grpc.Host"
 $serviceBin = Get-Item  "${ServiceFolderPath}\BaltBet.Payment.Cupis.GrpcHost.exe"
