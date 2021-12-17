@@ -1,11 +1,11 @@
 # Редактируем конфиг
-$ServiceName = "ActionLogService"
+$ServiceName = "SuperExpressService"
 $ServiceFolderPath = "C:\Services\${ServiceName}"
 $DataSourceKernel = "BaltBetM"
 $DataSourceKernelWeb = "BaltBetWeb"
 
 
-Write-Host -ForegroundColor Green "[INFO] Edit BaltBet.ActionLogService configuration files..."
+Write-Host -ForegroundColor Green "[INFO] Edit BaltBet.SuperExpressService configuration files..."
 $config = Get-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8
 $config = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
 
