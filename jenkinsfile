@@ -117,7 +117,7 @@ def getNexusBranch (repoName, userTask){
 		if (checkNexusBranch(repoName , userTask)) { return userTask }
         if (checkNexusBranch(repoName , "feature-${userTask}")) { return  "feature-${userTask}" }
 	}
-	def NotFeatureTask =  (userTask.contains('/')) ? defaultNexusNaming(userTask): userTask
+	def NotFeatureTask =  (userTask.contains('/') || userTask.contains('\\')) ? defaultNexusNaming(userTask): userTask
 	def hasMaster = checkNexusBranch(repoName, 'master')
 	if(NotFeatureTask && (checkNexusBranch(repoName, NotFeatureTask)) ){
 		return NotFeatureTask

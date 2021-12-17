@@ -6,10 +6,11 @@ $targetDir  = 'C:\inetpub\WebsiteCom'
 $ProgressPreference = 'SilentlyContinue'
 $webConfig = "$targetDir\Web.config"
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
-$db = @{
+$db = (@{
 	DbName = "SiteCom"
 	BackupFile = "\\server\tcbuild$\Testers\DB\SiteCom.bak"
-	}
+	})
+RestoreSqlDb -db_params $db
 ###
 #XML values replace
 ####
