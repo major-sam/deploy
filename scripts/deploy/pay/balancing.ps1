@@ -34,7 +34,6 @@ Write-Host -ForegroundColor Green "[info] edit json files"
 $configFile = Get-Content $pathtojson  -Raw
 ## Json comment imporvement
 
-		#ertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
 $json_appsetings = $configFile -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/'| ConvertFrom-Json
 $json_appsetings.PSObject.Properties.Remove('Kestrel')
 $json_appsetings.Balancing.Address = "http://$($apiAddr):$($apiPort)"
