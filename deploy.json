@@ -88,5 +88,9 @@
         "name": "ActionLogService",
         "source": ".\\scripts\\deploy\\ActionLogService.ps1",
 		"deployDir": "c:\\Services\\"
+    }, {
+        "name": "SuperExpressService",
+        "source": ".\\scripts\\deploy\\SuperExpressService.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]

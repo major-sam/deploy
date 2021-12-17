@@ -31,5 +31,8 @@
     }, {
         "name": "ActionLogService",
         "source": ".\\scripts\\post\\ActionLogService.ps1 "
+    }, {
+        "name": "SuperExpressService",
+        "source": ".\\scripts\\post\\SuperExpressService.ps1 "
     }
 ]
