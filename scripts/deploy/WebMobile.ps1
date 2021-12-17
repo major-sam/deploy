@@ -1,4 +1,4 @@
-import-module '..\scripts\sideFunctions.psm1'
+import-module '.\scripts\sideFunctions.psm1'
 
 # 3 Сервис WebMobile
 

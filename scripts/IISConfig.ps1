@@ -7,17 +7,29 @@ $preloader = "SitePreload"
 $wildcardDomain = "bb-webapps.com"
 $IISPools = @( 
     @{
-        SiteName = 'WebsiteCom'
-        DomainAuth =  @{
-            userName="$username";password="$pass";identitytype=3
+        sitename = 'Uni.PaymentsService'
+        domainauth =  @{
+            username="$username";password="$pass";identitytype=3
             }
-        Bindings= @(
-                @{protocol='http';bindingInformation="*:84:$($env:COMPUTERNAME).$($wildcardDomain)"}
-                @{protocol='https';bindingInformation="*:4444:$($env:COMPUTERNAME).$($wildcardDomain)"}
+        bindings= @(
+                @{protocol='https';bindinginformation="*:54381:$($env:computername).$($wildcarddomain)"}
             )
-		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootDir = 'c:\inetpub'
-		siteSubDir = $true
+		certpath = 'cert:\localmachine\my\38be86bcf49337804643a671c4c56bc4224c6606'
+		rootdir = 'c:\Services\'
+		sitesubdir = $true
+    }
+    @{
+        sitename = 'websitecom'
+        domainauth =  @{
+            username="$username";password="$pass";identitytype=3
+            }
+        bindings= @(
+                @{protocol='http';bindinginformation="*:84:$($env:computername).$($wildcarddomain)"}
+                @{protocol='https';bindinginformation="*:4444:$($env:computername).$($wildcarddomain)"}
+            )
+		certpath = 'cert:\localmachine\my\38be86bcf49337804643a671c4c56bc4224c6606'
+		rootdir = 'c:\inetpub'
+		sitesubdir = $true
     }
     @{
         SiteName = 'WebsiteCom-Public'

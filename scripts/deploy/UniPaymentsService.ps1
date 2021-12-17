@@ -2,7 +2,7 @@ import-module '.\scripts\sideFunctions.psm1'
 
 # 4.2 Обновляем Uni.PaymentsService
 
-$targetDir = "C:\inetpub\Uni.PaymentsService"
+$targetDir = "C:\Services\Uni.PaymentsService"
 
 Write-Host -ForegroundColor Green "[INFO] Change settings $targetDir\appsettings.json"
 $ConfigPath = "$targetDir\appsettings.json"
