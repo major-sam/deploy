@@ -23,6 +23,9 @@
         "name": "Logs",
         "source": ".\\scripts\\post\\logs.ps1 "
     }, {
+        "name": "PaymentCupis",
+        "source": ".\\scripts\\post\\PaymentCupis.ps1 "
+    }, {
         "name": "UniPaymentsService",
         "source": ".\\scripts\\post\\UniPaymentsService.ps1 "
     }, {
