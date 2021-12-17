@@ -15,3 +15,6 @@ WHEN 'OAuth.LastLogoutUrl' THEN 'https://#VM_HOSTNAME.bb-webapps.com:449/account
 WHEN 'OAuth.TokenUrl' THEN 'https://#VM_HOSTNAME.bb-webapps.com:449/oauth/token'
 WHEN 'Global.RabbitMq.NotificationGateWayBus.IsEnabled' THEN 'false'
 ELSE Value END
+
+INSERT INTO UniRu.Settings.SiteOptions (GroupId, Name, Value, IsInherited)
+VALUES (1,'Pages.Tickets.IsEnabled','true',0)
