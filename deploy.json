@@ -69,7 +69,7 @@
         "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
 		"deployDir": "c:\\inetpub\\"
     }, {
-        "name": "PaymentCupis",
+        "name": "PaymentCupisService",
         "source": ".\\scripts\\deploy\\PaymentCupis.ps1",
         "deployDir": "c:\\Services\\Payments\\"
     }, {

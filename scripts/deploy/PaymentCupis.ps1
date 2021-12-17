@@ -15,7 +15,7 @@ Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTER
 
 # Редактируем конфиг
 $ServiceName = "BaltBet.PaymentCupis.Grpc.Host"
-$ServiceFolderPath = "C:\Services\Payments\${ServiceName}"
+$ServiceFolderPath = "C:\Services\Payments\PaymentCupisService\${ServiceName}"
 $DataSource = "localhost"
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 | Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
 
@@ -33,7 +33,7 @@ $config.AggregatorGrpcOptions.CheckWithdrawUrl = "http://${IPAddress}:5001//api/
 Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
 
 $ServiceName = "PaymentCupis.RestApi.Host"
-$ServiceFolderPath = "C:\Services\Payments\${ServiceName}"
+$ServiceFolderPath = "C:\Services\Payments\PaymentCupisService\${ServiceName}"
 
 $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1 }).IPAddress.trim()
 
