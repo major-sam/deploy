@@ -24,3 +24,16 @@ foreach ($script in (Get-Item -Path $sqlfolder\* -Include "*.sql").FullName | So
     Write-Host -ForegroundColor Green "[INFO] Execute $script on $dbname"
     Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile $script -ErrorAction continue
 }
+
+# Редактируем конфиг
+$ServiceName = "CashBookService"
+$ServiceFolderPath = "C:\Services\${ServiceName}"
+
+
+Write-Host -ForegroundColor Green "[INFO] Edit BaltBet.CashBookService configuration files..."
+$config = Get-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8
+$config = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
+
+$config.Serilog.WriteTo[1].Args.path = "C:\logs\CashBookService\CashBookService-{Date}.log"
+
+Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
