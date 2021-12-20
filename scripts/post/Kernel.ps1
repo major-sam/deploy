@@ -4,6 +4,7 @@ if (test-path "c:\kernel\TasksDB"){
 	write-host "Exec tasks"
 	get-ChildItem "c:\kernel\taskdb\" -include "*.sql" | % {
 		Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database 'BaltBetM' -InputFile $_ -Verbose -ErrorAction continue
+		Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database 'BaltBetMMirror' -InputFile $_ -Verbose -ErrorAction continue
 		}
 }else{
 	write-host "no task for this branch"
