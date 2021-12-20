@@ -40,5 +40,8 @@
     }, {
         "name": "CoefService",
         "source": ".\\scripts\\post\\CoefService.ps1 "
+    }, {
+        "name": "CashBookService",
+        "source": ".\\scripts\\post\\CashBookService.ps1 "
     }
 ]
