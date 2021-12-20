@@ -96,5 +96,9 @@
         "name": "CoefService",
         "source": ".\\scripts\\deploy\\CoefService.ps1",
 		"deployDir": "c:\\Services\\"
+    }, {
+        "name": "CashBookService",
+        "source": ".\\scripts\\deploy\\CashBookService.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]
