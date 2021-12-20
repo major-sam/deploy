@@ -43,5 +43,8 @@
     }, {
         "name": "CashBookService",
         "source": ".\\scripts\\post\\CashBookService.ps1 "
+    }, {
+        "name": "ComAccounts",
+        "source": ".\\scripts\\post\\ComAccounts.ps1 "
     }
 ]
