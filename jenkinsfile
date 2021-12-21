@@ -321,34 +321,34 @@ pipeline{
 				script{
 					stage('Marketing Maven Deploy'){
 						MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
-							MSBadge.setStatus('running')
-							currentBuild.description = addToDescription(
-									description: currentBuild.description,
-									html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
-									position: 1)
-							def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
-							def nexusVersion = getNexusBranch ('Marketing', params.Task)
-							if (nexusVersion){
-								def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
-									def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
-									MavenDeployResultList << [
-										Repo: 'Marketing' ,
-										Branch: nexusVersion 
-									]
-									configFileProvider(
-											[configFile(
-												fileId: 'mavenSettingsGlobal', 
-												targetLocation: 'MAVEN_SETTINGS.xml'),
-											configFile(
-												fileId: 'defaultPOM', 
-												targetLocation: 'pomxml')
-											]){
-										powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-									}
-							}
-							else{
-								println "Marketing repo has no masterBranch"
-							}
+						MSBadge.setStatus('running')
+						currentBuild.description = addToDescription(
+								description: currentBuild.description,
+								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+								position: 1)
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
+						def nexusVersion = getNexusBranch ('Marketing', params.Task)
+						if (nexusVersion){
+							def deployBranch = "\"-Ddeploy.branch=${nexusVersion}\""
+								def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+								MavenDeployResultList << [
+									Repo: 'Marketing' ,
+									Branch: nexusVersion 
+								]
+								configFileProvider(
+										[configFile(
+											fileId: 'mavenSettingsGlobal', 
+											targetLocation: 'MAVEN_SETTINGS.xml'),
+										configFile(
+											fileId: 'defaultPOM', 
+											targetLocation: 'pomxml')
+										]){
+									powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								}
+						}
+						else{
+							println "Marketing repo has no masterBranch"
+						}
 					}
 					stage('marketing settings'){
 						def data = readJSON file: DEPLOY_MS_JSON
