@@ -1,8 +1,5 @@
 import-module '.\scripts\sideFunctions.psm1'
 
-#get release params
-#vars
-
 $ProgressPreference = 'SilentlyContinue'
 $targetDir = 'C:\Kernel'
 $CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
@@ -70,34 +67,6 @@ $dbs = @(
 		)
 	}
 )
-
-#$FILES= @(
-#      @{
-#        transf = "$targetDir\App.OctopusTestVM.config"
-#        target = "$targetDir\Kernel.exe.config"
-#      }
-#      @{
-#        transf = "$targetDir\settings.OctopusTestVM.xml"
-#        target = "$targetDir\settings.xml"
-#      }
-#      @{
-#        transf = "$targetDir\Config\UnityConfig.OctopusTestVM.config"
-#        target = "$targetDir\Config\UnityConfig.config"
-#      }
-#      @{
-#        transf = "$targetDir\Config\Log.OctopusTestVM.config"
-#        target = "$targetDir\Config\Log.config"
-#      } 
-#)
-#$transformFiles = @("$targetDir\settings.OctopusTestVM.xml")
-#foreach($transformFile in $transformFiles){
-#    (Get-Content -Encoding UTF8 $transformFile) | Foreach-Object {
-#        $_ -replace '#{VM[#{VMName}].ServerIp}',  $CurrentIpAddr 
-#        ### multiple replace example :
-#        ###   -replace 'SQL', 'PowerShell' 
-#        } | Set-Content -Encoding UTF8 $transformFile
-#        Write-Host -ForegroundColor Green "$transformFile renewed"
-#    }
 ###### edit json files
 
 Write-Host -ForegroundColor Green "[info] edit json files"
@@ -108,18 +77,6 @@ $HttpsInlineCertStore = '
 $json_appsetings.Kestrel.EndPoints.HttpsInlineCertStore =  $HttpsInlineCertStore
 ConvertTo-Json $json_appsetings -Depth $jsonDepth  | Format-Json | Set-Content $pathtojson -Encoding UTF8
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth $jsonDepth"
-
-
-### apply xml transformation
-#Write-Host -ForegroundColor Green "[info] apply xml transformation"
-#foreach($item in $FILES){
-# try{
-#    XmlDocTransform -xml $item.target -xdt  $item.transf
-#    Write-Host -ForegroundColor Green " $item.target renewed with transformation $item.transf"}
-# catch{
-# 
-#    Write-Host -ForegroundColor Red " $item.target FAIL renew with transformation $item.transf"}
-#}
 
 ### edit settings.xml
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
@@ -135,6 +92,11 @@ $webdoc.Settings.EventCacheSettings.CoefSumCache.FileName =  "$cachePath\EventCo
 
 $webdoc.Settings.CurrentEventsJob.Enabled = "false"
 $webdoc.Settings.CurrentEventsJob.FileCache.FileName = "$cachePath\EventCoefsCacheJob.dat"
+$webdoc.Settings.AggregatorSettings.connection | % { $_.serviceType
+    if ($_.serviceType -iin @("StandardPaymentService", "CpsPaymentService")){
+		        $_.SetAttribute("notificationUrl","http://$($CurrentIpAddr):88/callback/baltbet" )
+				    }
+}
 $webdoc.Save($webConfig)
 ### edit Log.config
 Write-Host "[INFO] Edit web.config of $LogConfig"
@@ -177,41 +139,6 @@ foreach ($file in $sqlFiles) {
 	Write-Host -ForegroundColor Green "[INFO] EXECUTED SUCCESSFULLY: " $file 
 }
 ####KERNELWEB
-# vars
-#$targetDir = 'C:\KernelWeb'
-#$transformLibPath = ".\scripts\Microsoft.Web.XmlTransform.dll"
-#$transformFiles = @("$targetDir\settings.OctopusTestVM.xml","$targetDir\App.OctopusTestVM.config")
-#
-#$FILES= @(
-#      @{
-#        transf = "$targetDir\App.OctopusTestVM.config"
-#        target = "$targetDir\KernelWeb.exe.config"
-#      }
-#      @{
-#        transf = "$targetDir\settings.OctopusTestVM.xml"
-#        target = "$targetDir\settings.xml"
-#      }
-#)
-###### raw replace
-#foreach($transformFile in $transformFiles){
-#    (Get-Content -Encoding UTF8 $transformFile) | Foreach-Object {
-#        $_ -replace '#{VM[#{VMName}].ServerIp}',  $CurrentIpAddr `
-#           -replace '#{KernelWeb_apconf_AddressSlotService}', 'localhost'`
-#           -replace '#{KernelWeb_apconf_CertSubjectName}', 'VM1APKTEST-P0.gkbaltbet.local' 
-#        } | Set-Content -Encoding UTF8 $transformFile
-#        Write-Host -ForegroundColor Green "$transformFile renewed"
-#    }
-#
-#
-###### apply xml transformation
-#foreach($item in $FILES){
-# try{
-#    XmlDocTransform -xml $item.target -xdt  $item.transf
-#    Write-Host -ForegroundColor Green " $item.target renewed with transformation $item.transf"}
-# catch{
-# 
-#    Write-Host -ForegroundColor Red " $item.target FAIL renew with transformation $item.transf"}
-#}
 $LogConfig  = "C:\KernelWeb\KernelWeb.exe.config"
 Write-Host "[INFO] Edit web.config of $LogConfig"
 
