@@ -1,1 +1,1 @@
-echo 'nothing to test'
+Set-ItemProperty -Path IIS:\AppPools\UniPaymentsService -Name managedRuntimeVersion -Value ''

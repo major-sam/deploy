@@ -7,7 +7,7 @@ $preloader = "SitePreload"
 $wildcardDomain = "bb-webapps.com"
 $IISPools = @( 
     @{
-        sitename = 'Uni.PaymentsService'
+        sitename = 'UniPaymentsService'
         domainauth =  @{
             username="$username";password="$pass";identitytype=3
             }
@@ -15,7 +15,7 @@ $IISPools = @(
                 @{protocol='https';bindinginformation="*:54381:$($env:computername).$($wildcarddomain)"}
             )
 		certpath = 'cert:\localmachine\my\38be86bcf49337804643a671c4c56bc4224c6606'
-		rootdir = 'c:\Services\'
+		rootdir = 'c:\Services'
 		sitesubdir = $true
     }
     @{
