@@ -31,9 +31,14 @@ $ServiceFolderPath = "C:\Services\${ServiceName}"
 
 
 Write-Host -ForegroundColor Green "[INFO] Edit BaltBet.CashBookService configuration files..."
-$config = Get-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8
-$config = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
+$pathtojson = "C:\Services\CashBookService\appsettings.json"
+$config = Get-Content -Path $pathtojson -Encoding UTF8
+$json_appsetings = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
 
-$config.Serilog.WriteTo[1].Args.path = "C:\logs\CashBookService\CashBookService-{Date}.log"
+$json_appsetings.Serilog.WriteTo| %{ if ($_.Name -like 'File'){
+	        $_.Args.path = "C:\logs\CashBookService\CashBookService-{Date}.log"   
+			    }
+}
+$json_appsetings.Kestrel.EndPoints.HttpsInlineCertStore.Certificate.Location = "LocalMachine"
+ConvertTo-Json $json_appsetings -Depth 4  | Format-Json | Set-Content $pathtojson -Encoding UTF8
 
-Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
