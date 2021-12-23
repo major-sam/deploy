@@ -26,9 +26,9 @@ $config.RabbitBusOptions.ConnectionString = "host=localhost"
 $config.Serilog.WriteTo[1].Args.path = "C:\logs\Payments\Payment.Cupis\Payment.Cupis-.log"
 $config.Kestrel.Endpoints.HttpGrpc.Url = "http://0.0.0.0:5003"
 $config.Kestrel.Endpoints.HttpWeb.Url = "http://0.0.0.0:5002"
-$config.AggregatorGrpcOptions.ServiceAddress = "http://${IPAddress}:32421"
+$config.AggregatorGrpcOptions.ServiceAddress = "http://172.16.1.70:32421"
 $config.AggregatorGrpcOptions.NotificationUrl = "http://${IPAddress}:5001/api/v1/notifications/aggregator"
-$config.AggregatorGrpcOptions.CheckWithdrawUrl = "http://${IPAddress}:5001//api/v1/payout/checkwithdraw"
+$config.AggregatorGrpcOptions.CheckWithdrawUrl = "http://${IPAddress}:5001/api/v1/payout/checkwithdraw"
 Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
 
 $ServiceName = "PaymentCupis.RestApi.Host"

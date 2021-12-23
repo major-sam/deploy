@@ -3,7 +3,7 @@
 
 $file = "$($env:workspace)\scripts\post\ComAccountsSql\COMAccounts.sql"
 $queryTimeout = 720
-$MyUrl = "$env:COMPUTERNAME"
+$MyUrl = "$env:COMPUTERNAME".ToLower()
 
 # Меняем $query без сохранения оригинала
 $query = (get-content -raw -Encoding UTF8 -Path "$file") -replace '#VM_URL', $MyUrl
