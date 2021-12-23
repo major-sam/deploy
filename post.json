@@ -49,5 +49,8 @@
     }, {
         "name": "IdentificationDocumentService",
         "source": ".\\scripts\\post\\IdentificationDocumentService.ps1 "
+    }, {
+        "name": "TicketService",
+        "source": ".\\scripts\\post\\TicketService.ps1 "
     }
 ]
