@@ -23,3 +23,11 @@ $dbs = @(
 )
 RestoreSqlDb -db_params $dbs
 
+$targetDir = 'C:\inetpub\KRM'
+$KRMConfig ="$targetDir\Web.config"
+$CurrentIpAddr =(Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript { $_.interfaceindex -ne 1}).IPAddress.trim()
+
+### edit KRM Web.config
+$conf = [Xml](Get-Content $KRMConfig)
+$conf.configuration."system.serviceModel".client |% {$_.endpoint |% {$_.address = $_.address.replace("localhost",$CurrentIpAddr)}}
+$conf.Save($KRMConfig)
