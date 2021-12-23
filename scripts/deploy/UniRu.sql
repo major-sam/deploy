@@ -21,5 +21,6 @@ VALUES (1,'Pages.Tickets.IsEnabled','true',0),
 (1,'Asterisk.IpAddress','172.16.0.54',0),
 (1,'Asterisk.Login','site',0),
 (1,'Asterisk.Port','5038',0),
-(1,'Asterisk.Secret','hzccIuSfo1rMgVBU',0);
+(1,'Asterisk.Secret','hzccIuSfo1rMgVBU',0),
+(1,'Payment.IsCupisPaymentsEnabled','true',0);
 GO
