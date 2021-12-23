@@ -46,5 +46,8 @@
     }, {
         "name": "ComAccounts",
         "source": ".\\scripts\\post\\ComAccounts.ps1 "
+    }, {
+        "name": "IdentificationDocumentService",
+        "source": ".\\scripts\\post\\IdentificationDocumentService.ps1 "
     }
 ]

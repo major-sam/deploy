@@ -41,12 +41,4 @@ $GlobalLog.file.SetAttribute("value","C:\Logs\IdentificationDocumentService\")
 
 $conf.Save($ConfigFilePath)
 
-
-# Регистрируем сервис
-$serviceBin = Get-Item  "C:\Services\IdentificationDocumentService\IdentificationDocumentService.exe"
-$sname = RegisterWinService($serviceBin)
-Start-Service $sname
-Set-Recovery -ServiceDisplayName $sname -Server $env:COMPUTERNAME
-
-
 Write-Host -ForegroundColor Green "[INFO] IdentificationService deployed"
