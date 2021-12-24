@@ -16,11 +16,3 @@ WHEN 'OAuth.TokenUrl' THEN 'https://#VM_HOSTNAME.bb-webapps.com:449/oauth/token'
 WHEN 'Global.RabbitMq.NotificationGateWayBus.IsEnabled' THEN 'false'
 ELSE Value END
 
-INSERT INTO UniRu.Settings.SiteOptions (GroupId, Name, Value, IsInherited)
-VALUES (1,'Pages.Tickets.IsEnabled','true',0),
-(1,'Asterisk.IpAddress','172.16.0.54',0),
-(1,'Asterisk.Login','site',0),
-(1,'Asterisk.Port','5038',0),
-(1,'Asterisk.Secret','hzccIuSfo1rMgVBU',0),
-(1,'Payment.IsCupisPaymentsEnabled','true',0);
-GO
