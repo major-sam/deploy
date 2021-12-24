@@ -189,6 +189,7 @@ pipeline{
 	parameters {
 		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
 			choice name:"TESTVM", choices: getVmList(100)
+			booleanParam name: "CUSTOM_TAG", description:'Enable tag chooser', defaultValue: false
 			booleanParam name: "DEPLOY_MS", description:'Deploy Marketing Service', defaultValue: false
 			booleanParam name: "DEPLOY_PAY", description:'Deploy Payment Balanser', defaultValue: false
 			booleanParam name: "DEPLOY_TT", description:'Deploy Trading Tool', defaultValue: false
@@ -215,6 +216,12 @@ pipeline{
 	stages{
 
 		stage('Choose release tag'){
+			
+			when{
+				expression {
+					params.CUSTOM_TAG
+				}
+			}
 			steps{
 				script{
 					BuildBadge.setStatus('running')
