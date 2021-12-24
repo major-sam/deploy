@@ -1,3 +1,4 @@
+Import-module '.\scripts\sideFunctions.psm1'
 <#
     CupisIntegrationService
     Скрипт для разворота CupisIntegrationService
@@ -36,9 +37,8 @@ $config.VirtualMachines.EnableMultiNotification = "false"
 $config.DocumentImages.UploadServiceAddress = "http://localhost:8123"
 $config.Authorization.Realm = "https://vm4-p0.bb-webapps.com:4453/"
 
-# Сохраняем конфиг
-$config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
 
+ConvertTo-Json $config -Depth 4  | Format-Json | Set-Content "$ServiceFolderPath\appsettings.json" -Encoding UTF8
 # Создаем БД CupisIntegrationService
 $queryTimeout = 720
 $file = "C:\Services\CupisIntegrationService\DB\init.sql"
