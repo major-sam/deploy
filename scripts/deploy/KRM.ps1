@@ -3,7 +3,7 @@ import-module '.\scripts\sideFunctions.psm1'
 ###vars
 $targetDir = "C:\inetpub\KRM"
 $ProgressPreference = 'SilentlyContinue'
-$release_bak_folder= "\\dev-comp49\share\DBs"
+$release_bak_folder= "\\server\tcbuild$\Testers\DB"
 
 $dbs = @(
 	@{
