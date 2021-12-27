@@ -16,5 +16,5 @@ $json_appsettings.Grpc.Services[0].Name = "Payment.Cupis.GrpcHost"
 $json_appsettings.Grpc.Services[0].Host = $new_host
 $json_appsettings.Grpc.Services[0].Port = 5003
 
-ConvertTo-Json $json_appsetings -Depth 4 | Format-Json | Set-Content $ConfigPath -Encoding UTF8
+ConvertTo-Json $json_appsettings -Depth 4 | Format-Json | Set-Content $ConfigPath -Encoding UTF8
 
