@@ -16,5 +16,5 @@ $json_appsettings.Origins[2] = "https://$($new_host).bb-webapps.com:4445"
 $json_appsettings.Grpc.Services.Host = "$($new_host)"
 $json_appsettings.Grpc.Services[0].Port = "5010"
 
-ConvertTo-Json $json_appsetings -Depth 4 | Format-Json | Set-Content $pathtojson -Encoding UTF8
+ConvertTo-Json $json_appsetings -Depth 4 | Format-Json | Set-Content $ConfigPath -Encoding UTF8
 
