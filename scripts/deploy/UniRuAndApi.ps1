@@ -76,6 +76,8 @@ Write-Host -ForegroundColor Green "[INFO] Edit web.config of $apiWebConfig"
 $webdoc = [Xml](Get-Content $apiWebConfig)
 $obj = $webdoc.configuration.connectionStrings.add | where {$_.name -eq 'DataContext' }
 $obj.connectionString = "data source=localhost;initial catalog=UniRu;Integrated Security=true;MultipleActiveResultSets=True;"
+$obj = $webdoc.configuration.connectionStrings.add | where {$_.name -eq 'UniPaymentsServiceUrl' }
+$obj.connectionString = "https://${env:COMPUTERNAME}.bb-webapps.com:54381"
 $obj = $webdoc.configuration.cache.db
 $obj.connection = "data source=localhost;initial catalog=UniRu;Integrated Security=true;MultipleActiveResultSets=True;"
 $ConnectionStringsAdd = $webdoc.CreateElement('add')
