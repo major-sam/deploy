@@ -56,13 +56,13 @@ Write-Host -ForegroundColor Green "[INFO] Insert settings to UniRu"
 Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbname -query $query_insert_settings -ErrorAction continue
 
 # Включаем функционал платежных систем в админке
-$query_insert_settings = "
+$EnablePayments = "
 UPDATE UniRu.Settings.SiteOptions
 SET Value = 'true'
 WHERE Name = 'Payment.IsCupisPaymentsEnabled'
 "
 Write-Host -ForegroundColor Green "[INFO] Enable Payments"
-Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbname -query $query_insert_settings -ErrorAction continue
+Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbname -query $EnablePayments -ErrorAction continue
 
 ###
 #XML values replace UniRu
