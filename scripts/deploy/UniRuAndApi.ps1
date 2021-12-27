@@ -54,6 +54,16 @@ GO
 "
 Write-Host -ForegroundColor Green "[INFO] Insert settings to UniRu"
 Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbname -query $query_insert_settings -ErrorAction continue
+
+# Включаем функционал платежных систем в админке
+$query_insert_settings = "
+UPDATE UniRu.Settings.SiteOptions
+SET Value = 'true'
+WHERE Name = 'Payment.IsCupisPaymentsEnabled'
+"
+Write-Host -ForegroundColor Green "[INFO] Enable Payments"
+Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $dbname -query $query_insert_settings -ErrorAction continue
+
 ###
 #XML values replace UniRu
 ####
@@ -87,3 +97,4 @@ $webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
 $webdoc.Save($apiWebConfig)
 
 Write-Host -ForegroundColor Green "[INFO] Done"
+
