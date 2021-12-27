@@ -140,6 +140,7 @@ function CreateSqlDatabase($dbname){
 function RegisterIISSite($site){
     Import-Module -Force WebAdministration
     $name =  $site.SiteName
+    $runtimeVersion = $site.RuntimeVersion
 	if ($site.siteSubDir){
 		$targetDir = "$($site.rootDir)\$name"
 	}else{
@@ -150,7 +151,7 @@ function RegisterIISSite($site){
     }
     else{
         New-Item -Path IIS:\AppPools\$name -force
-        Set-ItemProperty -Path IIS:\AppPools\$name -Name managedRuntimeVersion -Value 'v4.0'
+        Set-ItemProperty -Path IIS:\AppPools\$name -Name managedRuntimeVersion -Value $runtimeVersion
         Set-ItemProperty -Path IIS:\AppPools\$name -Name startMode -Value 'AlwaysRunning'
         if ($site.DomainAuth){
            Set-ItemProperty  IIS:\AppPools\$name -name processModel -value $site.DomainAuth

@@ -8,6 +8,7 @@ $wildcardDomain = "bb-webapps.com"
 $IISPools = @( 
     @{
         sitename = 'UniPaymentsService'
+        RuntimeVersion = ''
         domainauth =  @{
             username="$username";password="$pass";identitytype=3
             }
@@ -20,6 +21,7 @@ $IISPools = @(
     }
     @{
         sitename = 'PaymenSystemHandlers'
+        RuntimeVersion = 'v4.0'
         domainauth =  @{
             username="$username";password="$pass";identitytype=3
             }
@@ -31,6 +33,7 @@ $IISPools = @(
     }
     @{
         sitename = 'websitecom'
+        RuntimeVersion = 'v4.0'
         domainauth =  @{
             username="$username";password="$pass";identitytype=3
             }
@@ -44,6 +47,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'WebsiteCom-Public'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -56,6 +60,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'Website'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -69,6 +74,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'KRM'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -81,6 +87,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'UniRu'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -93,6 +100,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'UniruWebApi'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -105,6 +113,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'AdminMessageService'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -117,6 +126,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'WebApiAuth'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -129,6 +139,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'BaltBet.CupisIntegrationService.Host'
+        RuntimeVersion = ''
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -141,6 +152,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'BaltBetDomainService'
+        RuntimeVersion = ''
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -153,6 +165,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'WebMobile'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -165,6 +178,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'WebTouch'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
@@ -177,6 +191,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'WebTouch-Public'
+        RuntimeVersion = 'v4.0'
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
