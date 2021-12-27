@@ -113,7 +113,7 @@ $IISPools = @(
     }
     @{
         SiteName = 'AdminMessageService'
-        RuntimeVersion = 'v4.0'
+        RuntimeVersion = ''
         DomainAuth =  @{
             userName="$username";password="$pass";identitytype=3
             }
