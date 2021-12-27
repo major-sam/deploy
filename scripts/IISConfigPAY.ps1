@@ -29,6 +29,6 @@ foreach($site in $IISPools ){
 }
 $SiteName = "BaltBet.Payment.BalancingService.Blazor"
 
-Set-WebConfigurationProperty -Filter "/system.webServer/security/authentication/anonymousAuthentication" -Name Enabled -Value false -PSPath "IIS:\Sites\$SiteName\$SiteName"
-Set-WebConfigurationProperty -Filter "/system.webServer/security/authentication/windowsAuthentication" -Name Enabled -Value True -PSPath "IIS:\Sites\$SiteName\$SiteName"
+Set-WebConfigurationProperty -Filter '/system.webServer/security/authentication/anonymousAuthentication' -Name 'enabled' -Value 'false' -PSPath 'IIS:\' -Location $SiteName
+Set-WebConfigurationProperty -Filter "/system.webServer/security/authentication/windowsAuthentication" -Name 'Enabled' -Value 'True' -PSPath 'IIS:\' -Location $SiteName
 
