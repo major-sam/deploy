@@ -35,9 +35,13 @@ Replace-StringInArray -ConfigPath "${inetpub}\${site}\Web.config" -ContainsStrin
 
 # Включаем функционал платежных систем в админке
 $EnablePayments = "
-UPDATE UniRu.Settings.SiteOptions
-SET Value = 'true'
-WHERE Name = 'Payment.IsCupisPaymentsEnabled'
+IF EXISTS (SELECT * FROM UniRu.Settings.SiteOptions
+	WHERE Name = 'Payment.IsCupisPaymentsEnabled')
+UPDATE UniRu.Settings.SiteOptions SET Value = 'true'
+	WHERE Name = 'Payment.IsCupisPaymentsEnabled'
+ELSE
+	INSERT INTO UniRu.Settings.SiteOptions (GroupId, Name, Value, IsInherited)
+	VALUES (1, 'Payment.IsCupisPaymentsEnabled', 'true', 0)
 "
 Write-Host -ForegroundColor Green "[INFO] Enable Payments"
 Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database 'UniRu' -query $EnablePayments -ErrorAction continue
