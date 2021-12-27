@@ -100,5 +100,9 @@
         "name": "CashBookService",
         "source": ".\\scripts\\deploy\\CashBookService.ps1",
 		"deployDir": "c:\\Services\\"
+    }, {
+        "name": "UniStatisticsLogger",
+        "source": ".\\scripts\\deploy\\UniStatisticsLogger.ps1",
+		"deployDir": "c:\\Services\\"
     }
 ]

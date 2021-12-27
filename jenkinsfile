@@ -353,10 +353,10 @@ pipeline{
 									]){
 								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvn\\${repo['name']}\\${repo['name']}\\${taskBranch}).name", 
+									script:"(Get-ChildItem -Directory .\\.mvn\\Marketing\\Marketing\\${taskBranch}).name", 
 									returnStdout: true)
 								MavenDeployResultList << [
-									Repo: repo['name'],
+									Repo: 'Marketing',
 									Branch: taskBranch,
 									Version: packageVersion.trim()
 								]
@@ -395,40 +395,40 @@ pipeline{
 			steps{
 				script{
 					TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
-						TTBadge.setStatus('running')
-						currentBuild.description = addToDescription(
-								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
-								position: 1)
-						stage('TT Maven Deploy'){
-							def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-								def taskBranch = getNexusBranch ('TradingTool', params.Task)
-								if (taskBranch){
-									println taskBranch
-									def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-									def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
-									configFileProvider(
-											[configFile(
-												fileId: 'mavenSettingsGlobal', 
-												targetLocation: 'MAVEN_SETTINGS.xml'),
-											configFile(
-												fileId: 'defaultPOM', 
-												targetLocation: 'pomxml')
-											]){
-										powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-										def packageVersion = powershell (
-											script:"(Get-ChildItem -Directory .\\.mvn\\${repo['name']}\\${repo['name']}\\master).name", 
-											returnStdout: true)
-										MavenDeployResultList << [
-											Repo: repo['name'],
-											Branch: taskBranch,
-											Version: packageVersion.trim()
-										]
-									}
+					TTBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+							position: 1)
+					stage('TT Maven Deploy'){
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
+							def taskBranch = getNexusBranch ('TradingTool', params.Task)
+							if (taskBranch){
+								println taskBranch
+								def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
+								def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+								configFileProvider(
+										[configFile(
+											fileId: 'mavenSettingsGlobal', 
+											targetLocation: 'MAVEN_SETTINGS.xml'),
+										configFile(
+											fileId: 'defaultPOM', 
+											targetLocation: 'pomxml')
+										]){
+									powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+									def packageVersion = powershell (
+										script:"(Get-ChildItem -Directory .\\.mvn\\TradingTool\\TradingTool\\master).name", 
+										returnStdout: true)
+									MavenDeployResultList << [
+										Repo: 'TradingTool',
+										Branch: taskBranch,
+										Version: packageVersion.trim()
+									]
 								}
-								else{
-									println "TT has no master branch"
-								}
+							}
+							else{
+								println "TT has no master branch"
+							}
 						}
 
 					stage('TT settings'){
