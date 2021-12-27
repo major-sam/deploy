@@ -33,4 +33,14 @@ Replace-StringInArray -ConfigPath "${inetpub}\${site}\Web.config" -ContainsStrin
 Replace-StringInArray -ConfigPath "${inetpub}\${site}\Web.config" -ContainsString "TicketService" -OldString "5000" -NewString "5037"
 
 
+# Включаем функционал платежных систем в админке
+$EnablePayments = "
+UPDATE UniRu.Settings.SiteOptions
+SET Value = 'true'
+WHERE Name = 'Payment.IsCupisPaymentsEnabled'
+"
+Write-Host -ForegroundColor Green "[INFO] Enable Payments"
+Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database 'UniRu' -query $EnablePayments -ErrorAction continue
+
+
 Start-WebAppPool "UniRu"
