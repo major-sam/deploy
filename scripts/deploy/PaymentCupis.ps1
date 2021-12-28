@@ -11,7 +11,7 @@ CreateSqlDatabase $dbname
 #    Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile $script -ErrorAction continue
 #}
 
-Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile  'c:\services\payments\CupisGrpcDb\init.sql' -ErrorAction continue
+Invoke-Sqlcmd -verbose -QueryTimeout $queryTimeout -ServerInstance $env:COMPUTERNAME -Database $dbname -InputFile  'C:\Services\Payments\PaymentCupisService\CupisGrpcDB\init.sql' -ErrorAction continue
 
 # Редактируем конфиг
 $ServiceName = "BaltBet.PaymentCupis.Grpc.Host"
@@ -39,5 +39,7 @@ $config = Get-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8
 $config = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
 $config.Serilog.WriteTo[1].Args.path = "C:\logs\RestLog\Payment.Cupis-.log"
 $config.Kestrel.Endpoints.Http.Url = "http://${IPAddress}:5001"
+$config.PSHOptions.ServiceUrl = "http://localhost:88"
+$config.DbOptions.ConnectionString = "data source=localhost;initial catalog=Cupis.GrpcHost;Integrated Security=true;MultipleActiveResultSets=True;"
 Set-Content -Path "$ServiceFolderPath\appsettings.json" -Encoding UTF8 -Value ($config | ConvertTo-Json -Depth 100)
 
