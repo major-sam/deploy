@@ -16,3 +16,10 @@ WHEN 'OAuth.TokenUrl' THEN 'https://#VM_HOSTNAME.bb-webapps.com:449/oauth/token'
 WHEN 'Global.RabbitMq.NotificationGateWayBus.IsEnabled' THEN 'false'
 ELSE Value END
 
+IF EXISTS (SELECT * FROM UniRu.Settings.SiteOptions
+	WHERE Name = 'Payment.IsCupisPaymentsEnabled')
+UPDATE UniRu.Settings.SiteOptions SET Value = 'true'
+	WHERE Name = 'Payment.IsCupisPaymentsEnabled'
+ELSE
+	INSERT INTO UniRu.Settings.SiteOptions (GroupId, Name, Value, IsInherited)
+	VALUES (1, 'Payment.IsCupisPaymentsEnabled', 'true', 0)
