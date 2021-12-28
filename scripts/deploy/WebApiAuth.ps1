@@ -49,8 +49,8 @@ Invoke-Sqlcmd -verbose -ServerInstance $env:COMPUTERNAME -Database $DbName -quer
 Write-Host -ForegroundColor Green "[INFO] Edit web.config of $webConfig"
 $webConfig = "c:\inetpub\WebApiAuth\Web.config"
 $webdoc = [Xml](Get-Content $webConfig)
-$obj = $webdoc.configuration.connectionStrings.add | % {$_.name -eq 'OAuth.LastLogoutUrl' }
-$obj.connectionString = "https://$($env:COMPUTERNAME).bb-webapps.com:449/account/logout/last"
+$webdoc.configuration.connectionStrings.add | % {if ($_.name -eq 'OAuth.LastLogoutUrl') {
+		$_.connectionString = "https://$($env:COMPUTERNAME).bb-webapps.com:449/account/logout/last"}}
 $webdoc.Save($webConfig)
 
 

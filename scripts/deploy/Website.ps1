@@ -13,9 +13,12 @@ $webdoc.configuration.rabbitMqConfig.connectionString = "host=localhost:5672"
 $webdoc.configuration.cache.redis.add.name = "account"
 $webdoc.configuration.cache.redis.add.connection = "localhost:6379"
 
-$ClientId = $webdoc.configuration.appSettings.add | Where-Object key -eq "ClientId"
-$ClientId.value = "7773" 
+#хз что это но это не работает
+#$ClientId = $webdoc.configuration.appSettings.add | Where-Object key -eq "ClientId"
+#$$ClientId.value = "7773" 
 
+$webdoc.configuration.appSettings.add | %{ if ($_.key -eq "ClientId"){
+		$_.value = "7773"}}
 $ServerAddress = $webdoc.configuration.appSettings.add | Where-Object key -eq "ServerAddress"
 $ServerAddress.value = "$($CurrentIpAddr):8082"
 

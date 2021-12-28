@@ -104,12 +104,15 @@ def lookupBranchInNexus (repoName, task){
 				returnStdout: true,
 				script : '''
 				curl.exe --netrc-file "$env:NexusNetRC" `
-				-X GET "http://nexus:8081/service/rest/v1/search?repository=''' + repoName+'''&maven.groupId='''+repoName+'''&maven.artifactId='''+task+'''" `
-				-H "accept: application/json"
+					-X GET "http://nexus:8081/service/rest/v1/search/assets?repository=''' +repoName+
+					'''&maven.groupId='''+repoName+
+					'''&maven.artifactId='''+task+'''&maven.extension=zip" `
+					-H "accept: application/json" 4>&1 2>out-null
 				'''
 				)
 		def repoMap = new JsonSlurperClassic().parseText(text)
-		return repoMap.items
+		println repoMap.items 
+		return (repoMap.items.size() > 0)
 	}
 }
 
@@ -120,6 +123,9 @@ def getNexusBranch (repoName, userTask){
 	}
 	def NotFeatureTask =  defaultNexusNaming(userTask) 
 	def hasMaster = lookupBranchInNexus(repoName, 'master')
+	println 'userTask='+ userTask
+	println 'hasMaster='+ hasMaster 
+	println 'NotFeatureTask='+ NotFeatureTask
 	if(NotFeatureTask && (lookupBranchInNexus(repoName, NotFeatureTask)) ){
 		return NotFeatureTask
 	}
@@ -127,7 +133,6 @@ def getNexusBranch (repoName, userTask){
 		return  (hasMaster) ? 'master' : false
 	}
 }
-
 
 
 def updatePom(services, branchTask){
@@ -177,7 +182,7 @@ def doMavenDeploy(taskBranch){
 	}
 	services.each { service -> 
 		def packageVersion = powershell (
-			script:"(Get-ChildItem -Directory .\\.mvn\\${service}\\${service}\\${taskBranch}).name", 
+			script:"(Get-ChildItem -Directory .\\.mvn\\${service}\\${taskBranch}).name", 
 			returnStdout: true)
 		MavenDeployResultList << [
 			Repo: service,
@@ -305,7 +310,7 @@ pipeline{
 		}
 		
 
-		stage('Deploy'){
+		stage('Mvn Deploy'){
 			steps{
 				script{
 					doMavenDeploy(params.Task)
@@ -358,10 +363,11 @@ pipeline{
 								position: 1)
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
 						def taskBranch = getNexusBranch ('Marketing', params.Task)
+						println taskBranch
 						if (taskBranch){
 							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\Marketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnMarketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
 							configFileProvider(
 									[configFile(
 										fileId: 'mavenSettingsGlobal', 
@@ -372,7 +378,7 @@ pipeline{
 									]){
 								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
 								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvn\\Marketing\\Marketing\\${taskBranch}).name", 
+									script:"(Get-ChildItem -Directory .\\.mvnMarketing\\Marketing\\${taskBranch}).name", 
 									returnStdout: true)
 								MavenDeployResultList << [
 									Repo: 'Marketing',
@@ -382,7 +388,7 @@ pipeline{
 							}
 						}
 						else{
-							println "Marketing repo has no masterBranch"
+							println "Marketing repo has no master branch"
 						}
 					}
 					stage('marketing settings'){

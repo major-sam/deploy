@@ -111,6 +111,24 @@
 						<outputDirectory>c:/inetpub/WebTouch-Public</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>WebsiteCom</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/inetpub/WebsiteCom</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>WebsiteCom-Public</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>Website</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
