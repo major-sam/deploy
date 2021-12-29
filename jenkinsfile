@@ -181,12 +181,15 @@ def doMavenDeploy(taskBranch){
 		powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f deployPom.xml ${deployParams}"
 	}
 	services.each { service -> 
+		def packageBranch = powershell (
+			script:"(Get-ChildItem -Directory .\\.mvn\\${service}| Select-Object -First 1).name", 
+			returnStdout: true)
 		def packageVersion = powershell (
 			script:"(Get-ChildItem -Directory (Get-ChildItem -Directory .\\.mvn\\${service}| Select-Object -First 1).FullName).name", 
 			returnStdout: true)
 		MavenDeployResultList << [
 			Repo: service,
-			Branch: taskBranch,
+			Branch: packageBranch.trim(),
 			Version: packageVersion.trim()
 		]
 	}
