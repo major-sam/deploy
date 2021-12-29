@@ -134,7 +134,7 @@ def getNexusBranch (repoName, userTask){
 def updatePom(services, branchTask){
 	services.each{ 
 		nexusLookup = getNexusBranch(it, branchTask)
-		if (nexusLookup){
+		if (nexusLookup && nexusLookup != 'master'){
 			println 'Update pom '+ it + ' with ' + nexusLookup 
 			powershell (
 				script: '''

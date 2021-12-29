@@ -75,11 +75,9 @@
         "source": ".\\scripts\\deploy\\CoefService.ps1"
     }, {
         "name": "CashBookService",
-        "source": ".\\scripts\\deploy\\CashBookService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\CashBookService.ps1"
     }, {
         "name": "UniStatisticsLogger",
-        "source": ".\\scripts\\deploy\\UniStatisticsLogger.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\UniStatisticsLogger.ps1"
     }
 ]
