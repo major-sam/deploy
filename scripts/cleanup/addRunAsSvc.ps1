@@ -30,10 +30,10 @@ if($env:HOMEDRIVE -like 'z:') {
 #	}
 #}
 ## temp 3.1 fix
-choco install dotnetcore-3.1-windowshosting -y
-choco install dotnetcore-3.1-runtime -y
-choco install dotnet-6.0-runtime -y
-choco install dotnet-6.0-windowshosting -y
+##choco install dotnetcore-3.1-windowshosting -y
+#choco install dotnetcore-3.1-runtime -y
+#choco install dotnet-6.0-runtime -y
+#choco install dotnet-6.0-windowshosting -y
 $fixNameQuery= "
 DECLARE @MachineName NVARCHAR(60)
 SET @MachineName = CONVERT(nvarchar,SERVERPROPERTY('ServerName'));

@@ -1,101 +1,78 @@
 [{
         "name": "deploy placeholder",
-        "source": "echo $env:COMPUTERNAME \n systeminfo \n echo 'omg one more way'| echo 'and another one'"
+        "source": "echo $env:COMPUTERNAME"
     }, {
         "name": "CupisIntegrationService",
-        "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1"
     }, {
         "name": "Kernel",
-        "source": ".\\scripts\\deploy\\kernel.ps1",
-		"deployDir": "c:\\"
+        "source": ".\\scripts\\deploy\\kernel.ps1"
     }, {
         "name": "WebMobile",
-        "source": ".\\scripts\\deploy\\WebMobile.ps1",
-        "deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebMobile.ps1"
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"
     }, {
         "name": "ClientWorkPlace",
-        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1"
     },  {
         "name": "KRM",
-        "source": ".\\scripts\\deploy\\KRM.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\KRM.ps1"
     }, {
         "name": "WebTouch",
-        "source": ".\\scripts\\deploy\\WebTouch.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebTouch.ps1"
     }, {
         "name": "WebsiteCom",
-        "source": ".\\scripts\\deploy\\WebsiteCom.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebsiteCom.ps1"
     }, {
         "name": "WebTouch-Public",
-        "source": ".\\scripts\\deploy\\WebTouchPublic.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebTouchPublic.ps1"
     }, {
         "name": "WebsiteCom-Public",
-        "source": ".\\scripts\\deploy\\WebsiteCom-public.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebsiteCom-public.ps1"
     }, {
         "name": "Website",
-        "source": ".\\scripts\\deploy\\Website.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\Website.ps1"
     }, {
         "name": "PersonalInfoCenter",
-        "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1"
     }, {
         "name": "cert",
-        "source": ".\\scripts\\deploy\\cert.ps1",
-        "oldsource": "certutil.exe -addstore root .\\scripts\\deploy\\gkbaltbet-ca.cer"
+        "source": ".\\scripts\\deploy\\cert.ps1"
     }, {
         "name": "rabbitmq",
         "source": ".\\scripts\\deploy\\rabbitmq.ps1"
     }, {
         "name": "IdentificationDocumentService",
-        "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1",
-        "deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1"
     }, {
         "name": "TicketService",
-        "source": ".\\scripts\\deploy\\TicketService.ps1",
-        "deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\TicketService.ps1"
     }, {
         "name": "WebApiAuth",
-        "source": ".\\scripts\\deploy\\WebApiAuth.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\WebApiAuth.ps1"
     }, {
         "name": "PaymenSystemHandlers",
-        "source": ".\\scripts\\deploy\\PaymenSystemHandlers.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\PaymenSystemHandlers.ps1"
     }, {
         "name": "PaymentCupisService",
-        "source": ".\\scripts\\deploy\\PaymentCupis.ps1",
-        "deployDir": "c:\\Services\\Payments\\"
+        "source": ".\\scripts\\deploy\\PaymentCupis.ps1"
     }, {
         "name": "BaltBetDomainService",
-        "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1",
-		"deployDir": "c:\\inetpub\\"
+        "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1"
     }, {
         "name": "ReportService",
-        "source": ".\\scripts\\deploy\\ReportService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\ReportService.ps1"
     }, {
         "name": "ActionLogService",
-        "source": ".\\scripts\\deploy\\ActionLogService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\ActionLogService.ps1"
     }, {
         "name": "SuperExpressService",
-        "source": ".\\scripts\\deploy\\SuperExpressService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\SuperExpressService.ps1"
     }, {
         "name": "CoefService",
-        "source": ".\\scripts\\deploy\\CoefService.ps1",
-		"deployDir": "c:\\Services\\"
+        "source": ".\\scripts\\deploy\\CoefService.ps1"
     }, {
         "name": "CashBookService",
         "source": ".\\scripts\\deploy\\CashBookService.ps1",

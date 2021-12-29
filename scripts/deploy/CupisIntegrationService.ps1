@@ -20,7 +20,7 @@ Get-Content -Encoding UTF8 -Path "${ServiceFolderPath}\appsettings.json"
 
 $CupisBaseUrl = "https://demo-api.1cupis.ru/binding-api/"
 $CupisBackupBaseUrl = "https://demo-api.1cupis.ru/"
-$CupisCertPassword = $env:CUPIS_CERT_PASS
+#$CupisCertPassword = $env:CUPIS_CERT_PASS
 $CupisCertThumbprint = $env:CUPIS_CERT_THUMBPRINT
 $FnsBaseUrl = "https://api-fns.ru/api/"
 $FnsKey = $env:CUPIS_FNS_KEY
@@ -28,7 +28,7 @@ $FnsKey = $env:CUPIS_FNS_KEY
 $config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json
 $config.Cupis.BaseUrl = $CupisBaseUrl
 $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
-$config.Cupis.CertPassword = $CupisCertPassword
+#$config.Cupis.CertPassword = $CupisCertPassword
 $config.Cupis.CertThumbprint = $CupisCertThumbprint
 $config.Bus.CupisCallbackBusConnectionString = "host=localhost"
 $config.Fns.BaseUrl = $FnsBaseUrl
@@ -78,7 +78,7 @@ Get-Content -Encoding UTF8 -Path "${ServiceFolderPath}\appsettings.json"
 
 $CupisBaseUrl = "https://demo-api.1cupis.ru/binding-api/"
 $CupisBackupBaseUrl = "https://demo-api.1cupis.ru/"
-$CupisCertPassword = $env:CUPIS_CERT_PASS
+#$CupisCertPassword = $env:CUPIS_CERT_PASS
 $CupisCertThumbprint = $env:CUPIS_CERT_THUMBPRINT
 $FnsBaseUrl = "https://api-fns.ru/api/"
 $FnsKey = $env:CUPIS_FNS_KEY
@@ -87,10 +87,9 @@ $FnsKey = $env:CUPIS_FNS_KEY
 $config = Get-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8 | ConvertFrom-Json
 $config.Cupis.BaseUrl = $CupisBaseUrl
 $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
-$config.Cupis.CertPassword = $CupisCertPassword
+#$config.Cupis.CertPassword = $CupisCertPassword
 $config.Cupis.CertThumbprint = $CupisCertThumbprint
 $config.Fns.BaseUrl = $FnsBaseUrl
 $config.Fns.Key = $FnsKey
 
-# Сохраняем конфиг
-$config | ConvertTo-Json -Depth 100 | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
+ConvertTo-Json $config -Depth 5| Format-Json | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
