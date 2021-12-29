@@ -271,11 +271,13 @@ pipeline{
 		stage('Set Description'){
 			steps{
 				script{
-					def locked= true
-					lock( resource: params.TESTVM ,skipIfLocked: true) {
-						locked = false
+					def all_lockable_resources = org.jenkins.plugins.lockableresources.LockableResourcesManager.get().resources
+					def lockable_resource = all_lockable_resources.find { r-> r.getName() == params.TESTVM}
+					def boolean locked_by_me = (lockable_resource.getReservedBy() == currentBuild.getBuildCauses()[0].userName)
+					if (locked_by_me){
+						println "Vm ${lockable_resource} is locked by current build user(${currentBuild.getBuildCauses()[0].userName}) \n Continue Build"
 					}
-					if (locked){
+					if (lockable_resource.isLocked() && !locked_by_me){
 						def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
 						def lastBuildDescr = "Can't find any info about last successfull build"
 						if(lastDescr){
@@ -290,6 +292,8 @@ pipeline{
 						def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
 						def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
 						currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+						println "Locking vm ${lockable_resource} by current build user(${currentBuild.getBuildCauses()[0].userName}) \n Continue Build"
+						lockable_resource.setReservedBy(currentBuild.getBuildCauses()[0].userName)
 					}
 					currentBuild.description = addToDescription(
 							description: currentBuild.description,
