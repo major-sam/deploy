@@ -111,7 +111,6 @@ def lookupBranchInNexus (repoName, task){
 				'''
 				)
 		def repoMap = new JsonSlurperClassic().parseText(text)
-		println repoMap.items 
 		return (repoMap.items.size() > 0)
 	}
 }
@@ -123,9 +122,6 @@ def getNexusBranch (repoName, userTask){
 	}
 	def NotFeatureTask =  defaultNexusNaming(userTask) 
 	def hasMaster = lookupBranchInNexus(repoName, 'master')
-	println 'userTask='+ userTask
-	println 'hasMaster='+ hasMaster 
-	println 'NotFeatureTask='+ NotFeatureTask
 	if(NotFeatureTask && (lookupBranchInNexus(repoName, NotFeatureTask)) ){
 		return NotFeatureTask
 	}
@@ -140,14 +136,18 @@ def updatePom(services, branchTask){
 		nexusLookup = getNexusBranch(it, branchTask)
 		if (nexusLookup){
 			println 'Update pom '+ it + ' with ' + nexusLookup 
-			powershell script: '''
+			powershell (
+				script: '''
 				\$pom= "'''+ "${env.WORKSPACE}\\deployPom.xml" +'''"
 				\$xml= [Xml] (Get-Content \$pom)
 				((\$xml.project.build.plugins.plugin  |? {
 					\$_.artifactId -like 'maven-dependency-plugin' }).configuration.artifactItems.artifactItem| ? {
 						\$_.groupId -like "'''+ it +'''"}).artifactId = "'''+ nexusLookup  +'''"
 				\$xml.Save(\$pom)
-				'''
+				''',
+				returnStdout:true
+				)
+				
 		} 
 	}	
 }
@@ -272,24 +272,24 @@ pipeline{
 			steps{
 				script{
 					def locked= true
-						lock( resource: params.TESTVM ,skipIfLocked: true) {
-							locked = false
-						}
+					lock( resource: params.TESTVM ,skipIfLocked: true) {
+						locked = false
+					}
 					if (locked){
 						def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
-							def lastBuildDescr = "Can't find any info about last successfull build"
-							if(lastDescr){
-								lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
-							}
+						def lastBuildDescr = "Can't find any info about last successfull build"
+						if(lastDescr){
+							lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
+						}
 						currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>${lastBuildDescr}"
-							currentBuild.result = 'NOT_BUILT'
-							error('VM is LOCKED. Check Lockable Resources')
+						currentBuild.result = 'NOT_BUILT'
+						error('VM is LOCKED. Check Lockable Resources')
 					}
 					else{
 						def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-							def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
-							def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-							currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
+						def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
+						def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
+						currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
 					}
 					currentBuild.description = addToDescription(
 							description: currentBuild.description,
@@ -424,35 +424,35 @@ pipeline{
 							position: 1)
 					stage('TT Maven Deploy'){
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-							def taskBranch = getNexusBranch ('TradingTool', params.Task)
-							if (taskBranch){
-								println taskBranch
-								def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-								def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
-								configFileProvider(
-										[configFile(
-											fileId: 'mavenSettingsGlobal', 
-											targetLocation: 'MAVEN_SETTINGS.xml'),
-										configFile(
-											fileId: 'defaultPOM', 
-											targetLocation: 'pomxml')
-										]){
-									powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
-									def packageVersion = powershell (
-										script:"(Get-ChildItem -Directory .\\.mvn\\TradingTool\\TradingTool\\master).name", 
-										returnStdout: true)
-									MavenDeployResultList << [
-										Repo: 'TradingTool',
-										Branch: taskBranch,
-										Version: packageVersion.trim()
-									]
-								}
-							}
-							else{
-								println "TT has no master branch"
+						def taskBranch = getNexusBranch ('TradingTool', params.Task)
+						if (taskBranch){
+							println taskBranch
+							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
+							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+							configFileProvider(
+									[configFile(
+										fileId: 'mavenSettingsGlobal', 
+										targetLocation: 'MAVEN_SETTINGS.xml'),
+									configFile(
+										fileId: 'defaultPOM', 
+										targetLocation: 'pomxml')
+									]){
+								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								def packageVersion = powershell (
+									script:"(Get-ChildItem -Directory .\\.mvn\\TradingTool\\TradingTool\\master).name", 
+									returnStdout: true)
+								MavenDeployResultList << [
+									Repo: 'TradingTool',
+									Branch: taskBranch,
+									Version: packageVersion.trim()
+								]
 							}
 						}
-
+						else{
+							println "TT has no master branch"
+						}
+					}
+				
 					stage('TT settings'){
 						def data = readJSON file: DEPLOY_TT_JSON
 						def map = getParralelDeliveryMap(data)
@@ -460,7 +460,7 @@ pipeline{
 								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 							parallel map
-							}
+						}
 					}
 				}
 			}
@@ -488,9 +488,72 @@ pipeline{
 							description: currentBuild.description,
 							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
 							position: 1)
-					def data = readJSON file: DEPLOY_PAY_JSON 
-					def map = getParralelDeliveryMap(data)
-					parallel map
+
+					stage('PaymentBalancing Maven Deploy'){
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalancing \""
+						def taskBranch = getNexusBranch ('PaymentBalancing', params.Task)
+						if (taskBranch){
+							println taskBranch
+							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
+							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnPaymentBalancing\\\" \"-Ddeploy.groupid=PaymentBalancing\"  ${deployDir} ${deployBranch}"
+							configFileProvider(
+									[configFile(
+										fileId: 'mavenSettingsGlobal', 
+										targetLocation: 'MAVEN_SETTINGS.xml'),
+									configFile(
+										fileId: 'defaultPOM', 
+										targetLocation: 'pomxml')
+									]){
+								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								def packageVersion = powershell (
+									script:"(Get-ChildItem -Directory .\\.mvnPaymentBalancing\\PaymentBalancing\\master).name", 
+									returnStdout: true)
+								MavenDeployResultList << [
+									Repo: 'PaymentBalancing',
+									Branch: taskBranch,
+									Version: packageVersion.trim()
+								]
+							}
+						}
+						else{
+							println "PaymentBalancing has no master branch"
+						}
+					}
+					stage('PaymentBalanceReport Maven Deploy'){
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalanceReport \""
+						def taskBranch = getNexusBranch ('PaymentBalanceReport', params.Task)
+						if (taskBranch){
+							println taskBranch
+							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
+							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnPaymentBalancg\\\" \"-Ddeploy.groupid=PaymentBalanceReport\"  ${deployDir} ${deployBranch}"
+							configFileProvider(
+									[configFile(
+										fileId: 'mavenSettingsGlobal', 
+										targetLocation: 'MAVEN_SETTINGS.xml'),
+									configFile(
+										fileId: 'defaultPOM', 
+										targetLocation: 'pomxml')
+									]){
+								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								def packageVersion = powershell (
+									script:"(Get-ChildItem -Directory .\\.mvnPaymentBalancing\\PaymentBalanceReport\\master).name", 
+									returnStdout: true)
+								MavenDeployResultList << [
+									Repo: 'PaymentBalanceReport',
+									Branch: taskBranch,
+									Version: packageVersion.trim()
+								]
+							}
+						}
+						else{
+							println "PaymentBalanceReport has no master branch"
+						}
+					}
+					stage('Payments settings'){
+						def data = readJSON file: DEPLOY_PAY_JSON 
+						def map = getParralelDeliveryMap(data)
+						parallel map
+					}
 				}
 			}
 			post{
