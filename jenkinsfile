@@ -182,7 +182,7 @@ def doMavenDeploy(taskBranch){
 	}
 	services.each { service -> 
 		def packageVersion = powershell (
-			script:"(Get-ChildItem -Directory .\\.mvn\\${service}\\${taskBranch}).name", 
+			script:"(Get-ChildItem -Directory (Get-ChildItem -Directory .\\.mvn\\${service}| Select-Object -First 1).FullName).name", 
 			returnStdout: true)
 		MavenDeployResultList << [
 			Repo: service,
@@ -273,11 +273,11 @@ pipeline{
 				script{
 					def all_lockable_resources = org.jenkins.plugins.lockableresources.LockableResourcesManager.get().resources
 					def lockable_resource = all_lockable_resources.find { r-> r.getName() == params.TESTVM}
-					def boolean locked_by_me = (lockable_resource.getReservedBy() == currentBuild.getBuildCauses()[0].userName)
+					def boolean locked_by_me = ("${lockable_resource.getReservedBy()}" == "${currentBuild.getBuildCauses()[0].userName}")
 					if (locked_by_me){
 						println "Vm ${lockable_resource} is locked by current build user(${currentBuild.getBuildCauses()[0].userName}) \n Continue Build"
 					}
-					if (lockable_resource.isLocked() && !locked_by_me){
+					if (lockable_resource.isReserved() && !locked_by_me){
 						def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
 						def lastBuildDescr = "Can't find any info about last successfull build"
 						if(lastDescr){
