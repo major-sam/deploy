@@ -226,11 +226,12 @@ pipeline{
 
 	environment {
 		SERVICE_CREDS = credentials('Testkernel')
-			TT_SERVICE_CREDS = credentials('kernelsvc')
-			NEXUS_CREDS = credentials('jenkinsAD')
-			CUPIS_CERT_PASS = credentials('CupisCertPassword')
-			CUPIS_FNS_KEY = credentials('CupisFnsKey')
-			CUPIS_CERT_THUMBPRINT = credentials('CupisCertThumbprint')
+		TT_SERVICE_CREDS = credentials('kernelsvc')
+		NEXUS_CREDS = credentials('jenkinsAD')
+		CUPIS_CERT_PASS = credentials('CupisCertPassword')
+		CUPIS_FNS_KEY = credentials('CupisFnsKey')
+		CUPIS_CERT_THUMBPRINT = credentials('CupisCertThumbprint')
+		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 	}
 
 	agent {label "${TESTVM}" }
@@ -343,6 +344,12 @@ pipeline{
 						file (
 							credentialsId: 'test.payment.service', 
 							variable: 'TESTPAYMENTSERVICE'),
+						file (
+							credentialsId: 'testCupis', 
+							variable: 'TESTCUPISCERT'),
+						file (
+							credentialsId: 'testCupisCA', 
+							variable: 'TESTCUPISCA'),
 				]){
 					script{
 						def data = readJSON file: DEPLOY_JSON 

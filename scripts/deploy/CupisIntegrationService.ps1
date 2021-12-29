@@ -37,6 +37,8 @@ $config.VirtualMachines.EnableMultiNotification = "false"
 $config.DocumentImages.UploadServiceAddress = "http://localhost:8123"
 $config.Authorization.Realm = "https://vm4-p0.bb-webapps.com:4453/"
 
+$config.Bus.CupisCallbackBusConnectionString = "host=$($env:COMPUTERNAME);username=test;password=test"
+
 
 ConvertTo-Json $config -Depth 4  | Format-Json | Set-Content "$ServiceFolderPath\appsettings.json" -Encoding UTF8
 # Создаем БД CupisIntegrationService
@@ -91,5 +93,6 @@ $config.Cupis.BackupBaseUrl = $CupisBackupBaseUrl
 $config.Cupis.CertThumbprint = $CupisCertThumbprint
 $config.Fns.BaseUrl = $FnsBaseUrl
 $config.Fns.Key = $FnsKey
+
 
 ConvertTo-Json $config -Depth 5| Format-Json | Set-Content "${ServiceFolderPath}\appsettings.json" -Encoding utf8
