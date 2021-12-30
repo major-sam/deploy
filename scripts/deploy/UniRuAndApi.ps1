@@ -5,6 +5,16 @@
 $targetDir = "C:\inetpub\ClientWorkPlace\UniRu"
 $apiTargetDir = "C:\inetpub\ClientWorkPlace\UniruWebApi"
 
+# Проверяем существует ли каталог
+if (Test-Path -Path $apiTargetDir) {
+	Write-Host -ForegroundColor Green "[INFO] Target $apiTargetDir exists"
+} else {
+	$apiTargetDir = "C:\inetpub\ClientWorkPlace\webapi"
+}
+
+$webConfig = "$targetDir\Web.config"
+$apiWebConfig = "$apiTargetDir\Web.config"
+
 $sourceFile = "$($env:workspace)\scripts\deploy\UniRu.sql"
 $oldIp = '#VM_IP'
 $oldHostname = '#VM_HOSTNAME'
@@ -12,8 +22,7 @@ $IPAddress = (Get-NetIPAddress -AddressFamily ipv4 |  Where-Object -FilterScript
 $ProgressPreference = 'SilentlyContinue'
 $release_bak_folder = "\\server\tcbuild$\Testers\DB"
 $queryTimeout = 720
-$webConfig = "$targetDir\Web.config"
-$apiWebConfig = "$apiTargetDir\Web.config"
+
 $dbs = @(
 	@{
 		DbName = "UniRu"
@@ -30,6 +39,7 @@ $dbs = @(
 		)    
 	}
 )
+
 
 ###Create dbs
 Write-Host -ForegroundColor Green "[INFO] Create dbs"
