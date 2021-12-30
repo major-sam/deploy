@@ -65,6 +65,8 @@ $obj = $webdoc.configuration.connectionStrings.add | where {$_.name -eq 'UniPaym
 $obj.connectionString = "https://${env:COMPUTERNAME}.bb-webapps.com:54381"
 $obj = $webdoc.configuration.cache.db
 $obj.connection = "data source=localhost;initial catalog=UniRu;Integrated Security=true;MultipleActiveResultSets=True;"
+($webdoc.configuration.Grpc.services.add | where {$_.name -eq 'DefaultService' }).host = $IPAddress
+($webdoc.configuration.Grpc.services.add | where {$_.name -eq 'PromocodeAdminService' }).host = $IPAddress
 $webdoc.Save($webConfig)
 
 
@@ -84,6 +86,8 @@ $ConnectionStringsAdd = $webdoc.CreateElement('add')
 $ConnectionStringsAdd.SetAttribute("name","OAuth.LastLogoutUrl")
 $ConnectionStringsAdd.SetAttribute("connectionString","https://${env:COMPUTERNAME}.gkbaltbet.local:449/account/logout/last")
 $webdoc.configuration.connectionStrings.AppendChild($ConnectionStringsAdd)
+($webdoc.configuration.Grpc.services.add | where {$_.name -eq 'DefaultService' }).host = $IPAddress
+($webdoc.configuration.Grpc.services.add | where {$_.name -eq 'PromocodeAdminService' }).host = $IPAddress
 $webdoc.Save($apiWebConfig)
 
 Write-Host -ForegroundColor Green "[INFO] Done"
