@@ -4,7 +4,7 @@ WHEN 'Global.GlobalLog.BaltBetClientStatistics.StatisticsHandlerUrl' THEN 'https
 WHEN 'PlayerIdentificationSettings.DocumentUploadSettings.RecognitionCompletingPassportAddress' THEN 'http://localhost:8123/api/AccountFiles/Cps/completingPassportData/{0}'
 WHEN 'PlayerIdentificationSettings.DocumentUploadSettings.RecognitionResultsAddress' THEN 'http://localhost:8123/api/AccountFiles/Cps/completingPassportData/{0}'
 WHEN 'PlayerIdentificationSettings.DocumentUploadSettings.UploadingDocumentAddress' THEN 'http://localhost:8123/api/AccountFiles/Cps/Upload/{0}/{1}/{2}'
-WHEN 'Global.MessagesServiceSettings.URL' THEN 'https://#VM_HOSTNAME.bb-webapps.com::4442/ '
+WHEN 'Global.MessagesServiceSettings.URL' THEN 'https://#VM_HOSTNAME.bb-webapps.com:4442/ '
 WHEN 'Global.SignalR.Remote.Endpoint' THEN 'https://#VM_HOSTNAME.bb-webapps.com:8491/'
 WHEN 'Registration.InSessionDataEncrptionPassphrase' THEN 'Qwerty1z'
 WHEN 'SupportContacts.SupportEmail' THEN 'report@baltbet.ru'
