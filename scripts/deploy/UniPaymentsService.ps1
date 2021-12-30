@@ -6,12 +6,11 @@ import-module '.\scripts\sideFunctions.psm1'
 $ConfigPath = "c:\Services\UniPaymentsService\appsettings.json"
 Write-Host -ForegroundColor Green "[INFO] Change settings $ConfigPath"
 $config = Get-Content -Raw -path $ConfigPath 
-$json_appsetings = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
-$json_appsetings.ConnectionStrings.UniSiteSettings = "data source=localhost;initial catalog=UniRu;Integrated Security=SSPI;MultipleActiveResultSets=True;"
-$json_appsetings.Origins =@( "https://$($env:COMPUTERNAME).bb-webapps.com:4443",
+$json_appsettings = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
+$json_appsettings.ConnectionStrings.UniSiteSettings = "data source=localhost;initial catalog=UniRu;Integrated Security=SSPI;MultipleActiveResultSets=True;"
+$json_appsettings.Origins =@( "https://$($env:COMPUTERNAME).bb-webapps.com:4443",
  "https://$($env:COMPUTERNAME).bb-webapps.com:4444",
  "https://$($env:COMPUTERNAME).bb-webapps.com:4445")
-ConvertTo-Json $json_appsetings -Depth 4 | Format-Json | Set-Content $ConfigPath -Encoding UTF8
 $json_appsettings.Grpc.Services | % {
 	if ($_.name -like "DefaultService" ){
 		$_.Host = $env:COMPUTERNAME 

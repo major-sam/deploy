@@ -33,8 +33,9 @@ $paths = @(
 	"C:\Services\PersonalInfoCenter\NotificationService\Log.config"
 	)
 $paths | % { 
+    $svc = (get-item $_).Directory.Name
 	$webdoc = [Xml](Get-Content $_)
-	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\$($_.Directory.name)-"
+	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\$svc-"
 	$webdoc.Save($_)
 }
 CreateSqlDatabase ("NotificationService")
