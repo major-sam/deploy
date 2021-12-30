@@ -35,7 +35,7 @@ $paths = @(
 $paths | % { 
     $svc = (get-item $_).DirectoryName
 	$webdoc = [Xml](Get-Content $_)
-	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\$($svc)-"
+	$webdoc.log4net.appender.file.value = "c:\logs\PersonalInfoCenter\$($_.Directory.name)-"
 	$webdoc.Save($_)
 }
 CreateSqlDatabase ("NotificationService")
