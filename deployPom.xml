@@ -144,7 +144,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter/MessageService</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>AdminMessageService</groupId>
@@ -153,7 +153,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter/AdminMessageService</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>PromocodeService</groupId>
@@ -162,7 +162,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter/PromocodeService</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>PushService</groupId>
@@ -171,7 +171,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter/PushService</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>IdentificationDocumentService</groupId>

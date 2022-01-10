@@ -7,7 +7,7 @@ $config = $config -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?
 
 $config.Serilog.WriteTo|% {
 	if ($_.Name -like 'File'){
-		$_.Args.pathFormat	= "C:\logs\PersonalInfoCenter\PromoCodeService-{Date}.log"
+		$_.Args.path=  "C:\logs\PersonalInfoCenter\PromoCodeService-{Date}.log"
 	}
 }
 
