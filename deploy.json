@@ -35,8 +35,17 @@
         "name": "Website",
         "source": ".\\scripts\\deploy\\Website.ps1"
     }, {
-        "name": "PersonalInfoCenter",
-        "source": ".\\scripts\\deploy\\PersonalInfoCenter.ps1"
+        "name": "AdminMessageService",
+        "source": ".\\scripts\\deploy\\AdminMessageService.ps1"
+    }, {
+        "name": "PromocodeService",
+        "source": ".\\scripts\\deploy\\PromocodeService.ps1"
+    }, {
+        "name": "PushService",
+        "source": ".\\scripts\\deploy\\PushService.ps1"
+    }, {
+        "name": "MessageService",
+        "source": ".\\scripts\\deploy\\MessageService.ps1"
     }, {
         "name": "cert",
         "source": ".\\scripts\\deploy\\cert.ps1"

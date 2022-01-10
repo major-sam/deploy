@@ -138,13 +138,40 @@
 						<outputDirectory>c:/inetpub/Website</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
-						<groupId>PersonalInfoCenter</groupId>
+						<groupId>MessageService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter/MessageService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>AdminMessageService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/PersonalInfoCenter/AdminMessageService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>PromocodeService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/PersonalInfoCenter/PromocodeService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>PushService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/PersonalInfoCenter/PushService</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>IdentificationDocumentService</groupId>
