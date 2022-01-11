@@ -12,8 +12,8 @@ $webConfig = "$targetDir\index.html"
 Write-Host -ForegroundColor Green "[info] edit json files"
 $jsonAppsetings = Get-Content -Raw -path $pathtojson | ConvertFrom-Json 
 $jsonAppsetings.apiUrl = "https://$($env:COMPUTERNAME).$($defaultDomain):9880"
+$jsonAppsetings.uniAuthorizeUrl = "https://$($env:COMPUTERNAME).$($defaultDomain):44306/marketing/authorize"
 $content = ConvertTo-Json $jsonAppsetings -Depth  1 | Format-Json 
-$content.getType()
 Set-Content -path $pathtojson -Encoding UTF8 -Value $content
 Write-Host -ForegroundColor Green "$pathtojson renewed with json depth 1"
 ###
