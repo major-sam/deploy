@@ -1,6 +1,8 @@
 import-module '.\scripts\sideFunctions.psm1'
 
 ##Credential provided by jenkins
+New-Item -Type Directory C:\inetpub\images\
+
 $username = "$($ENV:SERVICE_CREDS_USR)" 
 $pass =  "$($ENV:SERVICE_CREDS_PSW)"
 $preloader = "SitePreload"
@@ -177,6 +179,17 @@ $IISPools = @(
 		siteSubDir = $true
     }
     @{
+        SiteName = 'images'
+        RuntimeVersion = 'v4.0'
+        DomainAuth =  $false
+        Bindings= @(
+                @{protocol='https';bindingInformation="*:443:$($env:COMPUTERNAME).$($wildcardDomain)"}
+            )
+		CertPath = 'Cert:\LocalMachine\My\38be86bcf49337804643a671c4c56bc4224c6606'
+		rootDir = 'c:\inetpub'
+		siteSubDir = $true
+    }
+    @{
         SiteName = 'WebTouch'
         RuntimeVersion = 'v4.0'
         DomainAuth =  @{
@@ -237,3 +250,6 @@ if ( (C:\Windows\system32\inetsrv\appcmd.exe  list config   -section:system.appl
 $WebSiteName = "UniRu"
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartEnabled -Value True
 Set-WebConfigurationProperty -Filter "system.applicationHost/sites/site[@name='$WebSiteName']/applicationDefaults" -Name serviceAutoStartProvider -Value $preloader
+
+C:\Windows\system32\inetsrv\appcmd.exe set config "images" /section:directorybrowse /enabled:true
+

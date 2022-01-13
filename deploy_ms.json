@@ -1,23 +1,20 @@
 [{
-        "name": "MS",
-        "source": ".\\scripts\\deploy\\ms\\MarketingService.ps1"
+        "name": "Admin",
+        "source": ["Marketing_Admin_Angular.ps1"]
     }, {
-        "name": "MS-DB",
-        "source": ".\\scripts\\deploy\\ms\\MarketingServiceDB.ps1"
+        "name": "APKService",
+        "source": ["MarketingService.ApkService.ps1"]
     }, {
-        "name": "MS-APKSvc",
-        "source": ".\\scripts\\deploy\\ms\\MarketingService.ApkService.ps1"
+        "name": "Client",
+        "source": [
+            "Marketing_Client_Angular.ps1",
+            "MarketingImages.ps1"
+        ]
     }, {
-        "name": "MS-Client",
-        "source": ".\\scripts\\deploy\\ms\\Marketing_Client_Angular.ps1"
-    }, {
-        "name": "MS-Admin",
-        "source": ".\\scripts\\deploy\\ms\\Marketing_Admin_Angular.ps1"
-    }, {
-        "name": "MS-Images",
-        "source": ".\\scripts\\deploy\\ms\\MarketingImages.ps1"
-    }, {
-        "name": "MS placeholder",
-        "source": "echo 'marketing service placeholder'"
+        "name": "Service",
+        "source": [
+            "Service.ps1",
+            "DB.ps1"
+        ]
     }
 ]

@@ -1,11 +1,10 @@
 [{
-        "name": "MarketingService.ApkService",
-        "source": ".\\scripts\\post\\ms\\MarketingService.ApkService.ps1"
+        "name": "ApkService",
+        "source": ["ApkService.ps1"]
     }, {
-        "name": "MarketingService",
-        "source": ".\\scripts\\post\\ms\\MarketingService"
-    }, {
-        "name": "Marketing service placeholder",
-        "source": "echo 'Marketing service placeholder'"
+        "name": "Service",
+        "source": [
+            "Service.ps1"
+        ]
     }
 ]

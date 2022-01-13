@@ -1,56 +1,74 @@
 [{
         "name": "CIS",
-        "source": ".\\scripts\\post\\CIS.ps1 "
+        "source": [
+            "CIS.ps1"
+        ]
     }, {
         "name": "Kernel",
-        "source": ".\\scripts\\post\\Kernel.ps1 "
+        "source": [
+            "Kernel.ps1"
+        ]
     }, {
-        "name": "rabbitmq",
-        "source": ".\\scripts\\post\\rabbitmq.ps1 "
+        "name": "Services",
+        "source": [
+            "rabbitmq.ps1",
+            "Logs.ps1",
+            "Memurai.ps1"
+        ]
     }, {
         "name": "UniRu",
-        "source": ".\\scripts\\post\\UniRu.ps1 "
-    }, {
-        "name": "Memurai",
-        "source": ".\\scripts\\post\\Memurai.ps1 "
-    }, {
-        "name": "UniWebApiAuth",
-        "source": ".\\scripts\\post\\UniWebApiAuth.ps1 "
+        "source": [
+            "UniRu.ps1"
+        ]
     }, {
         "name": "PersonalInfoCenter",
-        "source": ".\\scripts\\post\\PersonalInfoCenter.ps1 "
-    }, {
-        "name": "Logs",
-        "source": ".\\scripts\\post\\logs.ps1 "
+        "source": [
+            "PersonalInfoCenter.ps1"
+        ]
     }, {
         "name": "PaymentCupis",
-        "source": ".\\scripts\\post\\PaymentCupis.ps1 "
-    }, {
-        "name": "UniPaymentsService",
-        "source": ".\\scripts\\post\\UniPaymentsService.ps1 "
+        "source": [
+            "PaymentCupis.ps1"
+        ]
     }, {
         "name": "ReportService",
-        "source": ".\\scripts\\post\\ReportService.ps1 "
+        "source": [
+            "ReportService.ps1"
+        ]
     }, {
         "name": "ActionLogService",
-        "source": ".\\scripts\\post\\ActionLogService.ps1 "
+        "source": [
+            "ActionLogService.ps1"
+        ]
     }, {
         "name": "SuperExpressService",
-        "source": ".\\scripts\\post\\SuperExpressService.ps1 "
+        "source": [
+            "SuperExpressService.ps1"
+        ]
     }, {
         "name": "CoefService",
-        "source": ".\\scripts\\post\\CoefService.ps1 "
+        "source": [
+            "CoefService.ps1"
+        ]
     }, {
         "name": "CashBookService",
-        "source": ".\\scripts\\post\\CashBookService.ps1 "
+        "source": [
+            "CashBookService.ps1"
+        ]
     }, {
         "name": "ComAccounts",
-        "source": ".\\scripts\\post\\ComAccounts.ps1 "
+        "source": [
+            "ComAccounts.ps1"
+        ]
     }, {
         "name": "IdentificationDocumentService",
-        "source": ".\\scripts\\post\\IdentificationDocumentService.ps1 "
+        "source": [
+            "IdentificationDocumentService.ps1"
+        ]
     }, {
         "name": "TicketService",
-        "source": ".\\scripts\\post\\TicketService.ps1 "
+        "source": [
+            "TicketService.ps1"
+        ]
     }
 ]

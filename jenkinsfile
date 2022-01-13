@@ -1,4 +1,4 @@
-@Library("JenkinsCI") _
+@Library(["JenkinsCI", "DeployLib"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -24,204 +24,86 @@ mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
 PAYBadgeId = 'PayBadgeId'
 MSBadgeId = 'MSBadgeId'
-def BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
-def getLastSuccessfullTaskJobDescription(node){
-	def test_job = Jenkins.instance.getItemByFullName(JOB_NAME)
-		prev_sucessful_build=test_job.getLastSuccessfulBuild()
-		while (prev_sucessful_build){
-			prev_sucessful_build_descr=prev_sucessful_build.getDescription()
-				if(prev_sucessful_build_descr){
-					if (prev_sucessful_build_descr.contains("${node}")){
-						def matches = (prev_sucessful_build_descr =~ /Task\(Branch\):.*$/) 
-							return [
-							matches[0], 
-							prev_sucessful_build.getId(), 
-							prev_sucessful_build.getCauses()[0].shortDescription as String]
-					}
-					else{
-						prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-							prev_sucessful_build_descr = false
-					}
-				}
-				else{
-					prev_sucessful_build = prev_sucessful_build.getPreviousSuccessfulBuild()
-						prev_sucessful_build_descr = false
-				}
-		}
-}
-def	addToDescription(Map config = [:]){
-	def String result = ""
-		if (config.position instanceof Integer){
-			def splitedDescr = config.description.split('<br>') as List
-				splitedDescr.add(config.position, config.html)
-				result = splitedDescr.join('<br>')
-		}
-		else{
-			result = "$config.description <br> $config.html"
-		}
+def BuildBadge = addEmbeddableBadgeConfiguration(
+	id: mainBadgeId, 
+	subject: "Windows Deploy"
+	)
+
+
+def getParralelDeliveryMap(Map config = [:]){
+	envOS = isUnix() ? "linux" : "windows"
+	def result = config.jsonMap.collectEntries {[
+		(it['name']) : {
+			stage(it['name']){
+				generateStages(it, config.stage)
+			}
+		}]
+	}
 	return result
 }
 
-//def getNexusArtifactList(){
-//	withCredentials([file(credentialsId: 'NexusNetRC', variable: 'NexusNetRC')]){
-//		def text = powershell (
-//				returnStdout: true,
-//				script :  '''
-//				curl.exe --netrc-file "$env:NexusNetRC" `
-//				-X GET  "http://nexus:8081/service/rest/v1/repositories?type=hosted" `
-//				-H "accept: application/json"
-//				'''
-//				)
-//		def scriptMap = new JsonSlurperClassic().parseText(text)
-//		def repos = scriptMap.findAll{ it.format == "maven2" &&  it.type == "hosted"}
-//		return repos*.name
-//	}
-//}
-
-def getVmList(int max){
-	def ints = 10..max
-		def VM_LIST = [
-			"devops-test-vm1",
-			"devops-test-vm2", 
-			"devops-test-vm3",
-			"devops-test-vm4",
-			"devops-test-vm5",
-			"devops-test-vm6",
-			"devops-test-vm7",
-			"devops-test-vm8",
-			"devops-test-vm9"
-		]
-		for (id in ints){
-			VM_LIST += "devops-testvm${id}"
-		}
-	return VM_LIST
-}
-
-def lookupBranchInNexus (repoName, task){
-	withCredentials([file(credentialsId: 'NexusNetRC', variable: 'NexusNetRC')]){
-		def text = powershell (
-				returnStdout: true,
-				script : '''
-				curl.exe --netrc-file "$env:NexusNetRC" `
-					-X GET "http://nexus:8081/service/rest/v1/search/assets?repository=''' +repoName+
-					'''&maven.groupId='''+repoName+
-					'''&maven.artifactId='''+task+'''&maven.extension=zip" `
-					-H "accept: application/json" 4>&1 2>out-null
-				'''
-				)
-		def repoMap = new JsonSlurperClassic().parseText(text)
-		return (repoMap.items.size() > 0)
-	}
-}
-
-def getNexusBranch (repoName, userTask){
-	if (userTask =~ /^[A-Z]{2,}-\d+$/){
-		if (lookupBranchInNexus(repoName , userTask)) { return userTask }
-        if (lookupBranchInNexus(repoName , "feature-${userTask}")) { return  "feature-${userTask}" }
-	}
-	def NotFeatureTask =  defaultNexusNaming(userTask) 
-	def hasMaster = lookupBranchInNexus(repoName, 'master')
-	if(NotFeatureTask && (lookupBranchInNexus(repoName, NotFeatureTask)) ){
-		return NotFeatureTask
-	}
-	else{
-		return  (hasMaster) ? 'master' : false
-	}
-}
-
-
-def updatePom(services, branchTask){
-	services.each{ 
-		nexusLookup = getNexusBranch(it, branchTask)
-		if (nexusLookup && nexusLookup != 'master'){
-			println 'Update pom '+ it + ' with ' + nexusLookup 
+def generateStages(job, stageName) {
+    Closure stagesResult = {}
+    for (stageScript in job['source']) {
+		subStageName = stageScript.split('\\.')[0]
+        stagesResult << stage(subStageName){ 
+			libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+			libScript =libraryResource libScriptPath
 			powershell (
-				script: '''
-				\$pom= "'''+ "${env.WORKSPACE}\\deployPom.xml" +'''"
-				\$xml= [Xml] (Get-Content \$pom)
-				((\$xml.project.build.plugins.plugin  |? {
-					\$_.artifactId -like 'maven-dependency-plugin' }).configuration.artifactItems.artifactItem| ? {
-						\$_.groupId -like "'''+ it +'''"}).artifactId = "'''+ nexusLookup  +'''"
-				\$xml.Save(\$pom)
-				''',
-				returnStdout:true
-				)
-				
-		} 
-	}	
-}
-
-def getPomServices(){
-	def services = powershell(
-		returnStdout: true,
-		script:'''
-			\$pom= "'''+ "${env.WORKSPACE}\\deployPom.xml" +'''"
-			\$xml= [Xml] (Get-Content \$pom)
-			\$artifacts=(\$xml.project.build.plugins.plugin  |? {
-					 \$_.artifactId -like 'maven-dependency-plugin' }).configuration.artifactItems.artifactItem| % {
-									 \$_.groupId} 
-			 Write-Output ($artifacts -join ",")''',
-		 encoding: 'UTF8').split(',') as List
-	services[-1] = services[-1].replaceAll("[^A-Za-z0-9]", "")
-	println services
-	return services
-}
-
-def doMavenDeploy(taskBranch){
-	services = getPomServices()
-	updatePom(services,taskBranch)
-	def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\\" "
-	configFileProvider(
-			[
-			configFile(
-				fileId: 'mavenSettingsGlobal', 
-				targetLocation: 'MAVEN_SETTINGS.xml')
-			]){
-		powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f deployPom.xml ${deployParams}"
-	}
-	services.each { service -> 
-		def packageBranch = powershell (
-			script:"(Get-ChildItem -Directory .\\.mvn\\${service}| Select-Object -First 1).name", 
-			returnStdout: true)
-		def packageVersion = powershell (
-			script:"(Get-ChildItem -Directory (Get-ChildItem -Directory .\\.mvn\\${service}| Select-Object -First 1).FullName).name", 
-			returnStdout: true)
-		MavenDeployResultList << [
-			Repo: service,
-			Branch: packageBranch.trim(),
-			Version: packageVersion.trim()
-		]
-	}
-}
-
-
-def getParralelDeliveryMap(src){
-	return src.collectEntries{[ (it['name']) : deliverSources(it)
-	]}
-}
-
-def deliverSources(src){
-	return{
-		stage(src['name']){ 
-			powershell (
-					encoding:'UTF8', 
-					script:"${src['source']}"
+					encoding: 'UTF8', 
+					script: libScript,
+					label: libScriptPath
 					)
 		}
 	}
+    return stagesResult 
 }
 
+def getVmList(int max){
+	def ints = 10..max
+	def VM_LIST = [
+		"devops-test-vm1",
+		"devops-test-vm2", 
+		"devops-test-vm3",
+		"devops-test-vm4",
+		"devops-test-vm5",
+		"devops-test-vm6",
+		"devops-test-vm7",
+		"devops-test-vm8",
+		"devops-test-vm9"
+	]
+	for (id in ints){
+		VM_LIST += "devops-testvm${id}"
+	}
+	return VM_LIST
+}
 
 pipeline{
 
 	parameters {
 		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getVmList(100)
-		booleanParam name: "CUSTOM_TAG", description:'Enable tag chooser', defaultValue: false
-		booleanParam name: "DEPLOY_MS", description:'Deploy Marketing Service', defaultValue: false
-		booleanParam name: "DEPLOY_PAY", description:'Deploy Payment Balanser', defaultValue: false
-		booleanParam name: "DEPLOY_TT", description:'Deploy Trading Tool', defaultValue: false
+		booleanParam (
+			name: "CUSTOM_TAG",
+			description:'Enable tag chooser',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "DEPLOY_MS",
+			description:'Deploy Marketing Service',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "DEPLOY_PAY",
+			description:'Deploy Payment Balanser',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "DEPLOY_TT",
+			description:'Deploy Trading Tool', 
+			defaultValue: false
+			)
 	}
 
 	environment {
@@ -255,19 +137,19 @@ pipeline{
 			steps{
 				script{
 					BuildBadge.setStatus('running')
-						def tags = powershell(
-								returnStdout:true,
-								encoding:'UTF-8',
-								script:'git tag'
-								).split("\\r?\\n") as List
-						if (tags[0] =~ /[a-zA-Z]/){
-							tags.add(0,"Latest Commit")
-								tag = input message: 'Choose release to deploy', ok: 'Deploy!',
-							parameters: [choice (name: '', choices: tags, description: "Choose release")]
-								if(tag != "Latest Commit"){
-									powershell "git checkout tags/${tag}"
-								}
+					def tags = powershell(
+							returnStdout:true,
+							encoding:'UTF-8',
+							script:'git tag'
+							).split("\\r?\\n") as List
+					if (tags[0] =~ /[a-zA-Z]/){
+						tags.add(0,"Latest Commit")
+						tag = input message: 'Choose release to deploy', ok: 'Deploy!',
+						parameters: [choice (name: '', choices: tags, description: "Choose release")]
+						if(tag != "Latest Commit"){
+							powershell "git checkout tags/${tag}"
 						}
+					}
 				}
 			}
 		}
@@ -276,32 +158,64 @@ pipeline{
 			steps{
 				script{
 					def all_lockable_resources = org.jenkins.plugins.lockableresources.LockableResourcesManager.get().resources
-					def lockable_resource = all_lockable_resources.find { r-> r.getName() == params.TESTVM}
-					def boolean locked_by_me = ("${lockable_resource.getReservedBy()}" == "${currentBuild.getBuildCauses()[0].userName}")
+					def lockable_resource = all_lockable_resources.find { r->
+						r.getName() == params.TESTVM
+						}
+					def boolean locked_by_me = (
+						"${lockable_resource.getReservedBy()}" ==
+							"${currentBuild.getBuildCauses()[0].userName}"
+						)
 					if (locked_by_me){
-						println "Vm ${lockable_resource} is locked by current build user(${currentBuild.getBuildCauses()[0].userName}) \n Continue Build"
+						println "Vm ${lockable_resource}" +
+							" is locked by current build user (" +
+							currentBuild.getBuildCauses()[0].userName +
+							") \n Continue Build"
 					}
 					if (lockable_resource.isReserved() && !locked_by_me){
-						def lastDescr = getLastSuccessfullTaskJobDescription(NODE_NAME)
+						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
 						def lastBuildDescr = "Can't find any info about last successfull build"
 						if(lastDescr){
-							lastBuildDescr ="Last successfull build ${lastDescr[1]} ${lastDescr[2]} <br>Last  ${lastDescr[0]}"
+							lastBuildDescr ="Last successfull build " +
+								lastDescr[1] +' '+ lastDescr[2] +
+								" <br>Last  ${lastDescr[0]}"
 						}
-						currentBuild.description = "VM ${params.TESTVM} is Locked.Skipped <br><p><a href=\"${JENKINS_URL}lockable-resources/\">Remove VM Lock</a><p><br>${lastBuildDescr}"
+						currentBuild.description = "VM ${params.TESTVM} is Locked. " +
+							" Skipped <br><p><a href='" + 
+							"${JENKINS_URL}lockable-resources/"+
+							"'>Remove VM Lock</a><p><br>${lastBuildDescr}"
 						currentBuild.result = 'NOT_BUILT'
 						error('VM is LOCKED. Check Lockable Resources')
 					}
 					else{
-						def GIT_COMMIT_MSG = powershell (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-						def GIT_COMMIT = powershell (script: 'git log -1 --pretty=%h', returnStdout: true).trim()
-						def BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].shortDescription} / ${currentBuild.getBuildCauses()[0].userId}"
-						currentBuild.description = "${currentBuild.description ? currentBuild.description + '<br>' : ''}vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}<br>CommitMsg: ${GIT_COMMIT_MSG}<br>CommitHash: ${GIT_COMMIT}<br>Task(Branch): ${params.Task}"
-						println "Locking vm ${lockable_resource} by current build user(${currentBuild.getBuildCauses()[0].userName}) \n Continue Build"
-						lockable_resource.setReservedBy(currentBuild.getBuildCauses()[0].userName)
+						def GIT_COMMIT_MSG = powershell (
+							script: 'git log -1 --pretty=%B ${GIT_COMMIT}', 
+							returnStdout: true, 
+							label: "get commit message").trim()
+						def GIT_COMMIT = powershell (
+							script: 'git log -1 --pretty=%h', 
+							label: "get commit message",
+							returnStdout: true).trim()
+						def BUILD_TRIGGER_BY = (
+							currentBuild.getBuildCauses()[0].shortDescription) + 
+							"/" + currentBuild.getBuildCauses()[0].userId
+						currentBuild.description = (
+							currentBuild.description ? currentBuild.description +'<br>' : '') +
+							"vm: ${TESTVM}<br>${BUILD_TRIGGER_BY}" +
+							"<br>CommitMsg: ${GIT_COMMIT_MSG}" +
+							"<br>CommitHash: ${GIT_COMMIT}"+
+							"<br>Task(Branch): ${params.Task}"
+						println "Locking vm ${lockable_resource}" +
+							" by current build user("+
+							currentBuild.getBuildCauses()[0].userName +
+							") \n Continue Build"
+						lockable_resource.setReservedBy(
+							currentBuild.getBuildCauses()[0].userName
+							)
 					}
-					currentBuild.description = addToDescription(
+					currentBuild.description = utils.addToDescription(
 							description: currentBuild.description,
-							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
+							html: "<a href='${BUILD_URL}'>" +
+								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
 							position: 0 )
 				}
 			}
@@ -310,23 +224,28 @@ pipeline{
 		stage('Cleanup'){
 			steps{
 				script{
-					def data = readJSON file: CLEAN_JSON
-					def map = getParralelDeliveryMap(data)
-					parallel map
+					def funcFile =libraryResource '/windows/sideFunctions.psm1' 
+					writeFile (
+						file: '.\\scripts\\sideFunctions.psm1',
+						text: funcFile)
+					parallel (getParralelDeliveryMap(
+							jsonMap: readJSON (file: CLEAN_JSON), 
+							stage: STAGE_NAME)
+					)
 				}
 			}
 		}
-		
 
-		stage('Mvn Deploy'){
+		stage('Get maven packages'){
 			steps{
 				script{
-					doMavenDeploy(params.Task)
+					def result = utils.doMavenDeploy(params.Task)
+					MavenDeployResultList << result
 				}
 			}
 		}
 
-		stage('Deploy Scripts'){ 
+		stage('Deploy'){ 
 			steps{
 				withCredentials([
 						file ( 
@@ -352,9 +271,11 @@ pipeline{
 							variable: 'TESTCUPISCA'),
 				]){
 					script{
-						def data = readJSON file: DEPLOY_JSON 
-						def map = getParralelDeliveryMap(data)
-						parallel map
+						def List scriptFile =readJSON (file: DEPLOY_JSON ) 
+						parallel (getParralelDeliveryMap(
+							jsonMap: scriptFile, 
+							stage: STAGE_NAME)
+						)
 					}
 				}
 			}
@@ -368,20 +289,24 @@ pipeline{
 			}
 			steps{
 				script{
-					stage('Marketing Maven Deploy'){
+					stage('Get marketing maven packages'){
 						MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
 						MSBadge.setStatus('running')
-						currentBuild.description = addToDescription(
+						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+								html: "<a href='${BUILD_URL}'>" +
+									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
 								position: 1)
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
-						def taskBranch = getNexusBranch ('Marketing', params.Task)
+						def taskBranch = utils.getNexusBranch ('Marketing', params.Task)
 						println taskBranch
 						if (taskBranch){
 							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnMarketing\\\" \"-Ddeploy.groupid=Marketing\"  ${deployDir} ${deployBranch}"
+							def deployParams = "\"-Dmaven.repo.local=" +
+								"${env.WORKSPACE}\\.mvn\\\"" +
+								" \"-Ddeploy.groupid=Marketing\"" +
+								" ${deployDir} ${deployBranch}"
 							configFileProvider(
 									[configFile(
 										fileId: 'mavenSettingsGlobal', 
@@ -390,9 +315,13 @@ pipeline{
 										fileId: 'defaultPOM', 
 										targetLocation: 'pomxml')
 									]){
-								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								powershell script: "mvn clean versions:use-latest-releases" +
+									" dependency:unpack -s MAVEN_SETTINGS.xml"+
+									" -f pomxml ${deployParams}"
 								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvnMarketing\\Marketing\\${taskBranch}).name", 
+									script:"(Get-ChildItem -Directory "+ 
+									".\\.mvnMarketing\\Marketing\\"+
+									taskBranch+").name", 
 									returnStdout: true)
 								MavenDeployResultList << [
 									Repo: 'Marketing',
@@ -405,10 +334,13 @@ pipeline{
 							println "Marketing repo has no master branch"
 						}
 					}
-					stage('marketing settings'){
-						def data = readJSON file: DEPLOY_MS_JSON
-						def map = getParralelDeliveryMap(data)
-						parallel map
+					stage('DeployMS'){
+						def List scriptFile =readJSON (file: DEPLOY_MS) 
+						parallel (
+							getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: STAGE_NAME)
+						)
 					}
 				}
 			}
@@ -430,19 +362,26 @@ pipeline{
 			}
 			steps{
 				script{
-					TTBadge = addEmbeddableBadgeConfiguration(id: TTBadgeId, subject: "TT Deploy")
+					TTBadge = addEmbeddableBadgeConfiguration(
+						id: TTBadgeId,
+						subject: "TT Deploy"
+						)
 					TTBadge.setStatus('running')
-					currentBuild.description = addToDescription(
+					currentBuild.description = utils.addToDescription(
 							description: currentBuild.description,
-							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+							html: "<a href='${BUILD_URL}'>"+
+								"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
 							position: 1)
-					stage('TT Maven Deploy'){
+					stage('Get TT maven packages'){
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-						def taskBranch = getNexusBranch ('TradingTool', params.Task)
+						def taskBranch = utils.getNexusBranch ('TradingTool', params.Task)
 						if (taskBranch){
 							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\TradingTool\\\" \"-Ddeploy.groupid=TradingTool\"  ${deployDir} ${deployBranch}"
+							def deployParams = "\"-Dmaven.repo.local=" +
+								"${env.WORKSPACE}\\.mvn\\\""+
+								" \"-Ddeploy.groupid=TradingTool\""+
+								" ${deployDir} ${deployBranch}"
 							configFileProvider(
 									[configFile(
 										fileId: 'mavenSettingsGlobal', 
@@ -451,9 +390,13 @@ pipeline{
 										fileId: 'defaultPOM', 
 										targetLocation: 'pomxml')
 									]){
-								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								powershell script:"mvn clean versions:use-latest-releases"+
+									" dependency:unpack -s MAVEN_SETTINGS.xml"+
+									" -f pomxml ${deployParams}"
 								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvn\\TradingTool\\TradingTool\\master).name", 
+									script: "(Get-ChildItem -Directory "+ 
+										".\\.mvn\\TradingTool\\TradingTool\\"+
+										taskBranch +").name" , 
 									returnStdout: true)
 								MavenDeployResultList << [
 									Repo: 'TradingTool',
@@ -467,13 +410,16 @@ pipeline{
 						}
 					}
 				
-					stage('TT settings'){
-						def data = readJSON file: DEPLOY_TT_JSON
-						def map = getParralelDeliveryMap(data)
+					stage('DeployTT'){
+						def List scriptFile = readJSON (file: DEPLOY_TT_JSON) 
 						withCredentials([
 								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
-							parallel map
+								parallel (
+									getParralelDeliveryMap(
+										jsonMap: scriptFile, 
+										stage: STAGE_NAME)
+								)
 						}
 					}
 				}
@@ -496,20 +442,26 @@ pipeline{
 			}
 			steps{
 				script{
-					PAYBadge = addEmbeddableBadgeConfiguration(id: PAYBadgeId, subject: "PAY Deploy")
+					PAYBadge = addEmbeddableBadgeConfiguration(
+						id: PAYBadgeId, 
+						subject: "PAY Deploy"
+						)
 					PAYBadge.setStatus('running')
-					currentBuild.description = addToDescription(
+					currentBuild.description = utils.addToDescription(
 							description: currentBuild.description,
-							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
+							html: "<a href='${BUILD_URL}'>"+
+								"<img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
 							position: 1)
 
-					stage('PaymentBalancing Maven Deploy'){
+					stage('Get payment maven packages'){
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalancing \""
-						def taskBranch = getNexusBranch ('PaymentBalancing', params.Task)
+						def taskBranch = utils.getNexusBranch ('PaymentBalancing', params.Task)
 						if (taskBranch){
-							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnPaymentBalancing\\\" \"-Ddeploy.groupid=PaymentBalancing\"  ${deployDir} ${deployBranch}"
+							def deployParams = "\"-Dmaven.repo.local="+
+								"${env.WORKSPACE}\\.mvn\\\""+
+								" \"-Ddeploy.groupid=PaymentBalancing\""+
+								" ${deployDir} ${deployBranch}"
 							configFileProvider(
 									[configFile(
 										fileId: 'mavenSettingsGlobal', 
@@ -518,9 +470,13 @@ pipeline{
 										fileId: 'defaultPOM', 
 										targetLocation: 'pomxml')
 									]){
-								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								powershell script:"mvn clean versions:use-latest-releases"+
+									" dependency:unpack -s MAVEN_SETTINGS.xml "+
+									" -f pomxml ${deployParams}"
 								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvnPaymentBalancing\\PaymentBalancing\\master).name", 
+									script:"(Get-ChildItem -Directory "+
+										".\\.mvnPaymentBalancing\\PaymentBalancing\\"+
+										taskBranch+").name", 
 									returnStdout: true)
 								MavenDeployResultList << [
 									Repo: 'PaymentBalancing',
@@ -535,11 +491,14 @@ pipeline{
 					}
 					stage('PaymentBalanceReport Maven Deploy'){
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalanceReport \""
-						def taskBranch = getNexusBranch ('PaymentBalanceReport', params.Task)
+						def taskBranch = utils.getNexusBranch ('PaymentBalanceReport', params.Task)
 						if (taskBranch){
 							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvnPaymentBalancg\\\" \"-Ddeploy.groupid=PaymentBalanceReport\"  ${deployDir} ${deployBranch}"
+							def deployParams = "\"-Dmaven.repo.local="+
+								"${env.WORKSPACE}\\.mvnPaymentBalancg\\\""+
+								" \"-Ddeploy.groupid=PaymentBalanceReport\""+
+								" ${deployDir} ${deployBranch}"
 							configFileProvider(
 									[configFile(
 										fileId: 'mavenSettingsGlobal', 
@@ -548,7 +507,9 @@ pipeline{
 										fileId: 'defaultPOM', 
 										targetLocation: 'pomxml')
 									]){
-								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								powershell "mvn clean versions:use-latest-releases"+
+									" dependency:unpack -s MAVEN_SETTINGS.xml"+
+									" -f pomxml ${deployParams}"
 								def packageVersion = powershell (
 									script:"(Get-ChildItem -Directory .\\.mvnPaymentBalancing\\PaymentBalanceReport\\master).name", 
 									returnStdout: true)
@@ -563,10 +524,14 @@ pipeline{
 							println "PaymentBalanceReport has no master branch"
 						}
 					}
-					stage('Payments settings'){
-						def data = readJSON file: DEPLOY_PAY_JSON 
-						def map = getParralelDeliveryMap(data)
-						parallel map
+
+					stage('DeployPay'){
+						def List scriptFile = readJSON (file: DEPLOY_PAY_JSON) 
+						parallel (
+							getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: STAGE_NAME)
+						)
 					}
 				}
 			}
@@ -644,7 +609,7 @@ pipeline{
 			}
 		}
 
-		stage('PostDeploy Payment Balancer'){
+		stage('PostPay'){
 			when{
 				expression {
 					params.DEPLOY_PAY
@@ -652,9 +617,12 @@ pipeline{
 			}
 			steps{
 				script{ 
-					def data = readJSON file: POST_PAY_JSON
-						def map = getParralelDeliveryMap(data)
-						parallel map
+					def List scriptFile = readJSON (file: POST_PAY_JSON) 
+					parallel (
+						getParralelDeliveryMap(
+							jsonMap: scriptFile, 
+							stage: STAGE_NAME)
+					)
 				}
 			}
 			post{
@@ -667,7 +635,7 @@ pipeline{
 			}
 		}
 
-		stage('PostDeploy Marketing service'){
+		stage('PostMS'){
 			when{
 				expression {
 					params.DEPLOY_MS
@@ -675,9 +643,12 @@ pipeline{
 			}
 			steps{
 				script{ 
-					def data = readJSON file: POST_MS_JSON
-					def map = getParralelDeliveryMap(data)
-					parallel map
+					def List scriptFile = readJSON (file: POST_MS_JSON) 
+					parallel (
+						getParralelDeliveryMap(
+							jsonMap: scriptFile, 
+							stage: STAGE_NAME)
+					)
 				}
 			}
 			post{
@@ -690,7 +661,7 @@ pipeline{
 			}
 		}
 
-		stage('PostDeploy TT'){
+		stage('PostTT'){
 			when{
 				expression {
 					params.DEPLOY_TT
@@ -698,9 +669,12 @@ pipeline{
 			}
 			steps{
 				script{ 
-					def data = readJSON file: POST_TT_JSON
-					def map = getParralelDeliveryMap(data)
-					parallel map
+					def List scriptFile = readJSON (file: POST_TT_JSON) 
+					parallel (
+						getParralelDeliveryMap(
+							jsonMap: scriptFile, 
+							stage: STAGE_NAME)
+					)
 				}
 			}
 			post{
@@ -713,12 +687,14 @@ pipeline{
 			}
 		}
 
-		stage('Default Post'){
+		stage('Post'){
 			steps{ 
 				script{ 
-					def data = readJSON file: POST_JSON
-					def map = getParralelDeliveryMap(data)
-					parallel map
+					def List scriptFile =readJSON (file: POST_JSON) 
+					parallel (getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: STAGE_NAME)
+					)
 				}
 			}
 		}
@@ -726,9 +702,11 @@ pipeline{
 		stage('Tests'){
 			steps{ 
 				script{ 
-					def data = readJSON file: TESTS_JSON
-					def map = getParralelDeliveryMap(data)
-					parallel map
+					def List scriptFile =readJSON (file: TESTS_JSON) 
+					parallel (getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: STAGE_NAME)
+					)
 				}
 			}
 		}
@@ -736,10 +714,11 @@ pipeline{
 			steps{
 				script{
 					def jsonFormat = JsonOutput.toJson(
-							MavenDeployResultList << [User: "${currentBuild.getBuildCauses()[0].userId}"]	)
-							
-				    prettyJSON = JsonOutput.prettyPrint(jsonFormat)
-					echo "${prettyJSON}"
+							MavenDeployResultList << [User: "${currentBuild.getBuildCauses()[0].userId}"]	
+							)
+
+						prettyJSON = JsonOutput.prettyPrint(jsonFormat)
+						echo "${prettyJSON}"
 				}
 			}
 		}

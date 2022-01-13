@@ -1,26 +1,21 @@
 [{
-        "name": "CIS",
-        "source": ".\\scripts\\tests\\CIS.ps1 "
-    }, {
-        "name": "Kernel",
-        "source": ".\\scripts\\tests\\Kernel.ps1 "
-    }, {
-        "name": "PDA",
-        "source": ".\\scripts\\tests\\PDA.ps1 "
-    }, {
-        "name": "rabbitmq",
-        "source": ".\\scripts\\tests\\rabbitmq.ps1 "
-    }, {
-        "name": "UniRu",
-        "source": ".\\scripts\\tests\\UniRu.ps1 "
-    }, {
-        "name": "UniWebApiAuth",
-        "source": ".\\scripts\\tests\\UniWebApiAuth.ps1 "
-    }, {
-        "name": "WebTouch",
-        "source": ".\\scripts\\tests\\WebTouch.ps1 "
-    }, {
-        "name": "UniPaymentsService",
-        "source": ".\\scripts\\tests\\UniPaymentsService.ps1 "
-    }
+    "name": "CIS",
+    "source": [
+        "CIS.ps1"
+    ]
+}, {
+"name": "Kernel",
+"source": [
+    "Kernel.ps1" 
 ]
+}, {
+"name": "PDA",
+"source": [
+    "PDA.ps1" 
+]
+}, {
+    "name": "UniRu",
+    "source": [
+        "UniRu.ps1" 
+    ]
+}]

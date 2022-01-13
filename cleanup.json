@@ -1,17 +1,22 @@
 [{
-        "name": "DB Cleanup",
-        "source": ".\\scripts\\cleanup\\FullCleanupDB.ps1"
+        "name": "DB",
+        "source": [
+            "FullCleanupDB.ps1"
+        ]
     }, {
-        "name": "IIS Cleanup",
-        "source": ".\\scripts\\cleanup\\FullCleanupIIS.ps1"
+        "name": "IIS",
+        "source": [
+            "FullCleanupIIS.ps1"
+        ]
     }, {
-        "name": "Service and Files Cleanup",
-        "source": ".\\scripts\\cleanup\\FullCleanupFiles.ps1"
+        "name": "Services",
+        "source": [
+            "FullCleanupFiles.ps1"
+        ]
     }, {
-        "name": "Add runAs service access",
-        "source": ".\\scripts\\cleanup\\addRunAsSvc.ps1"
-    }, {
-        "name": "cleanup placeholder",
-        "source": "echo 'cleanup placeholder'"
+        "name": "Fixes",
+        "source": [
+            "addRunAsSvc.ps1"
+        ]
     }
 ]

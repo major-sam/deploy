@@ -1,30 +1,33 @@
 [
 	{
-        "name": "Api deploy",
-        "source": ".\\scripts\\deploy\\tt\\api.ps1"
+        "name": "API",
+        "source": [
+                "api.ps1"
+        ]
 	},{
-        "name": "TT DB",
-        "source": ".\\scripts\\deploy\\tt\\db.ps1"
+        "name": "DB",
+        "source": [
+                "UpdateConfig.ps1",
+                "proxies.ps1",
+                "DBUpdater.ps1"
+        ]
 	},{
-        "name": "TT importer",
-        "source": ".\\scripts\\deploy\\tt\\importer.ps1"
+        "name": "Importer",
+        "source": ["importer.ps1"]
 	},{
-        "name": "TT matcher",
-        "source": ".\\scripts\\deploy\\tt\\matcher.ps1"
+        "name": "Matcher",
+        "source": ["matcher.ps1"]
 	},{
-        "name": "TT resulter",
-        "source": ".\\scripts\\deploy\\tt\\resulter.ps1"
+        "name": "Resulter",
+        "source": ["resulter.ps1"]
 	},{
-        "name": "TT scrappers",
-        "source": ".\\scripts\\deploy\\tt\\scrappers.ps1"
+        "name": "Scrappers",
+        "source": ["scrappers.ps1"]
 	},{
-        "name": "TT cert",
-        "source": ".\\scripts\\deploy\\tt\\cert.ps1"
+        "name": "conf",
+        "source": ["cert.ps1"]
 	},{
-        "name": "TT client",
-        "source": ".\\scripts\\deploy\\tt\\client.ps1"
-	},{
-        "name": "TT placeholder",
-        "source": "echo 'marketing service placeholder'"
+        "name": "Client",
+        "source": ["client.ps1"]
     }
 ]

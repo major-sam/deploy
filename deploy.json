@@ -1,92 +1,149 @@
 [{
-        "name": "deploy placeholder",
-        "source": "echo $env:COMPUTERNAME"
-    }, {
-        "name": "CupisIntegrationService",
-        "source": ".\\scripts\\deploy\\CupisIntegrationService.ps1"
+        "name": "CupisIS",
+        "source": [
+            "CupisIntegrationService.ps1"
+        ]
     }, {
         "name": "Kernel",
-        "source": ".\\scripts\\deploy\\kernel.ps1"
+        "source": [
+            "kernelDb.ps1",
+            "kernelAppsettings.ps1",
+            "kernelSettings.ps1",
+            "AccountGenerator.ps1",
+            "GrantAccess.ps1",
+            "BindKRMCard.ps1",
+            "CreateEvents.ps1",
+            "CreateSuperExpressFromBranches.ps1",
+            "ActivityService.ps1",
+            "FixResultsView.ps1",
+            "SpecialForTest.ps1",
+            "GeneratePaymentExchange.ps1"
+        ]
     }, {
         "name": "WebMobile",
-        "source": ".\\scripts\\deploy\\WebMobile.ps1"
+        "source": [
+            "WebMobile.ps1"
+        ]
     }, {
         "name": "UniPaymentsService",
-        "source": ".\\scripts\\deploy\\UniPaymentsService.ps1"
+        "source": [
+            "UniPaymentsService.ps1"
+        ]
     }, {
-        "name": "ClientWorkPlace",
-        "source": ".\\scripts\\deploy\\UniRuAndApi.ps1"
-    },  {
+        "name": "Uni",
+        "source": [
+            "UniRu.ps1",
+            "UniRuApi.ps1",
+            "UniRuSql.ps1"
+        ]
+    }, {
         "name": "KRM",
-        "source": ".\\scripts\\deploy\\KRM.ps1"
+        "source": [
+            "KRM.ps1"
+        ]
     }, {
         "name": "WebTouch",
-        "source": ".\\scripts\\deploy\\WebTouch.ps1"
+        "source": [
+            "WebTouch.ps1"
+        ]
     }, {
         "name": "WebsiteCom",
-        "source": ".\\scripts\\deploy\\WebsiteCom.ps1"
+        "source": [
+            "WebsiteCom.ps1",
+            "WebsiteComDB.ps1"
+        ]
     }, {
-        "name": "WebTouch-Public",
-        "source": ".\\scripts\\deploy\\WebTouchPublic.ps1"
+        "name": "WebTouchPublic",
+        "source": [ 
+            "WebTouchPublic.ps1"
+        ]
     }, {
-        "name": "WebsiteCom-Public",
-        "source": ".\\scripts\\deploy\\WebsiteCom-public.ps1"
+        "name": "WebsiteComPublic",
+        "source": [
+            "WebsiteComPublic.ps1"
+        ]
     }, {
         "name": "Website",
-        "source": ".\\scripts\\deploy\\Website.ps1"
+        "source": [
+            "Website.ps1"
+        ]
     }, {
-        "name": "AdminMessageService",
-        "source": ".\\scripts\\deploy\\AdminMessageService.ps1"
+        "name": "PIC",
+        "source": [
+            "AdminMessageService.ps1",
+            "PromoCodeService.ps1",
+            "PushService.ps1",
+            "MessageService.ps1"
+        ]
     }, {
-        "name": "PromocodeService",
-        "source": ".\\scripts\\deploy\\PromocodeService.ps1"
-    }, {
-        "name": "PushService",
-        "source": ".\\scripts\\deploy\\PushService.ps1"
-    }, {
-        "name": "MessageService",
-        "source": ".\\scripts\\deploy\\MessageService.ps1"
-    }, {
-        "name": "cert",
-        "source": ".\\scripts\\deploy\\cert.ps1"
-    }, {
-        "name": "rabbitmq",
-        "source": ".\\scripts\\deploy\\rabbitmq.ps1"
+        "name": "conf",
+        "source": [
+            "cert.ps1",
+            "rabbitmq.ps1"
+        ]
     }, {
         "name": "IdentificationDocumentService",
-        "source": ".\\scripts\\deploy\\IdentificationDocumentService.ps1"
+        "source": [
+            "IdentificationDocumentService.ps1"
+        ]
     }, {
         "name": "TicketService",
-        "source": ".\\scripts\\deploy\\TicketService.ps1"
+        "source": [
+            "TicketService.ps1"
+        ]
     }, {
         "name": "WebApiAuth",
-        "source": ".\\scripts\\deploy\\WebApiAuth.ps1"
+        "source": [
+            "WebApiAuth.ps1",
+            "WebApiAuthDB.ps1"
+        ]
     }, {
         "name": "PaymenSystemHandlers",
-        "source": ".\\scripts\\deploy\\PaymenSystemHandlers.ps1"
+        "source": [
+            "PaymenSystemHandlers.ps1"
+        ]
     }, {
-        "name": "PaymentCupisService",
-        "source": ".\\scripts\\deploy\\PaymentCupis.ps1"
+        "name": "PaymentCupis",
+        "source": [
+            "PaymentCupis.ps1"
+        ]
     }, {
         "name": "BaltBetDomainService",
-        "source": ".\\scripts\\deploy\\BaltBetDomainService.ps1"
+        "source": [
+            "BaltBetDomainService.ps1"
+        ]
     }, {
         "name": "ReportService",
-        "source": ".\\scripts\\deploy\\ReportService.ps1"
+        "source": [
+            "ReportService.ps1"
+        ]
     }, {
         "name": "ActionLogService",
-        "source": ".\\scripts\\deploy\\ActionLogService.ps1"
+        "source": [
+            "ActionLogService.ps1"
+        ]
     }, {
         "name": "SuperExpressService",
-        "source": ".\\scripts\\deploy\\SuperExpressService.ps1"
+        "source": [
+            "SuperExpressService.ps1"
+        ]
     }, {
         "name": "CoefService",
-        "source": ".\\scripts\\deploy\\CoefService.ps1"
+        "source": [
+            "CoefService.ps1"
+        ]
     }, {
         "name": "CashBookService",
-        "source": ".\\scripts\\deploy\\CashBookService.ps1"
+        "source": [
+            "CashBookService.ps1",
+            "DeployDb.ps1",
+            "InitDb.ps1",
+            "UpdateCashBookServiceDb.ps1"
+        ]
     }, {
         "name": "UniStatisticsLogger",
-        "source": ".\\scripts\\deploy\\UniStatisticsLogger.ps1"
+        "source": [
+            "UniStatisticsLogger.ps1"
+        ]
     }
 ]
