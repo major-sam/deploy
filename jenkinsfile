@@ -335,7 +335,7 @@ pipeline{
 						}
 					}
 					stage('DeployMS'){
-						def List scriptFile =readJSON (file: DEPLOY_MS) 
+						def List scriptFile =readJSON (file: DEPLOY_MS_JSON) 
 						parallel (
 							getParralelDeliveryMap(
 								jsonMap: scriptFile, 
