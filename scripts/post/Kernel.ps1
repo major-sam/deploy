@@ -2,7 +2,7 @@ import-module '.\scripts\sideFunctions.psm1'
 
 if (test-path "c:\kernel\TasksDB"){
 	write-host "Exec tasks"
-	get-ChildItem "c:\Kernel\TasksDB\" -include "*.sql" | % {
+	get-ChildItem "c:\Kernel\TasksDB\*" -include "*.sql" | % {
 		Write-Host -ForegroundColor Green "[INFO] Execute script $_ on database BaltBetM"
 		Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database 'BaltBetM' -InputFile $_ -Verbose -ErrorAction continue
 		Write-Host -ForegroundColor Green "[INFO] Execute script $_ on database BaltBetMMirror"
