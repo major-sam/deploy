@@ -1,4 +1,5 @@
 import-module '.\scripts\sideFunctions.psm1'
+Import-Module Carbon
 
 $ServicesFolder = "C:\Services"
 $ServiceName = "WebParser"
@@ -23,9 +24,9 @@ $config.Save($PathToExeConfig)
 
 
 Write-Host "[INFO] Run XML Transformation"
-Write-Host "[DEBUG] $PathToConfig\Settings.xml"
-Write-Host "[DEBUG] $PathToConfig\Settings.Test.xml"
-XmlDocTransform("$PathToConfig\Settings.xml", "$PathToConfig\Settings.Test.xml")
+Convert-XmlFile -Path "$PathToConfig\Settings.xml" -XdtPath "$PathToConfig\Settings.Test.xml" -Destination "$PathToConfig\SettingsNew.xml"
+Remove-Item "$PathToConfig\Settings.xml"
+Move-Item "$PathToConfig\SettingsNew.xml" "$PathToConfig\Settings.xml"
 
 Write-Host "[INFO] EDIT Settings.xml..."
 [xml]$config = Get-Content -Path "$($PathToConfig)\Settings.xml"
