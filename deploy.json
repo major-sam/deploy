@@ -10,14 +10,14 @@
             "kernelAppsettings.ps1",
             "kernelSettings.ps1",
             "AccountGenerator.sql",
-            "GrantAccess.ps1",
-            "BindKRMCard.ps1",
-            "CreateEvents.ps1",
-            "CreateSuperExpressFromBranches.ps1",
-            "ActivityService.ps1",
-            "FixResultsView.ps1",
-            "SpecialForTest.ps1",
-            "GeneratePaymentExchange.ps1"
+            "GrantAccess.sql",
+            "BindKRMCard.sql",
+            "CreateEvents.sql",
+            "CreateSuperExpressFromBranches.sql",
+            "ActivityService.sql",
+            "FixResultsView.sql",
+            "SpecialForTest.sql",
+            "GeneratePaymentExchange.sql"
         ]
     }, {
         "name": "WebMobile",
