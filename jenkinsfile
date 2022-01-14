@@ -282,40 +282,21 @@ pipeline{
 								html: "<a href='${BUILD_URL}'>" +
 									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
 								position: 1)
-						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
-						def taskBranch = utils.getNexusBranch ('Marketing', params.Task)
-						if (taskBranch){
-							println taskBranch
-							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=" +
-								"${env.WORKSPACE}\\.mvn\\\"" +
-								" \"-Ddeploy.groupid=Marketing\"" +
-								" ${deployDir} ${deployBranch}"
-							configFileProvider(
-									[configFile(
-										fileId: 'mavenSettingsGlobal', 
-										targetLocation: 'MAVEN_SETTINGS.xml'),
-									configFile(
-										fileId: 'defaultPOM', 
-										targetLocation: 'pomxml')
-									]){
-								powershell script: "mvn clean versions:use-latest-releases" +
-									" dependency:unpack -s MAVEN_SETTINGS.xml"+
-									" -f pomxml ${deployParams}"
-								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory "+ 
-									".\\.mvnMarketing\\Marketing\\"+
-									taskBranch+").name", 
-									returnStdout: true)
-								MavenDeployResultList << [
-									Repo: 'Marketing',
-									Branch: taskBranch,
-									Version: packageVersion.trim()
-								]
-							}
-						}
-						else{
-							println "Marketing repo has no master branch"
+						configFileProvider(
+								[
+								configFile(
+									fileId: 'mavenSettingsGlobal', 
+									targetLocation: 'MAVEN_SETTINGS.xml'),
+								configFile(
+									fileId: 'defaultPOM', 
+									targetLocation: 'pomxml')
+								]){
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\Marketing",
+									branch: params.Task,
+									groupId: "Marketing",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
 						}
 					}
 					stage('DeployMS'){
