@@ -58,6 +58,7 @@ def generateStages(job, stageName) {
 							label: libScriptPath
 							)
 					} 
+				break;
 			case 'sql':
 				stagesResult << stage(subStageName){ 
 					powershell (
@@ -70,11 +71,13 @@ def generateStages(job, stageName) {
 							label: libScriptPath
 							)
 					} 
+				break;
 			default:
 				stagesResult << stage(subStageName){ 
 					println "not suported script extention:" +
 						stageScript.split('\\.')[-1]	
 					} 
+				break;
 		}
 	}
     return stagesResult 
