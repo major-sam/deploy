@@ -57,11 +57,6 @@
             "CashBookService.ps1"
         ]
     }, {
-        "name": "ComAccounts",
-        "source": [
-            "ComAccounts.ps1"
-        ]
-    }, {
         "name": "IdentificationDocumentService",
         "source": [
             "IdentificationDocumentService.ps1"
