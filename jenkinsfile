@@ -285,7 +285,10 @@ pipeline{
 			steps{
 				script{
 					stage('Get marketing maven packages'){
-						MSBadge = addEmbeddableBadgeConfiguration(id: MSBadgeId, subject: "Marketing Deploy")
+						MSBadge = addEmbeddableBadgeConfiguration(
+							id: MSBadgeId, 
+							subject: "Marketing Deploy"
+							)
 						MSBadge.setStatus('running')
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
@@ -337,51 +340,32 @@ pipeline{
 			}
 			steps{
 				script{
-					TTBadge = addEmbeddableBadgeConfiguration(
-						id: TTBadgeId,
-						subject: "TT Deploy"
-						)
-					TTBadge.setStatus('running')
-					currentBuild.description = utils.addToDescription(
-							description: currentBuild.description,
-							html: "<a href='${BUILD_URL}'>"+
-								"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
-							position: 1)
 					stage('Get TT maven packages'){
-						def deployDir = "\"-Ddeploy.dir=c:\\Services\\TradingTool \""
-						def taskBranch = utils.getNexusBranch ('TradingTool', params.Task)
-						if (taskBranch){
-							println taskBranch
-							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local=" +
-								"${env.WORKSPACE}\\.mvn\\\""+
-								" \"-Ddeploy.groupid=TradingTool\""+
-								" ${deployDir} ${deployBranch}"
-							configFileProvider(
-									[configFile(
-										fileId: 'mavenSettingsGlobal', 
-										targetLocation: 'MAVEN_SETTINGS.xml'),
-									configFile(
-										fileId: 'defaultPOM', 
-										targetLocation: 'pomxml')
-									]){
-								powershell script:"mvn clean versions:use-latest-releases"+
-									" dependency:unpack -s MAVEN_SETTINGS.xml"+
-									" -f pomxml ${deployParams}"
-								def packageVersion = powershell (
-									script: "(Get-ChildItem -Directory "+ 
-										".\\.mvn\\TradingTool\\TradingTool\\"+
-										taskBranch +").name" , 
-									returnStdout: true)
-								MavenDeployResultList << [
-									Repo: 'TradingTool',
-									Branch: taskBranch,
-									Version: packageVersion.trim()
-								]
-							}
-						}
-						else{
-							println "TT has no master branch"
+						TTBadge = addEmbeddableBadgeConfiguration(
+							id: TTBadgeId,
+							subject: "TT Deploy"
+							)
+						TTBadge.setStatus('running')
+						currentBuild.description = utils.addToDescription(
+								description: currentBuild.description,
+								html: "<a href='${BUILD_URL}'>"+
+									"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+								position: 1)
+						configFileProvider(
+								[
+								configFile(
+									fileId: 'mavenSettingsGlobal', 
+									targetLocation: 'MAVEN_SETTINGS.xml'),
+								configFile(
+									fileId: 'defaultPOM', 
+									targetLocation: 'pomxml')
+								]){
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\TradingTool",
+									branch: params.Task,
+									groupId: "TradingTool",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
 						}
 					}
 				
@@ -417,89 +401,34 @@ pipeline{
 			}
 			steps{
 				script{
-					PAYBadge = addEmbeddableBadgeConfiguration(
-						id: PAYBadgeId, 
-						subject: "PAY Deploy"
-						)
-					PAYBadge.setStatus('running')
-					currentBuild.description = utils.addToDescription(
-							description: currentBuild.description,
-							html: "<a href='${BUILD_URL}'>"+
-								"<img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
-							position: 1)
-
 					stage('Get payment maven packages'){
-						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalancing \""
-						def taskBranch = utils.getNexusBranch ('PaymentBalancing', params.Task)
-						if (taskBranch){
-							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local="+
-								"${env.WORKSPACE}\\.mvn\\\""+
-								" \"-Ddeploy.groupid=PaymentBalancing\""+
-								" ${deployDir} ${deployBranch}"
-							configFileProvider(
-									[configFile(
-										fileId: 'mavenSettingsGlobal', 
-										targetLocation: 'MAVEN_SETTINGS.xml'),
-									configFile(
-										fileId: 'defaultPOM', 
-										targetLocation: 'pomxml')
-									]){
-								powershell script:"mvn clean versions:use-latest-releases"+
-									" dependency:unpack -s MAVEN_SETTINGS.xml "+
-									" -f pomxml ${deployParams}"
-								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory "+
-										".\\.mvnPaymentBalancing\\PaymentBalancing\\"+
-										taskBranch+").name", 
-									returnStdout: true)
-								MavenDeployResultList << [
-									Repo: 'PaymentBalancing',
-									Branch: taskBranch,
-									Version: packageVersion.trim()
-								]
-							}
-						}
-						else{
-							println "PaymentBalancing has no master branch"
+						PAYBadge = addEmbeddableBadgeConfiguration(
+								id: PAYBadgeId, 
+								subject: "PAY Deploy"
+								)
+						PAYBadge.setStatus('running')
+						currentBuild.description = utils.addToDescription(
+								description: currentBuild.description,
+								html: "<a href='${BUILD_URL}'>"+
+								"<img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
+								position: 1)
+						configFileProvider(
+								[
+								configFile(
+									fileId: 'mavenSettingsGlobal', 
+									targetLocation: 'MAVEN_SETTINGS.xml'),
+								configFile(
+									fileId: 'defaultPOM', 
+									targetLocation: 'pomxml')
+								]){
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\PaymentBalancing",
+									branch: params.Task,
+									groupId: "PaymentBalancing",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
 						}
 					}
-					stage('PaymentBalanceReport Maven Deploy'){
-						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Payments\\PaymentBalanceReport \""
-						def taskBranch = utils.getNexusBranch ('PaymentBalanceReport', params.Task)
-						if (taskBranch){
-							println taskBranch
-							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
-							def deployParams = "\"-Dmaven.repo.local="+
-								"${env.WORKSPACE}\\.mvnPaymentBalancg\\\""+
-								" \"-Ddeploy.groupid=PaymentBalanceReport\""+
-								" ${deployDir} ${deployBranch}"
-							configFileProvider(
-									[configFile(
-										fileId: 'mavenSettingsGlobal', 
-										targetLocation: 'MAVEN_SETTINGS.xml'),
-									configFile(
-										fileId: 'defaultPOM', 
-										targetLocation: 'pomxml')
-									]){
-								powershell "mvn clean versions:use-latest-releases"+
-									" dependency:unpack -s MAVEN_SETTINGS.xml"+
-									" -f pomxml ${deployParams}"
-								def packageVersion = powershell (
-									script:"(Get-ChildItem -Directory .\\.mvnPaymentBalancing\\PaymentBalanceReport\\master).name", 
-									returnStdout: true)
-								MavenDeployResultList << [
-									Repo: 'PaymentBalanceReport',
-									Branch: taskBranch,
-									Version: packageVersion.trim()
-								]
-							}
-						}
-						else{
-							println "PaymentBalanceReport has no master branch"
-						}
-					}
-
 					stage('DeployPay'){
 						def List scriptFile = readJSON (file: DEPLOY_PAY_JSON) 
 						parallel (
