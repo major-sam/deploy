@@ -1,0 +1,6 @@
+[
+    {
+        "name": "Connect to Parser from Kernel",
+        "source": ".\\scripts\\post\\webparser\\kernelConnection.ps1"
+    }
+]
