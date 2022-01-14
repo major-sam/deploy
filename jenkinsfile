@@ -222,6 +222,11 @@ pipeline{
 		}
 
 		stage('Get maven packages'){
+			when{
+				expression {
+					false	
+				}
+			}
 			steps{
 				script{
 					def result = utils.doMavenDeploy(params.Task)
@@ -231,6 +236,11 @@ pipeline{
 		}
 
 		stage('Deploy'){ 
+			when{
+				expression {
+					false	
+				}
+			}
 			steps{
 				withCredentials([
 						file ( 
