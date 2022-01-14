@@ -6,7 +6,8 @@
     }, {
         "name": "Kernel",
         "source": [
-            "Kernel.ps1"
+           "Kernel.ps1",
+           "ComAccounts.ps1"
         ]
     }, {
         "name": "Services",
