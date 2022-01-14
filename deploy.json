@@ -9,7 +9,7 @@
             "kernelDb.ps1",
             "kernelAppsettings.ps1",
             "kernelSettings.ps1",
-            "AccountGenerator.ps1",
+            "AccountGenerator.sql",
             "GrantAccess.ps1",
             "BindKRMCard.ps1",
             "CreateEvents.ps1",

@@ -47,14 +47,34 @@ def generateStages(job, stageName) {
     Closure stagesResult = {}
     for (stageScript in job['source']) {
 		subStageName = stageScript.split('\\.')[0]
-        stagesResult << stage(subStageName){ 
-			libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
-			libScript =libraryResource libScriptPath
-			powershell (
-					encoding: 'UTF8', 
-					script: libScript,
-					label: libScriptPath
-					)
+		libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+		libScript =libraryResource libScriptPath
+		switch(stageScript.split('\\.')[-1]){
+			case 'ps1':
+				stagesResult << stage(subStageName){ 
+					powershell (
+							encoding: 'UTF8', 
+							script: libScript,
+							label: libScriptPath
+							)
+					} 
+			case 'sql':
+				stagesResult << stage(subStageName){ 
+					powershell (
+							encoding: 'UTF8', 
+							script: '''
+								$q= @'
+								'''+libScript + ''''@
+								Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database BaltBetM -Query $q -ErrorAction stop
+								''',
+							label: libScriptPath
+							)
+					} 
+			default:
+				stagesResult << stage(subStageName){ 
+					println "not suported script extention:" +
+						stageScript.split('\\.')[-1]	
+					} 
 		}
 	}
     return stagesResult 
