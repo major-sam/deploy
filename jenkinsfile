@@ -46,12 +46,11 @@ def getParralelDeliveryMap(Map config = [:]){
 def generateStages(job, stageName) {
     Closure stagesResult = {}
     for (stageScript in job['source']) {
-		def subStageName = stageScript.split('\\.')[0]
-		def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
-		def libScript =libraryResource libScriptPath
-		println stageScript.split('\\.')[-1]
 		switch(stageScript.split('\\.')[-1]){
 			case 'ps1':
+				def subStageName = stageScript.split('\\.')[0]
+				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+				def libScript =libraryResource libScriptPath
 				stagesResult << stage(subStageName){ 
 					powershell (
 							encoding: 'UTF8', 
@@ -61,13 +60,16 @@ def generateStages(job, stageName) {
 					} 
 				break
 			case 'sql':
+				def subStageName = stageScript.split('\\.')[0]
+				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+				def libScript =libraryResource libScriptPath
 				stagesResult << stage(subStageName){ 
 					powershell (
 							encoding: 'UTF8', 
 							script: '''
 								$q= @'
 								'''+libScript + ''''@
-								Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database BaltBetM -Query $q -ErrorAction stop
+								Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Query $q -ErrorAction stop
 								''',
 							label: libScriptPath
 							)
@@ -322,7 +324,6 @@ pipeline{
 								position: 1)
 						def deployDir = "\"-Ddeploy.dir=c:\\Services\\Marketing\""
 						def taskBranch = utils.getNexusBranch ('Marketing', params.Task)
-						println taskBranch
 						if (taskBranch){
 							println taskBranch
 							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
