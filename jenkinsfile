@@ -232,7 +232,7 @@ pipeline{
 		stage('Get maven packages'){
 			when{
 				expression {
-					true
+					false
 				}
 			}
 			steps{
@@ -246,7 +246,7 @@ pipeline{
 		stage('Deploy'){ 
 			when{
 				expression {
-					true
+					false	
 				}
 			}
 			steps{

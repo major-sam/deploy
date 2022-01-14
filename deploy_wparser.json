@@ -1,10 +1,10 @@
 [
     {
-        "name": "WebParser DB",
-        "source": ".\\scripts\\deploy\\webparser\\db.ps1"
+        "name": "WebParserDB",
+        "source": ["db.ps1"]
     },
     {
         "name": "WebParser",
-        "source": ".\\scripts\\deploy\\webparser\\webparser.ps1"
+        "source": ["webparser.ps1"]
     }
 ]
