@@ -64,6 +64,7 @@ def generateStages(job, stageName) {
 				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
 				def libScript =libraryResource libScriptPath
 				stagesResult << stage(subStageName){ 
+					println "SQL SCRIPTS RUNS ON MASTER! \n For other db USE statment requered"
 					powershell (
 							encoding: 'UTF8', 
 							script: '''
@@ -71,7 +72,7 @@ def generateStages(job, stageName) {
 								'''+libScript + ''''@
 								Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Query $q -ErrorAction stop
 								''',
-							label: libScriptPath
+							label: 'Runs on master '+ libScriptPath
 							)
 					} 
 				break
