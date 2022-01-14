@@ -5,7 +5,7 @@ $ServiceName = "WebParser"
 $PathToTaskScripts = "$($ServicesFolder)\$($ServiceName)\TasksScripts"
 $db = @(
 	@{
-		DbName = $ServicesName
+		DbName = $ServiceName
 		BackupFile = "\\server\tcbuild$\Testers\DB\Parser\Parser.bak"
 		RelocateFiles = @(
 			@{

@@ -23,6 +23,8 @@ $config.Save($PathToExeConfig)
 
 
 Write-Host "[INFO] Run XML Transformation"
+Write-Host "[DEBUG] $PathToConfig\Settings.xml"
+Write-Host "[DEBUG] $PathToConfig\Settings.Test.xml"
 XmlDocTransform("$PathToConfig\Settings.xml", "$PathToConfig\Settings.Test.xml")
 
 Write-Host "[INFO] EDIT Settings.xml..."
