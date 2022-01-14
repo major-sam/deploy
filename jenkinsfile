@@ -224,7 +224,7 @@ pipeline{
 		stage('Get maven packages'){
 			when{
 				expression {
-					false	
+					true
 				}
 			}
 			steps{
@@ -238,7 +238,7 @@ pipeline{
 		stage('Deploy'){ 
 			when{
 				expression {
-					false	
+					true
 				}
 			}
 			steps{
@@ -422,7 +422,7 @@ pipeline{
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\PaymentBalancing",
+									deployDir: "c:\\Services\\Payments\\PaymentBalancing",
 									branch: params.Task,
 									groupId: "PaymentBalancing",
 									repo: "${env.WORKSPACE}\\.mvn\\"
