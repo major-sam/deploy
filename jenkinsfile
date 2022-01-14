@@ -12,11 +12,13 @@ POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
 POST_PAY_JSON = 'post_pay.json'
 POST_MS_JSON = 'post_ms.json'
+POST_WPARSER_JSON = 'post_wparser.json'
 
 DEPLOY_JSON = "deploy.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
+DEPLOY_WPARSER_JSON = "deploy_wparser.json"
 
 CLEAN_JSON = 'cleanup.json'
 
@@ -24,6 +26,8 @@ mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
 PAYBadgeId = 'PayBadgeId'
 MSBadgeId = 'MSBadgeId'
+WParserBadgeId = 'WParserBadgeId'
+def BuildBadge = addEmbeddableBadgeConfiguration(id: mainBadgeId, subject: "Windows Deploy")
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId, 
@@ -130,6 +134,7 @@ pipeline{
 			description:'Deploy Trading Tool', 
 			defaultValue: false
 			)
+		booleanParam name: "DEPLOY_WPARSER", description: 'Deploy Web Parser', defaultValue: false
 	}
 
 	environment {
@@ -449,6 +454,68 @@ pipeline{
 			}
 		}
 
+		stage('Deploy WebParser'){
+			when{
+				expression {
+					params.DEPLOY_WPARSER
+				}
+			}
+			steps{
+				script{
+					WPARSERBadge = addEmbeddableBadgeConfiguration(id: WParserBadgeId, subject: "WebParser Deploy")
+					WPARSERBadge.setStatus('running')
+					currentBuild.description = addToDescription(
+							description: currentBuild.description,
+							html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${WParserBadgeId}'></a>",
+							position: 1)
+					stage('WebParser Maven Deploy'){
+						def deployDir = "\"-Ddeploy.dir=c:\\Services\\WebParser \""
+						def taskBranch = getNexusBranch ('WebParser', params.Task)
+						if (taskBranch){
+							println taskBranch
+							def deployBranch = "\"-Ddeploy.branch=${taskBranch}\""
+							def deployParams = "\"-Dmaven.repo.local=${env.WORKSPACE}\\.mvn\\WebParser\\\" \"-Ddeploy.groupid=WebParser\"  ${deployDir} ${deployBranch}"
+							configFileProvider(
+									[configFile(
+										fileId: 'mavenSettingsGlobal', 
+										targetLocation: 'MAVEN_SETTINGS.xml'),
+									configFile(
+										fileId: 'defaultPOM', 
+										targetLocation: 'pomxml')
+									]){
+								powershell "mvn clean versions:use-latest-releases dependency:unpack -s MAVEN_SETTINGS.xml -f pomxml ${deployParams}"
+								def packageVersion = powershell (
+									script:"(Get-ChildItem -Directory .\\.mvn\\WebParser\\WebParser\\master).name", 
+									returnStdout: true)
+								MavenDeployResultList << [
+									Repo: 'WebParser',
+									Branch: taskBranch,
+									Version: packageVersion.trim()
+								]
+							}
+						}
+						else{
+							println "WebParser has no master branch"
+						}
+					}
+
+					stage('WebParser Settings'){
+						def data = readJSON file: DEPLOY_WPARSER_JSON
+						def map = getParralelDeliveryMap(data)
+						parallel map	
+					}
+				}
+			}
+			post{
+				success{script {WPARSERBadge.setStatus('passing')}}
+				failure{script {WPARSERBadge.setStatus('failing')}}
+				unstable {script{
+					WPARSERBadge.setStatus('unstable')
+						WPARSERBadge.setColor('orange')}}
+				aborted {script {WPARSERBadge.setStatus('aborted')}}
+			}
+		}  
+
 		stage('Config IIS'){
 			steps{
 				powershell '.\\scripts\\IISConfig.ps1'
@@ -588,6 +655,29 @@ pipeline{
 					TTBadge.setStatus('unstable')
 					TTBadge.setColor('orange')}}
 				aborted {script {TTBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('PostDeploy WebParser'){
+			when{
+				expression {
+					params.DEPLOY_WPARSER
+				}
+			}
+			steps{
+				script{ 
+					def data = readJSON file: POST_WPARSER_JSON
+					def map = getParralelDeliveryMap(data)
+					parallel map
+				}
+			}
+			post{
+				success{script {WPARSERBadge.setStatus('passing')}}
+				failure{script {WPARSERBadge.setStatus('failing')}}
+				unstable {script{
+					WPARSERBadge.setStatus('unstable')
+					WPARSERBadge.setColor('orange')}}
+				aborted {script {WPARSERBadge.setStatus('aborted')}}
 			}
 		}
 
