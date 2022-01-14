@@ -435,6 +435,12 @@ pipeline{
 									groupId: "PaymentBalancing",
 									repo: "${env.WORKSPACE}\\.mvn\\"
 									)
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\Payments\\PaymentBalanceReport",
+									branch: params.Task,
+									groupId: "PaymentBalanceReport",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
 						}
 					}
 					stage('DeployPay'){
