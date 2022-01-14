@@ -2,7 +2,7 @@ import-module '.\scripts\sideFunctions.psm1'
 
 $ServicesFolder = "C:\Services"
 $ServiceName = "WebParser"
-$PathToTaskScripts = "$($ServicesFolder)\$($ServiceName)\TasksScripts"
+$PathToTaskScripts = "$($ServicesFolder)\$($ServiceName)\DB Script"
 $db = @(
 	@{
 		DbName = $ServiceName
