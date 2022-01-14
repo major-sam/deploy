@@ -110,7 +110,8 @@
     }, {
         "name": "BaltBetDomainService",
         "source": [
-            "BaltBetDomainService.ps1"
+            "BaltBetDomainService.ps1",
+            "BaltBetDomainServiceDb.ps1"
         ]
     }, {
         "name": "ReportService",
