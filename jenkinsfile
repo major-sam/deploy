@@ -232,7 +232,7 @@ pipeline{
 		stage('Get maven packages'){
 			when{
 				expression {
-					false
+					true	
 				}
 			}
 			steps{
@@ -246,7 +246,7 @@ pipeline{
 		stage('Deploy'){ 
 			when{
 				expression {
-					false	
+					true	
 				}
 			}
 			steps{
@@ -435,6 +435,12 @@ pipeline{
 									groupId: "PaymentBalancing",
 									repo: "${env.WORKSPACE}\\.mvn\\"
 									)
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\Payments\\PaymentBalanceReport",
+									branch: params.Task,
+									groupId: "PaymentBalanceReport",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
 						}
 					}
 					stage('DeployPay'){
@@ -465,13 +471,13 @@ pipeline{
 			}
 			steps{
 				script{
-					stage('WebParser Maven Deploy'){
+					stage('Get WebParser maven packages'){
 						WPARSERBadge = addEmbeddableBadgeConfiguration(
 								id: WParserBadgeId, 
 								subject: "WebParser Deploy"
 								)
 						WPARSERBadge.setStatus('running')
-						currentBuild.description = addToDescription(
+						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${WParserBadgeId}'></a>",
 								position: 1)
