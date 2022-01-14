@@ -32,7 +32,7 @@ if (!(Get-ChildItem "$($PathToTaskScripts)\*" -include "*.sql")) {
     break
 }
 
-Get-ChildItem "$($PathToTaskScripts)\*" -include "*.sql" | % {
+Get-ChildItem "$($PathToTaskScripts)\*" -include "*.sql" | ForEach-Object {
     Write-Host -ForegroundColor Green "[INFO] Invoke $($_.Name) script..."
     Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Database $ServiceName -InputFile $_.FullName -Verbose -ErrorAction continue
 }
