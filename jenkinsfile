@@ -712,11 +712,12 @@ pipeline{
 			steps{
 				script{
 					def jsonFormat = JsonOutput.toJson(
-							MavenDeployResultList << [User: "${currentBuild.getBuildCauses()[0].userId}"]	
+							MavenDeployResultList << [
+								User: "${currentBuild.getBuildCauses()[0].userId}"
+								]
 							)
-
-						prettyJSON = JsonOutput.prettyPrint(jsonFormat)
-						echo "${prettyJSON}"
+					prettyJSON = JsonOutput.prettyPrint(jsonFormat)
+					echo "${prettyJSON}"
 				}
 			}
 		}
