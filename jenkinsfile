@@ -66,15 +66,16 @@ def generateStages(job, stageName) {
 				def subStageName = stageScript.split('\\.')[0]
 				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
 				def libScript =libraryResource libScriptPath
+				def libPsScript = '''
+					$q= @'
+					'''+libScript + ''''@
+					Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance '''+
+					'$env:COMPUTERNAME -Query $q -ErrorAction stop'
 				stagesResult << stage(subStageName){ 
 					println "SQL SCRIPTS RUNS ON MASTER! \n For other db USE statment requered"
 					powershell (
 							encoding: 'UTF8', 
-							script: '''
-								$q= @'
-								'''+libScript + ''''@
-								Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance $env:COMPUTERNAME -Query $q -ErrorAction stop
-								''',
+							script: libPsScript,
 							label: 'Runs on master '+ libScriptPath
 							)
 					} 
@@ -519,7 +520,10 @@ pipeline{
 
 		stage('Config IIS'){
 			steps{
-				powershell '.\\scripts\\IISConfig.ps1'
+				script{
+					def iisScript = libraryResource "/windows/Deploy/IIS/IISConfig.ps1" 
+					powershell script: iisScript, label: 'update iis config'
+				}
 			}
 		}
 
@@ -530,7 +534,10 @@ pipeline{
 				}
 			}
 			steps{
-				powershell '.\\scripts\\IISconfigMS.ps1'
+				script{
+					def iisScript = libraryResource "/windows/DeployMS/IIS/IISConfig.ps1" 
+					powershell script: iisScript, label: 'update iis config'
+				}
 			}
 			post{
 				success{script {MSBadge.setStatus('passing')}}
@@ -550,7 +557,10 @@ pipeline{
 
 			}
 			steps{
-				powershell '.\\scripts\\IISConfigPAY.ps1'
+				script{
+					def iisScript = libraryResource "/windows/DeployPay/IIS/IISConfig.ps1" 
+					powershell script: iisScript, label: 'update iis config'
+				}
 			}
 			post{
 				success{script {PAYBadge.setStatus('passing')}}
@@ -569,7 +579,10 @@ pipeline{
 				}
 			}
 			steps{
-				powershell '.\\scripts\\IISConfigTT.ps1'
+				script{
+					def iisScript = libraryResource "/windows/DeployTT/IIS/IISConfig.ps1" 
+					powershell script: iisScript, label: 'update iis config'
+				}
 			}
 			post{
 				success{script {TTBadge.setStatus('passing')}}
