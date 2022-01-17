@@ -8,8 +8,8 @@
         "source": [
            "Kernel.ps1",
            "updateConfig.ps1",
-           "RegisterService.ps1",
-           "ComAccounts.ps1"
+           "ComAccounts.ps1",
+           "RegisterService.ps1"
         ]
     }, {
         "name": "Services",
