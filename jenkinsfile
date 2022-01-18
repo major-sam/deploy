@@ -534,7 +534,7 @@ pipeline{
 			}
 			steps{
 				script{
-					stage('Get wingets maven packages'){
+					stage('Get widgets maven packages'){
 						WIDGETSBadge = addEmbeddableBadgeConfiguration(
 							id: WIDGETSBadgeId, 
 							subject: "Widgets Deploy"
@@ -555,9 +555,9 @@ pipeline{
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\Widgets",
+									deployDir: "c:\\Services\\BaltWidgets",
 									branch: params.Task,
-									groupId: "Widgets",
+									groupId: "BaltWidgets",
 									repo: "${env.WORKSPACE}\\.mvn\\"
 									)
 						}
