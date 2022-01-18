@@ -13,12 +13,14 @@ POST_TT_JSON = 'post_tt.json'
 POST_PAY_JSON = 'post_pay.json'
 POST_MS_JSON = 'post_ms.json'
 POST_WPARSER_JSON = 'post_wparser.json'
+POST_WIDGETS_JSON = 'post_widgets.json'
 
 DEPLOY_JSON = "deploy.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
+DEPLOY_WIDGETS_JSON = "deploy_widgets.json"
 
 CLEAN_JSON = 'cleanup.json'
 
@@ -27,6 +29,7 @@ TTBadgeId = 'TTBadgeId'
 PAYBadgeId = 'PayBadgeId'
 MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
+WIDGETSBadgeId = 'WIDGETSBadgeId'
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId, 
@@ -137,6 +140,11 @@ pipeline{
 		booleanParam (
 			name: "DEPLOY_WPARSER",
 			description: 'Deploy Web Parser',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "DEPLOY_WIDGETS",
+			description: 'Deploy BaltWidgets',
 			defaultValue: false
 			)
 	}
@@ -518,6 +526,65 @@ pipeline{
 			}
 		}  
 
+		stage('Deploy BaltBetWidgets'){
+			when{
+				expression {
+					params.DEPLOY_WIDGETS
+				}
+			}
+			steps{
+				script{
+					stage('Get wingets maven packages'){
+						WIDGETSBadge = addEmbeddableBadgeConfiguration(
+							id: WIDGETSBadgeId, 
+							subject: "Widgets Deploy"
+							)
+						WIDGETSBadge.setStatus('running')
+						currentBuild.description = utils.addToDescription(
+								description: currentBuild.description,
+								html: "<a href='${BUILD_URL}'>" +
+									"<img src='${BUILD_URL}badge/icon?config=${WIDGETSBadgeId}'></a>",
+								position: 1)
+						configFileProvider(
+								[
+								configFile(
+									fileId: 'mavenSettingsGlobal', 
+									targetLocation: 'MAVEN_SETTINGS.xml'),
+								configFile(
+									fileId: 'defaultPOM', 
+									targetLocation: 'pomxml')
+								]){
+							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\Widgets",
+									branch: params.Task,
+									groupId: "Widgets",
+									repo: "${env.WORKSPACE}\\.mvn\\"
+									)
+						}
+					}
+					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
+					Тогда могут понадобиться и пост и деплой
+					stage('DeployWIDGETS'){
+						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON) 
+						parallel (
+							getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: STAGE_NAME)
+						)
+					}*/
+				}
+			}
+			/*
+			post{
+				success{script {WIDGETSBadge.setStatus('passing')}}
+				failure{script {WIDGETSBadge.setStatus('failing')}}
+				unstable {script {
+					WIDGETSBadge.setStatus('unstable')
+					WIDGETSBadge.setColor('orange')}}
+				aborted {script {WIDGETSBadge.setStatus('aborted')}}
+			}*/
+		}
+
 		stage('Config IIS'){
 			steps{
 				script{
@@ -591,6 +658,29 @@ pipeline{
 					TTBadge.setStatus('unstable')
 						TTBadge.setColor('orange')}}
 				aborted {script {TTBadge.setStatus('aborted')}}
+			}
+		}
+
+		stage('Config IIS For BaltWidgetsClient'){
+			when{
+				expression {
+					params.DEPLOY_WIDGETS
+				}
+
+			}
+			steps{
+				script{
+					def iisScript = libraryResource "/windows/DeployWidgets/IIS/IISConfig.ps1" 
+					powershell script: iisScript, label: 'update iis config'
+				}
+			}
+			post{
+				success{script {WIDGETSBadge.setStatus('passing')}}
+				failure{script {WIDGETSBadge.setStatus('failing')}}
+				unstable {script {
+					WIDGETSBadge.setStatus('unstable')
+						WIDGETSBadge.setColor('orange')}}
+				aborted {script {WIDGETSBadge.setStatus('aborted')}}
 			}
 		}
 
