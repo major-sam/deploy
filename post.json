@@ -8,6 +8,8 @@
         "source": [
            "Kernel.ps1",
            "updateConfig.ps1",
+           "updateKernelLogConfig.ps1",
+           "updateKernelUnityConfig.ps1",
            "ComAccounts.ps1",
            "RegisterService.ps1"
         ]
