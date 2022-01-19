@@ -13,7 +13,11 @@
     }, {
         "name": "Service",
         "source": [
-            "Service.ps1",
+            "Service.ps1"
+        ]
+    }, {
+        "name": "DB",
+        "source": [
             "DB.ps1"
         ]
     }
