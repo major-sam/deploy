@@ -70,5 +70,10 @@
         "source": [
             "TicketService.ps1"
         ]
+    }, {
+        "name": "CashRegisterOperationService",
+        "source": [
+            "CashRegisterOperationService.ps1"
+        ]
     }
 ]
