@@ -146,5 +146,10 @@
         "source": [
             "UniStatisticsLogger.ps1"
         ]
+    }, {
+        "name": "CashRegisterOperationService",
+        "source": [
+            "CashRegisterOperationService.ps1"
+        ]
     }
 ]
