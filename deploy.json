@@ -1,7 +1,9 @@
 [{
         "name": "CupisIS",
         "source": [
-            "CupisIntegrationService.ps1"
+            "CupisIntegrationService.ps1",
+            "CupisIntegrationServiceGrpc.ps1",
+            "CupisIntegrationServiceDB.ps1"
         ]
     }, {
         "name": "Kernel",
@@ -39,6 +41,7 @@
     }, {
         "name": "KRM",
         "source": [
+            "KRMDB.ps1",
             "KRM.ps1"
         ]
     }, {
@@ -105,6 +108,8 @@
     }, {
         "name": "PaymentCupis",
         "source": [
+            "PaymentCupisDB.ps1",
+            "PaymentCupisApi.ps1",
             "PaymentCupis.ps1"
         ]
     }, {
