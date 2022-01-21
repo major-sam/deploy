@@ -149,7 +149,8 @@
     }, {
         "name": "CashRegisterOperationService",
         "source": [
-            "CashRegisterOperationService.ps1"
+            "CashRegisterOperationService.ps1",
+            "CashRegisterOperationServiceDB.ps1"
         ]
     }
 ]
