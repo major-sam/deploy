@@ -831,7 +831,7 @@ pipeline{
 	post{
 		always {
 			script{
-					cleanWs notFailBuild: true
+				if(false){	cleanWs notFailBuild: true}
 			}
 		}
 		success{
