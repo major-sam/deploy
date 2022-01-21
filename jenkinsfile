@@ -150,6 +150,7 @@ pipeline{
 	}
 
 	environment {
+		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
@@ -821,30 +822,45 @@ pipeline{
 							)
 					prettyJSON = JsonOutput.prettyPrint(jsonFormat)
 					echo "${prettyJSON}"
+					touch file: "c:\\Services\\Deploy_bundle.json"
+					writeFile file: "c:\\Services\\Deploy_bundle.json", text: prettyJSON
 				}
 			}
 		}
 	}
 	post{
-		always{
+		always {
 			script{
-				touch file: "c:\\Services\\Deploy_bundle.json"
-				writeFile file: "c:\\Services\\Deploy_bundle.json", text: prettyJSON
+					cleanWs notFailBuild: true
 			}
 		}
 		success{
-			script{
+			script {
 				BuildBadge.setStatus('passing')
-			}
-		}
-		aborted{
-			script{
-				BuildBadge.setStatus('aborted')
+				defaultPostSuccess()
+				makeLogs('Success')
 			}
 		}
 		failure{
-			script{
+			script {
 				BuildBadge.setStatus('failing')
+				defaultPostFail()
+				makeLogs('Fail')
+			}
+		}
+		unstable {
+			script {
+				Buil4dBadge.setStatus('unstable')
+				BuildBadge.setColor('orange')
+				defaultPostUnstable()
+				makeLogs('Unstable')
+			}
+		}
+		aborted {
+			script {
+				BuildBadge.setStatus('aborted')
+				defaultPostAborted()
+				makeLogs('Aborted')
 			}
 		}
 	}
