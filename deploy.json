@@ -157,5 +157,10 @@
             "CashRegisterOperationService.ps1",
             "CashRegisterOperationServiceDB.ps1"
         ]
+    }, {
+        "name": "EventService",
+        "source": [
+            "EventService.ps1"
+        ]
     }
 ]
