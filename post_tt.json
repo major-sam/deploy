@@ -3,7 +3,7 @@
         "source": [
             "tt.ps1",
             "addLinkedServer.ps1",
-            "kernel.ps1"
+            "kernel.sql"
         ]
     },{
         "name": "Services",
