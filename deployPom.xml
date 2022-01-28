@@ -306,7 +306,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/</outputDirectory>								
+						<outputDirectory>c:/Services/FavoritesService</outputDirectory>								
 					</artifactItem>
 				</artifactItems>
 			</configuration>
