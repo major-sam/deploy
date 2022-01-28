@@ -75,10 +75,5 @@
         "source": [
             "CashRegisterOperationService.ps1"
         ]
-    }, {
-        "name": "FavoritesService",
-        "source": [
-            "FavoritesService.ps1"
-        ]
     }
 ]
