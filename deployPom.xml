@@ -162,7 +162,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services</outputDirectory>								
+						<outputDirectory>c:/Services/PromoExpressService</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>PromocodeService</groupId>
