@@ -156,6 +156,15 @@
 						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>PromoExpressService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>PromocodeService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
