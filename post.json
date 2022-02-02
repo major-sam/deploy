@@ -26,6 +26,11 @@
             "UniRu.ps1"
         ]
     }, {
+        "name": "PromoExpressService",
+        "source": [
+            "PromoExpressService.ps1"
+        ]
+    }, {
         "name": "PersonalInfoCenter",
         "source": [
             "PersonalInfoCenter.ps1"

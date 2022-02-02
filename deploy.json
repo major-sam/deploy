@@ -27,6 +27,12 @@
             "WebMobile.ps1"
         ]
     }, {
+        "name": "PromoExpressService",
+        "source": [
+            "config.ps1",
+            "db.ps1"
+        ]
+    }, {
         "name": "UniPaymentsService",
         "source": [
             "UniPaymentsService.ps1"
