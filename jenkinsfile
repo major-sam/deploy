@@ -282,9 +282,15 @@ pipeline{
 						file (
 							credentialsId: 'testCupisCA', 
 							variable: 'TESTCUPISCA'),
+						string(
+							credentialsId: 'UniIdentService_DecryptionKey', 
+							variable: 'UniIdentServiceDecryptionKey'),
+						string(
+							credentialsId: 'UniIdentService_ValidationKey',
+							variable: 'UniIdentServiceValidationKey')
 				]){
 					script{
-						def List scriptFile =readJSON (file: DEPLOY_JSON ) 
+						def List scriptFile = readJSON (file: DEPLOY_JSON ) 
 						parallel (getParralelDeliveryMap(
 							jsonMap: scriptFile, 
 							stage: STAGE_NAME)
