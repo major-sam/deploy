@@ -283,6 +283,9 @@ pipeline{
 							credentialsId: 'testCupisCA', 
 							variable: 'TESTCUPISCA'),
 						string(
+							credentialsId: 'Asterisk_Secret', 
+							variable: 'AsteriskSecret'),
+						string(
 							credentialsId: 'UniIdentService_DecryptionKey', 
 							variable: 'UniIdentServiceDecryptionKey'),
 						string(
