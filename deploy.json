@@ -22,9 +22,17 @@
             "GeneratePaymentExchange.sql"
         ]
     }, {
-        "name": "WebMobile",
+        "name": "Web",
         "source": [
-            "WebMobile.ps1"
+            "WebMobile.ps1",
+            "WebTouch.ps1",
+            "WebsiteCom.ps1",
+            "WebsiteComDB.ps1",
+            "WebTouchPublic.ps1",
+            "WebsiteComPublic.ps1",
+            "Website.ps1",
+            "WebApiAuth.ps1",
+            "WebApiAuthDB.ps1"
         ]
     }, {
         "name": "PromoExpressService",
@@ -51,32 +59,6 @@
             "KRM.ps1"
         ]
     }, {
-        "name": "WebTouch",
-        "source": [
-            "WebTouch.ps1"
-        ]
-    }, {
-        "name": "WebsiteCom",
-        "source": [
-            "WebsiteCom.ps1",
-            "WebsiteComDB.ps1"
-        ]
-    }, {
-        "name": "WebTouchPublic",
-        "source": [ 
-            "WebTouchPublic.ps1"
-        ]
-    }, {
-        "name": "WebsiteComPublic",
-        "source": [
-            "WebsiteComPublic.ps1"
-        ]
-    }, {
-        "name": "Website",
-        "source": [
-            "Website.ps1"
-        ]
-    }, {
         "name": "PIC",
         "source": [
             "AdminMessageService.ps1",
@@ -99,12 +81,6 @@
         "name": "TicketService",
         "source": [
             "TicketService.ps1"
-        ]
-    }, {
-        "name": "WebApiAuth",
-        "source": [
-            "WebApiAuth.ps1",
-            "WebApiAuthDB.ps1"
         ]
     }, {
         "name": "PaymenSystemHandlers",
