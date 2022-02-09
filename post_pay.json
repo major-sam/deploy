@@ -1,7 +1,8 @@
 [{
         "name": "DB",
         "source": [
-            "pay.ps1",
+            "init.ps1",
+            "update.sql",
             "kernel.ps1"
         ]
     },{
