@@ -85,5 +85,10 @@
         "source": [
             "RegisterService.ps1"
         ]
+    },{
+        "name": "AccountStatisticsService",
+        "source": [
+            "AccountStatisticsServiceGrpcHost.ps1"
+        ]
     }
 ]

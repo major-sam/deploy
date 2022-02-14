@@ -144,5 +144,12 @@
         "source": [
             "EventService.ps1"
         ]
+    },{
+        "name": "AccountStatisticsService",
+        "source": [
+            "AccountStatisticsServiceDB.ps1",
+            "AccountStatisticsServiceHost.ps1",
+            "AccountStatisticsServiceGrpcHost.ps1"
+        ]
     }
 ]
