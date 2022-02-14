@@ -17,7 +17,6 @@ POST_WIDGETS_JSON = 'post_widgets.json'
 
 DEPLOY_JSON = "deploy.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
-DEPLOY_PAY_JSON = "deploy_pay.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
 DEPLOY_WIDGETS_JSON = "deploy_widgets.json"
@@ -26,7 +25,6 @@ CLEAN_JSON = 'cleanup.json'
 
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
-PAYBadgeId = 'PayBadgeId'
 MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
@@ -420,68 +418,6 @@ pipeline{
 			}
 		}    
 
-		stage('Deploy Payment Balanser'){
-			when{
-				expression {
-					params.DEPLOY_PAY
-				}
-			}
-			steps{
-				script{
-					stage('Get payment maven packages'){
-						PAYBadge = addEmbeddableBadgeConfiguration(
-								id: PAYBadgeId, 
-								subject: "PAY Deploy"
-								)
-						PAYBadge.setStatus('running')
-						currentBuild.description = utils.addToDescription(
-								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'>"+
-								"<img src='${BUILD_URL}badge/icon?config=${PAYBadgeId}'></a>",
-								position: 1)
-						configFileProvider(
-								[
-								configFile(
-									fileId: 'mavenSettingsGlobal', 
-									targetLocation: 'MAVEN_SETTINGS.xml'),
-								configFile(
-									fileId: 'defaultPOM', 
-									targetLocation: 'pomxml')
-								]){
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\Payments\\PaymentBalancing",
-									branch: params.Task,
-									groupId: "PaymentBalancing",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\Payments\\PaymentBalanceReport",
-									branch: params.Task,
-									groupId: "PaymentBalanceReport",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
-						}
-					}
-					stage('DeployPay'){
-						def List scriptFile = readJSON (file: DEPLOY_PAY_JSON) 
-						parallel (
-							getParralelDeliveryMap(
-								jsonMap: scriptFile, 
-								stage: STAGE_NAME)
-						)
-					}
-				}
-			}
-			post{
-				success{script {PAYBadge.setStatus('passing')}}
-				failure{script {PAYBadge.setStatus('failing')}}
-				unstable {script {
-					PAYBadge.setStatus('unstable')
-						PAYBadge.setColor('orange')}}
-				aborted {script {PAYBadge.setStatus('aborted')}}
-			}
-		}
-
 		stage('Deploy WebParser'){
 			when{
 				expression {
@@ -626,29 +562,6 @@ pipeline{
 			}
 		}
 
-		stage('Config IIS For Payment Balancer Blazor'){
-			when{
-				expression {
-					params.DEPLOY_PAY
-				}
-
-			}
-			steps{
-				script{
-					def iisScript = libraryResource "/windows/DeployPay/IIS/IISConfig.ps1" 
-					powershell script: iisScript, label: 'update iis config'
-				}
-			}
-			post{
-				success{script {PAYBadge.setStatus('passing')}}
-				failure{script {PAYBadge.setStatus('failing')}}
-				unstable {script {
-					PAYBadge.setStatus('unstable')
-						PAYBadge.setColor('orange')}}
-				aborted {script {PAYBadge.setStatus('aborted')}}
-			}
-		}
-
 		stage('Config IIS For Trading Tool'){
 			when{
 				expression {
@@ -691,32 +604,6 @@ pipeline{
 					WIDGETSBadge.setStatus('unstable')
 						WIDGETSBadge.setColor('orange')}}
 				aborted {script {WIDGETSBadge.setStatus('aborted')}}
-			}
-		}
-
-		stage('PostPay'){
-			when{
-				expression {
-					params.DEPLOY_PAY
-				}
-			}
-			steps{
-				script{ 
-					def List scriptFile = readJSON (file: POST_PAY_JSON) 
-					parallel (
-						getParralelDeliveryMap(
-							jsonMap: scriptFile, 
-							stage: STAGE_NAME)
-					)
-				}
-			}
-			post{
-				success{script {PAYBadge.setStatus('passing')}}
-				failure{script {PAYBadge.setStatus('failing')}}
-				unstable {script {
-					PAYBadge.setStatus('unstable')
-					PAYBadge.setColor('orange')}}
-				aborted {script {PAYBadge.setStatus('aborted')}}
 			}
 		}
 
@@ -859,7 +746,7 @@ pipeline{
 		}
 		unstable {
 			script {
-				Buil4dBadge.setStatus('unstable')
+				BuildBadge.setStatus('unstable')
 				BuildBadge.setColor('orange')
 				defaultPostUnstable()
 				makeLogs('Unstable')
