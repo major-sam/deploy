@@ -8,18 +8,9 @@
     }, {
         "name": "Kernel",
         "source": [
-            "kernelDb.ps1",
+            "kernelDb_v2.ps1",
             "kernelAppsettings.ps1",
-            "kernelSettings.ps1",
-            "AccountGenerator.sql",
-            "GrantAccess.sql",
-            "BindKRMCard.sql",
-            "CreateEvents.sql",
-            "CreateSuperExpressFromBranches.sql",
-            "ActivityService.sql",
-            "FixResultsView.sql",
-            "SpecialForTest.sql",
-            "GeneratePaymentExchange.sql"
+            "kernelSettings.ps1"
         ]
     }, {
         "name": "Web",
