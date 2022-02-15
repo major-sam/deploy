@@ -21,6 +21,14 @@
             "Memurai.ps1"
         ]
     }, {
+        "name": "PaymentBalancing",
+        "source": [
+            "init.ps1",
+            "update.sql",
+            "kernel.ps1",
+            "install.ps1"
+        ]
+    }, {
         "name": "UniRu",
         "source": [
             "UniRu.ps1"

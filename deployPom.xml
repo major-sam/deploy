@@ -129,6 +129,24 @@
 						<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>PaymentBalanceReport</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/Payments/PaymentBalanceReport</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>PaymentBalancing</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/Payments/PaymentBalancing</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>Website</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>

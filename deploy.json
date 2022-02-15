@@ -82,6 +82,13 @@
         "source": [
             "TicketService.ps1"
         ]
+
+    }, {
+        "name": "PaymentBalancing",
+        "source": [
+            "balancing.ps1",
+            "report.ps1"
+        ]
     }, {
         "name": "PaymenSystemHandlers",
         "source": [

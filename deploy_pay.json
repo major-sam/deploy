@@ -1,8 +1,0 @@
-[{
-        "name": "Balancing",
-        "source": ["balancing.ps1"]
-    }, {
-        "name": "Report",
-        "source": ["report.ps1"]
-    }
-]
