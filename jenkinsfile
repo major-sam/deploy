@@ -284,11 +284,11 @@ pipeline{
 							credentialsId: 'Asterisk_Secret', 
 							variable: 'AsteriskSecret'),
 						string(
-							credentialsId: 'UniIdentService_DecryptionKey', 
-							variable: 'UniIdentServiceDecryptionKey'),
+							credentialsId: 'Uni_DecryptionKey', 
+							variable: 'UniDecryptionKey'),
 						string(
-							credentialsId: 'UniIdentService_ValidationKey',
-							variable: 'UniIdentServiceValidationKey')
+							credentialsId: 'Uni_ValidationKey',
+							variable: 'UniValidationKey')
 				]){
 					script{
 						def List scriptFile = readJSON (file: DEPLOY_JSON ) 
