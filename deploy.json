@@ -1,10 +1,12 @@
-[{
+[
+    {
         "name": "CupisIS",
         "source": [
             "CupisIntegrationService.ps1",
             "CupisIntegrationServiceDB.ps1"
         ]
-    }, {
+    },
+    {
         "name": "Kernel",
         "source": [
             "kernelDb_v2.ps1",
@@ -12,7 +14,8 @@
             "kernelAppsettings.ps1",
             "kernelSettings.ps1"
         ]
-    }, {
+    },
+    {
         "name": "Web",
         "source": [
             "WebMobile.ps1",
@@ -25,31 +28,36 @@
             "WebApiAuth.ps1",
             "WebApiAuthDB.ps1"
         ]
-    }, {
+    },
+    {
         "name": "PromoExpressService",
         "source": [
             "config.ps1",
             "db.ps1"
         ]
-    }, {
+    },
+    {
         "name": "UniPaymentsService",
         "source": [
             "UniPaymentsService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "Uni",
         "source": [
             "UniRu.ps1",
             "UniRuApi.ps1",
             "UniRuSql.ps1"
         ]
-    }, {
+    },
+    {
         "name": "KRM",
         "source": [
             "KRMDB.ps1",
             "KRM.ps1"
         ]
-    }, {
+    },
+    {
         "name": "PIC",
         "source": [
             "AdminMessageService.ps1",
@@ -57,68 +65,79 @@
             "PushService.ps1",
             "MessageService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "conf",
         "source": [
             "cert.ps1",
             "rabbitmq.ps1"
         ]
-    }, {
+    },
+    {
         "name": "IdentificationDocumentService",
         "source": [
             "IdentificationDocumentService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "TicketService",
         "source": [
             "TicketService.ps1"
         ]
-
-    }, {
+    },
+    {
         "name": "PaymentBalancing",
         "source": [
             "balancing.ps1",
             "report.ps1"
         ]
-    }, {
+    },
+    {
         "name": "PaymenSystemHandlers",
         "source": [
             "PaymenSystemHandlers.ps1"
         ]
-    }, {
+    },
+    {
         "name": "PaymentCupis",
         "source": [
             "PaymentCupisDB.ps1",
             "PaymentCupisApi.ps1",
             "PaymentCupis.ps1"
         ]
-    }, {
+    },
+    {
         "name": "BaltBetDomainService",
         "source": [
             "BaltBetDomainService.ps1",
             "BaltBetDomainServiceDb.ps1"
         ]
-    }, {
+    },
+    {
         "name": "ReportService",
         "source": [
             "ReportService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "ActionLogService",
         "source": [
             "ActionLogService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "SuperExpressService",
         "source": [
             "SuperExpressService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "CoefService",
         "source": [
             "CoefService.ps1"
         ]
-    }, {
+    },
+    {
         "name": "CashBookService",
         "source": [
             "CashBookService.ps1",
@@ -126,18 +145,21 @@
             "InitDb.ps1",
             "UpdateCashBookServiceDb.ps1"
         ]
-    }, {
+    },
+    {
         "name": "UniStatisticsLogger",
         "source": [
             "UniStatisticsLogger.ps1"
         ]
-    }, {
+    },
+    {
         "name": "CashRegisterOperationService",
         "source": [
             "CashRegisterOperationService.ps1",
             "CashRegisterOperationServiceDB.ps1"
         ]
-    }, {
+    },
+    {
         "name": "EventService",
         "source": [
             "EventService.ps1"
