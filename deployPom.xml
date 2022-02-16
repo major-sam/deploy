@@ -344,6 +344,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/inetpub/UniIdentService</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>UniBonusService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/UniBonusService</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				
