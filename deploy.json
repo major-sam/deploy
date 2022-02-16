@@ -151,5 +151,10 @@
         "source": [
             "EventService.ps1"
         ]
+    }, {
+        "name": "UniBonusService",
+        "source": [
+            "UniBonusService.ps1"
+        ]
     }
 ]
