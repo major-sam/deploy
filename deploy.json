@@ -18,7 +18,6 @@
             "BindKRMCard.sql",
             "CreateEvents.sql",
             "CreateSuperExpressFromBranches.sql",
-            "ActivityService.sql",
             "FixResultsView.sql",
             "SpecialForTest.sql",
             "GeneratePaymentExchange.sql"
