@@ -9,6 +9,7 @@
         "name": "Kernel",
         "source": [
             "kernelDb_v2.ps1",
+            "UpdateEvents.ps1",
             "kernelAppsettings.ps1",
             "kernelSettings.ps1"
         ]
