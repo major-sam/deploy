@@ -225,7 +225,7 @@ pipeline{
 		stage('Cleanup'){
 			steps{
 				script{
-					def funcFile =libraryResource '/windows/sideFunctions.psm1' 
+					def funcFile =libraryResource 'windows/sideFunctions.psm1' 
 					writeFile (
 						file: '.\\scripts\\sideFunctions.psm1',
 						text: funcFile)
@@ -534,10 +534,10 @@ pipeline{
 		stage('Config IIS'){
 			steps{
 				script{
-					def iisScript = libraryResource "/windows/Deploy/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/Deploy/IIS/IISConfig.ps1" 
 					powershell script: iisScript, label: 'update iis config'
 				}
-			}
+			}		
 		}
 
 		stage('Config IIS for Marketing Service'){
@@ -548,7 +548,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "/windows/DeployMS/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployMS/IIS/IISConfig.ps1" 
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
@@ -570,7 +570,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "/windows/DeployTT/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployTT/IIS/IISConfig.ps1" 
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
@@ -593,7 +593,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "/windows/DeployWidgets/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployWidgets/IIS/IISConfig.ps1" 
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
