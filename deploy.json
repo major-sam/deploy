@@ -10,17 +10,10 @@
     {
         "name": "Kernel",
         "source": [
-            "kernelDb.ps1",
+            "kernelDb_v2.ps1",
+            "UpdateEvents.ps1",
             "kernelAppsettings.ps1",
-            "kernelSettings.ps1",
-            "AccountGenerator.sql",
-            "GrantAccess.sql",
-            "BindKRMCard.sql",
-            "CreateEvents.sql",
-            "CreateSuperExpressFromBranches.sql",
-            "FixResultsView.sql",
-            "SpecialForTest.sql",
-            "GeneratePaymentExchange.sql"
+            "kernelSettings.ps1"
         ]
     },
     {
