@@ -98,5 +98,10 @@
         "source": [
             "CurrencyConverter.ps1"
         ]
+    }, {
+        "name": "UniAccountRecoveryService",
+        "source": [
+            "UniAccountRecoveryService.ps1"
+        ]
     }
 ]

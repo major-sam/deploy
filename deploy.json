@@ -155,5 +155,10 @@
             "CurrencyConverterDB.ps1",
             "CurrencyConverterEditKernel.ps1"
         ]
+    }, {
+        "name": "UniAccountRecoveryService",
+        "source": [
+            "UniAccountRecoveryService.ps1"
+        ]
     }
 ]
