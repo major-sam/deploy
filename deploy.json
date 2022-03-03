@@ -148,5 +148,12 @@
         "source": [
             "UniBonusService.ps1"
         ]
+    }, {
+        "name": "CurrencyConverter",
+        "source": [
+            "CurrencyConverter.ps1",
+            "CurrencyConverterDB.ps1",
+            "CurrencyConverterEditKernel.ps1"
+        ]
     }
 ]

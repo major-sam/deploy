@@ -353,6 +353,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/UniBonusService</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>CurrencyConverter</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/CurrencyConverter</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				

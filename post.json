@@ -93,5 +93,10 @@
         "source": [
             "RegisterService.ps1"
         ]
+    }, {
+        "name": "CurrencyConverter",
+        "source": [
+            "CurrencyConverter.ps1"
+        ]
     }
 ]
