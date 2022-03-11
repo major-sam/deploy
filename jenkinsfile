@@ -160,6 +160,7 @@ pipeline{
 		CUPIS_CERT_THUMBPRINT = credentials('CupisCertThumbprint')
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
+		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 	}
 
 	agent {label "${TESTVM}" }
