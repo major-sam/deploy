@@ -155,5 +155,11 @@
             "CurrencyConverterDB.ps1",
             "CurrencyConverterEditKernel.ps1"
         ]
+    }, {
+        "name": "UpdateApkService",
+        "source": [
+            "UpdateApkService.ps1",
+            "UpdateApkServiceDB.ps1"
+        ]
     }
 ]

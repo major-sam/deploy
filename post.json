@@ -98,5 +98,10 @@
         "source": [
             "CurrencyConverter.ps1"
         ]
+    }, {
+        "name": "UpdateApkService",
+        "source": [
+            "UpdateApkService.ps1"
+        ]
     }
 ]
