@@ -101,7 +101,8 @@
     }, {
         "name": "UpdateApkService",
         "source": [
-            "UpdateApkService.ps1"
+            "UpdateApkService.ps1",
+            "UpdateApkServiceIIS.ps1"
         ]
     }
 ]
