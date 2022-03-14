@@ -255,7 +255,7 @@ pipeline{
 					steps{
 						script{
 							sh( 
-							script:"helm delete redis  --namespace ${TESTVM} || echo 'pass'",
+							script:"kubectl get ns -A" ,
 							label:'clean ns')
 						}
 					}
@@ -286,8 +286,9 @@ pipeline{
 							steps{
 								script{
 									MACHINE_ID = TESTVM.replaceAll("\\D+","").toInteger()
-										redis_port = 30100 + MACHINE_ID
-										rabbit_port = 30200 + MACHINE_ID
+									redis_port = 30100 + MACHINE_ID
+									rabbit_port = 30200 + MACHINE_ID
+									redis_pass = "pwd"
 								}
 							}
 						}
@@ -301,7 +302,7 @@ pipeline{
 										--create-namespace \
 										--set master.service.nodePorts.redis=${redis_port} \
 										--set master.service.type="NodePort" \
-										--set auth.password=secretpassword 
+										--set auth.password=${redis_pass}
 										""",
 									label: "deploy redis helm chart")
 							}
