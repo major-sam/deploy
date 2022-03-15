@@ -19,6 +19,7 @@ POST_WPARSER_JSON = 'post_wparser.json'
 POST_WIDGETS_JSON = 'post_widgets.json'
 
 DEPLOY_JSON = "deploy.json"
+KUBER_JSON = "kuber.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
@@ -40,25 +41,24 @@ def BuildBadge = addEmbeddableBadgeConfiguration(
 
 
 def getParralelDeliveryMap(Map config = [:]){
-	envOS = isUnix() ? "linux" : "windows"
 	def result = config.jsonMap.collectEntries {[
 		(it['name']) : {
 			stage(it['name']){
-				generateStages(it, config.stage)
+				generateStages(it, config.stage, (isUnix() ? "linux" : "windows"))
 			}
 		}]
 	}
 	return result
 }
 
-def generateStages(job, stageName) {
+def generateStages(job, stageName, envOS) {
     Closure stagesResult = {}
     for (stageScript in job['source']) {
+		def subStageName = stageScript.split('\\.')[0]
+		def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+		def libScript =libraryResource libScriptPath
 		switch(stageScript.split('\\.')[-1]){
 			case 'ps1':
-				def subStageName = stageScript.split('\\.')[0]
-				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
-				def libScript =libraryResource libScriptPath
 				stagesResult << stage(subStageName){ 
 					powershell (
 							encoding: 'UTF8', 
@@ -68,9 +68,6 @@ def generateStages(job, stageName) {
 					} 
 				break
 			case 'sql':
-				def subStageName = stageScript.split('\\.')[0]
-				def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
-				def libScript =libraryResource libScriptPath
 				def libPsScript = '''
 					$q= @'
 					'''+libScript + ''''@
@@ -83,13 +80,22 @@ def generateStages(job, stageName) {
 							script: libPsScript,
 							label: 'Runs on master '+ libScriptPath
 							)
-					} 
+				} 
+				break
+			case 'sh':
+				stagesResult << stage(subStageName){ 
+					sh (
+							encoding: 'UTF8', 
+							script: libScript,
+							label: libScriptPath
+							)
+				} 
 				break
 			default:
 				stagesResult << stage(subStageName){ 
 					println "not suported script extention:" +
 						stageScript.split('\\.')[-1]	
-					} 
+				} 
 		}
 	}
     return stagesResult 
@@ -228,43 +234,32 @@ pipeline{
 			}
 		}
 
-		stage('Clean env'){
-			parallel {
-				stage('Cleanup'){
-					steps{
-						script{
-							parallel (getParralelDeliveryMap(
-									jsonMap: readJSON (file: CLEAN_JSON), 
-									stage: STAGE_NAME)
+		stage('Cleanup env'){
+			steps{
+				script{
+					def funcFile =libraryResource 'windows/sideFunctions.psm1' 
+					writeFile (
+							file: '.\\scripts\\sideFunctions.psm1',
+							text: funcFile)
+					parallel (getParralelDeliveryMap(
+								jsonMap: readJSON (file: CLEAN_JSON), 
+								stage: 'Cleanup')
 							)
-						}
-					}
-				}
-				stage('lib fix'){
-					steps{
-						script{
-							def funcFile =libraryResource 'windows/sideFunctions.psm1' 
-								writeFile (
-										file: '.\\scripts\\sideFunctions.psm1',
-										text: funcFile)
-						}
-					}
-				}
-				stage('kuber cleanup'){
-					agent{label 'test_kuber'}	
-					steps{
-						script{
-							sh( 
-							script:"kubectl get ns -A" ,
-							label:'clean ns')
-						}
-					}
 				}
 			}
 		}
 		stage('Prepare env'){
 			parallel{
-
+				stage('kuber cleanup'){
+					agent{label 'test_kuber'}	
+					steps{
+						script{
+							sh( 
+							script:"kubectl delete ns ${TESTVM}|| echo 'NameSpace already removed'" ,
+							label:'clean ns')
+						}
+					}
+				}
 				stage('Get maven packages'){
 					when{
 						expression {
@@ -278,58 +273,60 @@ pipeline{
 						}
 					}
 				}
-
-				stage('Kuber deploy'){
-					agent{label 'test_kuber'}	
-					stages{
-						stage('set vars'){
-							steps{
-								script{
-									MACHINE_ID = TESTVM.replaceAll("\\D+","").toInteger()
-									redis_port = 30100 + MACHINE_ID
-									rabbit_port = 30200 + MACHINE_ID
-									redis_pass = "pwd"
-								}
-							}
-						}
-						stage('redis'){
-							steps{
-								sh (
-									script:"""
-									helm upgrade -i redis bitnami/redis \
-										--version 16.5.2 \
-										--namespace ${TESTVM} \
-										--create-namespace \
-										--set master.service.nodePorts.redis=${redis_port} \
-										--set master.service.type="NodePort" \
-										--set replica.replicaCount=0  \
-										--set master.resources.requests.cpu=250m \
-										--set master.resources.limits.cpu=250m   \
-										--set master.resources.requests.memory=250Mi \
-										--set master.resources.limits.memory=250Mi \
-										--set auth.password=${redis_pass}
-										""",
-									label: "deploy redis helm chart")
-							}
-						}
-						stage('rabbit'){
-							steps{
-								sh (
-									script:"ls",
-									label: "deploy rabbit helm chart")
-							}
-						}
-					}
-				}
 			}
 		}
 
-		stage('Deploy'){ 
-			when{
-				expression {
-					true	
+		stage('Kuber deploy'){
+			agent{label 'test_kuber'}	
+			steps{
+				script{
+					def List scriptFile = readJSON (file: KUBER_JSON ) 
+						parallel (getParralelDeliveryMap(
+									jsonMap: scriptFile, 
+									stage: 'Deploy')
+								)
 				}
 			}
+//			stages{
+//				stage('set vars'){
+//					steps{
+//						script{
+//							MACHINE_ID = TESTVM.replaceAll("\\D+","").toInteger()
+//								redis_port = 30100 + MACHINE_ID
+//								rabbit_port = 30200 + MACHINE_ID
+//								rabbit_web_port = 30300 + MACHINE_ID
+//								redis_pass = "pwd"
+//								rabbit_usr = 'test'
+//								rabbit_pwd = 'test'
+//						}
+//					}
+//				}
+//				stage('redis'){
+//					steps{
+//						sh (
+//								script:"""
+//								helm upgrade -i redis bitnami/redis \
+//								--version 16.5.2 \
+//								--namespace ${TESTVM} \
+//								--create-namespace \
+//								--set master.service.nodePorts.redis=${redis_port} \
+//								--set master.service.type="NodePort" \
+//								--set auth.password=${redis_pass}
+//								""",
+//								label: "deploy redis helm chart")
+//					}
+//				}
+//				stage('rabbit'){
+//					steps{
+//						sh (
+//								script:"ls",
+//								label: "deploy rabbit helm chart")
+//					}
+//				}
+//			}
+		}
+
+		stage('Configure'){ 
 			steps{
 				withCredentials([
 						file ( 
@@ -367,7 +364,7 @@ pipeline{
 						def List scriptFile = readJSON (file: DEPLOY_JSON ) 
 						parallel (getParralelDeliveryMap(
 							jsonMap: scriptFile, 
-							stage: STAGE_NAME)
+							stage: 'Deploy')
 						)
 					}
 				}
