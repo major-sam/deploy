@@ -371,6 +371,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/UpdateApk</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>UniAuthService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/UniAuthService</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				

@@ -104,5 +104,10 @@
         "source": [
             "UpdateApkService.ps1"
         ]
+    }, {
+        "name": "UniAuthService",
+        "source": [
+            "UniAuthServiceGrpc.ps1"
+        ]
     }
 ]
