@@ -160,5 +160,12 @@
             "UpdateApkService.ps1",
             "UpdateApkServiceDB.ps1"
         ]
+    }, {
+        "name": "UniAuthService",
+        "source": [
+            "UniAuthService.ps1",
+            "UniAuthServiceDB.ps1",
+            "UniAuthServiceGrpc.ps1"
+        ]
     }
 ]

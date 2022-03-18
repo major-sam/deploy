@@ -162,6 +162,7 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
+		RECAPTCHA_PK = credentials('ReCaptcha_PrivateKey')
 	}
 
 	agent {label "${TESTVM}" }
