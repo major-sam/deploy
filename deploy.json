@@ -3,7 +3,6 @@
         "name": "CupisIS",
         "source": [
             "CupisIntegrationService.ps1",
-            "CupisIntegrationServiceGrpc.ps1",
             "CupisIntegrationServiceDB.ps1"
         ]
     },
