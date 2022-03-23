@@ -4,7 +4,10 @@ import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
 import jenkins.model.Jenkins
 
-MavenDeployResultList = []
+MavenDeployResult = """\
+==============================
+===== Current build bundle =====
+==============================""".stripIndent()
 
 TESTS_JSON = 'tests.json'
 
@@ -28,6 +31,7 @@ TTBadgeId = 'TTBadgeId'
 MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
+MACHINE_ID = 0
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId, 
@@ -99,9 +103,6 @@ def getVmList(int max){
 		"devops-test-vm3",
 		"devops-test-vm4",
 		"devops-test-vm5",
-		"===============",
-		"apktest-p4",
-		"===============",
 		"devops-test-vm6",
 		"devops-test-vm7",
 		"devops-test-vm8",
@@ -227,31 +228,98 @@ pipeline{
 			}
 		}
 
-		stage('Cleanup'){
-			steps{
-				script{
-					def funcFile =libraryResource 'windows/sideFunctions.psm1' 
-					writeFile (
-						file: '.\\scripts\\sideFunctions.psm1',
-						text: funcFile)
-					parallel (getParralelDeliveryMap(
-							jsonMap: readJSON (file: CLEAN_JSON), 
-							stage: STAGE_NAME)
-					)
+		stage('Clean env'){
+			parallel {
+				stage('Cleanup'){
+					steps{
+						script{
+							parallel (getParralelDeliveryMap(
+									jsonMap: readJSON (file: CLEAN_JSON), 
+									stage: STAGE_NAME)
+							)
+						}
+					}
+				}
+				stage('lib fix'){
+					steps{
+						script{
+							def funcFile =libraryResource 'windows/sideFunctions.psm1' 
+								writeFile (
+										file: '.\\scripts\\sideFunctions.psm1',
+										text: funcFile)
+						}
+					}
+				}
+				stage('kuber cleanup'){
+					agent{label 'test_kuber'}	
+					steps{
+						script{
+							sh( 
+							script:"kubectl get ns -A" ,
+							label:'clean ns')
+						}
+					}
 				}
 			}
 		}
+		stage('Prepare env'){
+			parallel{
 
-		stage('Get maven packages'){
-			when{
-				expression {
-					true	
+				stage('Get maven packages'){
+					when{
+						expression {
+							true	
+						}
+					}
+					steps{
+						script{
+							def result = utils.doMavenDeploy(params.Task)
+								MavenDeployResult = MavenDeployResult + result.trim()
+						}
+					}
 				}
-			}
-			steps{
-				script{
-					def result = utils.doMavenDeploy(params.Task)
-					MavenDeployResultList << result
+
+				stage('Kuber deploy'){
+					agent{label 'test_kuber'}	
+					stages{
+						stage('set vars'){
+							steps{
+								script{
+									MACHINE_ID = TESTVM.replaceAll("\\D+","").toInteger()
+									redis_port = 30100 + MACHINE_ID
+									rabbit_port = 30200 + MACHINE_ID
+									redis_pass = "pwd"
+								}
+							}
+						}
+						stage('redis'){
+							steps{
+								sh (
+									script:"""
+									helm upgrade -i redis bitnami/redis \
+										--version 16.5.2 \
+										--namespace ${TESTVM} \
+										--create-namespace \
+										--set master.service.nodePorts.redis=${redis_port} \
+										--set master.service.type="NodePort" \
+										--set replica.replicaCount=0  \
+										--set master.resources.requests.cpu=250m \
+										--set master.resources.limits.cpu=250m   \
+										--set master.resources.requests.memory=250Mi \
+										--set master.resources.limits.memory=250Mi \
+										--set auth.password=${redis_pass}
+										""",
+									label: "deploy redis helm chart")
+							}
+						}
+						stage('rabbit'){
+							steps{
+								sh (
+									script:"ls",
+									label: "deploy rabbit helm chart")
+							}
+						}
+					}
 				}
 			}
 		}
@@ -334,7 +402,7 @@ pipeline{
 									fileId: 'defaultPOM', 
 									targetLocation: 'pomxml')
 								]){
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\Marketing",
 									branch: params.Task,
 									groupId: "Marketing",
@@ -390,7 +458,7 @@ pipeline{
 									fileId: 'defaultPOM', 
 									targetLocation: 'pomxml')
 								]){
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\TradingTool",
 									branch: params.Task,
 									groupId: "TradingTool",
@@ -449,7 +517,7 @@ pipeline{
 									fileId: 'defaultPOM', 
 									targetLocation: 'pomxml')
 								]){
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\WebParser",
 									branch: params.Task,
 									groupId: "WebParser",
@@ -505,7 +573,7 @@ pipeline{
 									fileId: 'defaultPOM', 
 									targetLocation: 'pomxml')
 								]){
-							MavenDeployResultList << utils.doSingleServiceMavenDeploy(
+							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\BaltWidgets",
 									branch: params.Task,
 									groupId: "BaltWidgets",
@@ -716,15 +784,13 @@ pipeline{
 		stage('Result Bundle'){
 			steps{
 				script{
-					def jsonFormat = JsonOutput.toJson(
-							MavenDeployResultList << [
-								User: "${currentBuild.getBuildCauses()[0].userId}"
-								]
-							)
-					prettyJSON = JsonOutput.prettyPrint(jsonFormat)
-					echo "${prettyJSON}"
+					MavenDeployResult  = MavenDeployResult  +
+						""" __________
+						User: ${currentBuild.getBuildCauses()[0].userId}
+						=============================================="""
+					echo MavenDeployResult
 					touch file: "c:\\Services\\Deploy_bundle.json"
-					writeFile file: "c:\\Services\\Deploy_bundle.json", text: prettyJSON
+					writeFile file: "c:\\Services\\Deploy_bundle.json", text: MavenDeployResult
 				}
 			}
 		}

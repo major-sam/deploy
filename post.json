@@ -11,6 +11,7 @@
            "updateKernelLogConfig.ps1",
            "updateKernelUnityConfig.ps1",
            "ComAccounts.ps1",
+           "AddRestoreComAccountTemplate.ps1",
            "RegisterService.ps1"
         ]
     }, {
