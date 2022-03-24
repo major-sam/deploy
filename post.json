@@ -6,7 +6,7 @@
     }, {
         "name": "Kernel",
         "source": [
-           "Kernel.ps1",
+            "Tasks.ps1",
            "updateConfig.ps1",
            "updateKernelLogConfig.ps1",
            "updateKernelUnityConfig.ps1",
@@ -42,6 +42,7 @@
     }, {
         "name": "PersonalInfoCenter",
         "source": [
+            "Tasks.ps1",
             "PersonalInfoCenter.ps1"
         ]
     }, {
@@ -87,6 +88,7 @@
     }, {
         "name": "CashRegisterOperationService",
         "source": [
+            "Tasks.ps1",
             "CashRegisterOperationService.ps1"
         ]
     }, {
@@ -97,6 +99,7 @@
     }, {
         "name": "CurrencyConverter",
         "source": [
+            "Tasks.ps1",
             "CurrencyConverter.ps1"
         ]
     }, {

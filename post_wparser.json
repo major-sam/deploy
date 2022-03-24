@@ -1,6 +1,8 @@
 [
     {
         "name": "WebParser",
-        "source": ["kernelConnection.ps1"]
+        "source": [
+            "Tasks.ps1",
+            "kernelConnection.ps1"]
     }
 ]
