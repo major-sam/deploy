@@ -103,6 +103,11 @@
             "CurrencyConverter.ps1"
         ]
     }, {
+        "name": "UniAccountRecoveryService",
+        "source": [
+            "UniAccountRecoveryService.ps1"
+        ]
+    }, {
         "name": "UpdateApkService",
         "source": [
             "UpdateApkService.ps1"
