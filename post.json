@@ -112,10 +112,5 @@
         "source": [
             "UpdateApkService.ps1"
         ]
-    }, {
-        "name": "UniAccountRecoveryService",
-        "source": [
-            "UniAccountRecoveryService.ps1"
-        ]
     }
 ]
