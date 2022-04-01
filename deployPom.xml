@@ -380,6 +380,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/UniAccountRecoveryService</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>NotificationGateway</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/NotificationGateWay</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				

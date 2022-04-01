@@ -1,4 +1,10 @@
 [{
+    "name": "NotificationGateWay",
+    "source": [
+        "NotificationGateWay.ps1",
+        "NotificationGateWayDB.ps1"
+    ]
+    },{
         "name": "CupisIS",
         "source": [
             "CupisIntegrationService.ps1",

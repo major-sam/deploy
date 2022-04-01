@@ -1,4 +1,10 @@
-[{
+[
+    {
+        "name": "NotificationGateWay",
+        "source": [
+            "NotificationGateWay.ps1"
+        ]
+    },{
         "name": "CIS",
         "source": [
             "CIS.ps1"
