@@ -21,9 +21,7 @@
             "WebsiteComDB.ps1",
             "WebTouchPublic.ps1",
             "WebsiteComPublic.ps1",
-            "Website.ps1",
-            "WebApiAuth.ps1",
-            "WebApiAuthDB.ps1"
+            "Website.ps1"
         ]
     }, {
         "name": "PromoExpressService",
