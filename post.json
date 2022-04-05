@@ -110,6 +110,7 @@
     }, {
         "name": "UniAuthService",
         "source": [
+            "UniAuthService.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
     }
