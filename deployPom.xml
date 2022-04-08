@@ -39,6 +39,15 @@
 			<configuration>
 				<artifactItems>
 					<artifactItem>
+						<groupId>ApkClient-Testers</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Testers</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/ApkClient</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>CupisIntegrationService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
