@@ -12,13 +12,13 @@
     }, {
         "name": "Kernel",
         "source": [
+            "ComAccounts.ps1",
             "Tasks.ps1",
-           "updateConfig.ps1",
-           "updateKernelLogConfig.ps1",
-           "updateKernelUnityConfig.ps1",
-           "ComAccounts.ps1",
-           "AddRestoreComAccountTemplate.ps1",
-           "RegisterService.ps1"
+            "updateConfig.ps1",
+            "updateKernelLogConfig.ps1",
+            "updateKernelUnityConfig.ps1",
+            "AddRestoreComAccountTemplate.ps1",
+            "RegisterService.ps1"
         ]
     }, {
         "name": "Services",
