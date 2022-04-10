@@ -35,7 +35,7 @@ WIDGETSBadgeId = 'WIDGETSBadgeId'
 MACHINE_ID = 0
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
-	id: mainBadgeId, 
+	id: mainBadgeId,
 	subject: "Windows Deploy"
 	)
 
@@ -45,7 +45,7 @@ def getParralelDeliveryMap(Map config = [:]){
 		(it['name']) : {
 			stage(it['name']){
 				generateStages(
-					job:it, 
+					job:it,
 					stageName: config.stage,
 					envOS: (isUnix() ? "linux" : "windows"))
 			}
@@ -66,13 +66,13 @@ def generateStages(Map config = [:] ) {
 		def libScript =libraryResource libScriptPath
 		switch(stageScript.split('\\.')[-1]){
 			case 'ps1':
-				stagesResult << stage(subStageName){ 
+				stagesResult << stage(subStageName){
 					powershell (
-							encoding: 'UTF8', 
+							encoding: 'UTF8',
 							script:  libScript,
 							label: libScriptPath
 							)
-					} 
+					}
 				break
 			case 'sql':
 				def libPsScript = '''
@@ -80,38 +80,38 @@ def generateStages(Map config = [:] ) {
 					'''+libScript + ''''@
 					Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance '''+
 					'$env:COMPUTERNAME -Query $q -ErrorAction stop'
-				stagesResult << stage(subStageName){ 
+				stagesResult << stage(subStageName){
 					println "SQL SCRIPTS RUNS ON MASTER! \n For other db USE statment requered"
 					powershell (
-							encoding: 'UTF8', 
+							encoding: 'UTF8',
 							script: libPsScript,
 							label: 'Runs on master '+ libScriptPath
 							)
-				} 
+				}
 				break
 			case 'sh':
-				stagesResult << stage(subStageName){ 
+				stagesResult << stage(subStageName){
 					sh (
-							encoding: 'UTF8', 
+							encoding: 'UTF8',
 							script: libScript,
 							label: libScriptPath)
-				} 
+				}
 				break
 			default:
-				stagesResult << stage(subStageName){ 
+				stagesResult << stage(subStageName){
 					println "not suported script extention:" +
-						stageScript.split('\\.')[-1]	
-				} 
+						stageScript.split('\\.')[-1]
+				}
 		}
 	}
-    return stagesResult 
+    return stagesResult
 }
 
 def getVmList(int max){
 	def ints = 10..max
 	def VM_LIST = [
 		"devops-test-vm1",
-		"devops-test-vm2", 
+		"devops-test-vm2",
 		"devops-test-vm3",
 		"devops-test-vm4",
 		"devops-test-vm5",
@@ -125,6 +125,10 @@ def getVmList(int max){
 	}
 	return VM_LIST
 }
+
+def kuberPortShift(Map config=[:]){
+	return config.port + config.VM.replaceAll("\\D+","").toInteger()
+	}
 
 pipeline{
 
@@ -148,7 +152,7 @@ pipeline{
 			)
 		booleanParam (
 			name: "DEPLOY_TT",
-			description:'Deploy Trading Tool', 
+			description:'Deploy Trading Tool',
 			defaultValue: false
 			)
 		booleanParam (
@@ -177,10 +181,16 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
-		NAMESPACE=TESTVM
-		REDIS_PORT=30100 + TESTVM.replaceAll("\\D+","").toInteger()
-		RABBIT_WEB_PORT=30300 + TESTVM.replaceAll("\\D+","").toInteger()
-		RABBIT_PORT=30200 + TESTVM.replaceAll("\\D+","").toInteger()
+		NAMESPACE="$TESTVM"
+		REDIS_PORT= kuberPortShift(
+			port:30100,
+			VM:TESTVM)
+		RABBIT_WEB_PORT=kuberPortShift(
+			port:30200,
+			VM:TESTVM)
+		RABBIT_PORT=kuberPortShift(
+			port:30300,
+			VM:TESTVM)
 	}
 
 
@@ -192,9 +202,7 @@ pipeline{
 	}
 
 	stages{
-
 		stage('Choose release tag'){
-			
 			when{
 				expression {
 					params.CUSTOM_TAG
@@ -249,12 +257,12 @@ pipeline{
 		stage('Cleanup env'){
 			steps{
 				script{
-					def funcFile =libraryResource 'windows/sideFunctions.psm1' 
+					def funcFile =libraryResource 'windows/sideFunctions.psm1'
 					writeFile (
 							file: '.\\scripts\\sideFunctions.psm1',
 							text: funcFile)
 					parallel (getParralelDeliveryMap(
-								jsonMap: readJSON (file: CLEAN_JSON), 
+								jsonMap: readJSON (file: CLEAN_JSON),
 								stage: 'Cleanup')
 							)
 				}
@@ -263,10 +271,10 @@ pipeline{
 		stage('Prepare env'){
 			parallel{
 				stage('kuber cleanup'){
-					agent{label 'test_kuber'}	
+					agent{label 'test_kuber'}
 					steps{
 						script{
-							sh( 
+							sh(
 							script:"kubectl delete ns ${TESTVM}|| echo 'NameSpace already removed'" ,
 							label:'clean ns')
 						}
@@ -275,7 +283,7 @@ pipeline{
 				stage('Get maven packages'){
 					when{
 						expression {
-							true	
+							true
 						}
 					}
 					steps{
@@ -289,17 +297,17 @@ pipeline{
 		}
 
 		stage('Kuber deploy'){
-			agent{label 'test_kuber'}	
+			agent{label 'test_kuber'}
 			steps{
 				script{
-					def List scriptFile = readJSON (file: KUBER_JSON ) 
+					def List scriptFile = readJSON (file: KUBER_JSON )
 					parallel (
 						getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: 'Deploy'))
-					}
 				}
 			}
+		}
 //			stages{
 //				stage('set vars'){
 //					steps{
@@ -336,52 +344,52 @@ pipeline{
 //					}
 //				}
 //			}
-		}
+//		}
 
-		stage('Configure'){ 
+		stage('Configure'){
 			steps{
 				withCredentials([
-						file ( 
-							credentialsId: 'bb-webapps', 
-							variable: 'BBWEBAPPS'),
-						file (
-							credentialsId: 'gkbaltbet-ca', 
-							variable: 'GKBALTBETCA'),
-						file (
-							credentialsId: 'wcf-host', 
-							variable: 'WCFHOST'),
-						file (
-							credentialsId: 'client.test.kernel', 
-							variable: 'CLIENTTESTKERNEL'),
-						file (
-							credentialsId: 'test.payment.service', 
-							variable: 'TESTPAYMENTSERVICE'),
-						file (
-							credentialsId: 'testCupis', 
-							variable: 'TESTCUPISCERT'),
-						file (
-							credentialsId: 'testCupisCA', 
-							variable: 'TESTCUPISCA'),
+						file(
+							credentialsId:'bb-webapps',
+							variable:'BBWEBAPPS'),
+						file(
+							credentialsId:'gkbaltbet-ca',
+							variable:'GKBALTBETCA'),
+						file(
+							credentialsId:'wcf-host',
+							variable:'WCFHOST'),
+						file(
+							credentialsId:'client.test.kernel',
+							variable:'CLIENTTESTKERNEL'),
+						file(
+							credentialsId:'test.payment.service',
+							variable:'TESTPAYMENTSERVICE'),
+						file(
+							credentialsId:'testCupis',
+							variable:'TESTCUPISCERT'),
+						file(
+							credentialsId:'testCupisCA',
+							variable:'TESTCUPISCA'),
 						string(
-							credentialsId: 'Asterisk_Secret', 
-							variable: 'AsteriskSecret'),
+							credentialsId:'Asterisk_Secret',
+							variable:'AsteriskSecret'),
 						string(
-							credentialsId: 'Uni_DecryptionKey', 
-							variable: 'UniDecryptionKey'),
+							credentialsId:'Uni_DecryptionKey',
+							variable:'UniDecryptionKey'),
 						string(
-							credentialsId: 'Uni_ValidationKey',
-							variable: 'UniValidationKey')
+							credentialsId:'Uni_ValidationKey',
+							variable:'UniValidationKey')
 				]){
 					script{
-						def List scriptFile = readJSON (file: DEPLOY_JSON ) 
+						def List scriptFile = readJSON (file: DEPLOY_JSON)
 						parallel (getParralelDeliveryMap(
-							jsonMap: scriptFile, 
+							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
 					}
 				}
 			}
-		}    
+		}
 
 		stage('Deploy Marketing Service'){
 			when{
@@ -393,7 +401,7 @@ pipeline{
 				script{
 					stage('Get marketing maven packages'){
 						MSBadge = addEmbeddableBadgeConfiguration(
-							id: MSBadgeId, 
+							id: MSBadgeId,
 							subject: "Marketing Deploy"
 							)
 						MSBadge.setStatus('running')
@@ -405,10 +413,10 @@ pipeline{
 						configFileProvider(
 								[
 								configFile(
-									fileId: 'mavenSettingsGlobal', 
+									fileId: 'mavenSettingsGlobal',
 									targetLocation: 'MAVEN_SETTINGS.xml'),
 								configFile(
-									fileId: 'defaultPOM', 
+									fileId: 'defaultPOM',
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -420,10 +428,10 @@ pipeline{
 						}
 					}
 					stage('DeployMS'){
-						def List scriptFile =readJSON (file: DEPLOY_MS_JSON) 
+						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
 						parallel (
 							getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
 					}
@@ -437,7 +445,7 @@ pipeline{
 						MSBadge.setColor('orange')}}
 				aborted {script {MSBadge.setStatus('aborted')}}
 			}
-		}    
+		}
 
 		stage('Deploy Trading Tool'){
 			when{
@@ -461,10 +469,10 @@ pipeline{
 						configFileProvider(
 								[
 								configFile(
-									fileId: 'mavenSettingsGlobal', 
+									fileId: 'mavenSettingsGlobal',
 									targetLocation: 'MAVEN_SETTINGS.xml'),
 								configFile(
-									fileId: 'defaultPOM', 
+									fileId: 'defaultPOM',
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -475,15 +483,15 @@ pipeline{
 									)
 						}
 					}
-				
+
 					stage('DeployTT'){
-						def List scriptFile = readJSON (file: DEPLOY_TT_JSON) 
+						def List scriptFile = readJSON (file: DEPLOY_TT_JSON)
 						withCredentials([
 								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 								parallel (
 									getParralelDeliveryMap(
-										jsonMap: scriptFile, 
+										jsonMap: scriptFile,
 										stage: STAGE_NAME)
 								)
 						}
@@ -498,7 +506,7 @@ pipeline{
 						TTBadge.setColor('orange')}}
 				aborted {script {TTBadge.setStatus('aborted')}}
 			}
-		}    
+		}
 
 		stage('Deploy WebParser'){
 			when{
@@ -510,7 +518,7 @@ pipeline{
 				script{
 					stage('Get WebParser maven packages'){
 						WPARSERBadge = addEmbeddableBadgeConfiguration(
-								id: WParserBadgeId, 
+								id: WParserBadgeId,
 								subject: "WebParser Deploy"
 								)
 						WPARSERBadge.setStatus('running')
@@ -520,10 +528,10 @@ pipeline{
 								position: 1)
 						configFileProvider(
 								[configFile(
-									fileId: 'mavenSettingsGlobal', 
+									fileId: 'mavenSettingsGlobal',
 									targetLocation: 'MAVEN_SETTINGS.xml'),
 								configFile(
-									fileId: 'defaultPOM', 
+									fileId: 'defaultPOM',
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -535,10 +543,10 @@ pipeline{
 						}
 					}
 					stage('Deploy WebParser'){
-						def List scriptFile =readJSON (file: DEPLOY_WPARSER_JSON) 
+						def List scriptFile =readJSON (file: DEPLOY_WPARSER_JSON)
 						parallel (
 							getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: STAGE_NAME.replaceAll("\\s",""))
 						)
 					}
@@ -552,7 +560,7 @@ pipeline{
 						WPARSERBadge.setColor('orange')}}
 				aborted {script {WPARSERBadge.setStatus('aborted')}}
 			}
-		}  
+		}
 
 		stage('Deploy BaltBetWidgets'){
 			when{
@@ -564,7 +572,7 @@ pipeline{
 				script{
 					stage('Get widgets maven packages'){
 						WIDGETSBadge = addEmbeddableBadgeConfiguration(
-							id: WIDGETSBadgeId, 
+							id: WIDGETSBadgeId,
 							subject: "Widgets Deploy"
 							)
 						WIDGETSBadge.setStatus('running')
@@ -576,10 +584,10 @@ pipeline{
 						configFileProvider(
 								[
 								configFile(
-									fileId: 'mavenSettingsGlobal', 
+									fileId: 'mavenSettingsGlobal',
 									targetLocation: 'MAVEN_SETTINGS.xml'),
 								configFile(
-									fileId: 'defaultPOM', 
+									fileId: 'defaultPOM',
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -593,10 +601,10 @@ pipeline{
 					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
 					Тогда могут понадобиться и пост и деплой
 					stage('DeployWIDGETS'){
-						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON) 
+						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
 							getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
 					}*/
@@ -616,10 +624,10 @@ pipeline{
 		stage('Config IIS'){
 			steps{
 				script{
-					def iisScript = libraryResource "windows/Deploy/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/Deploy/IIS/IISConfig.ps1"
 					powershell script: iisScript, label: 'update iis config'
 				}
-			}		
+			}
 		}
 
 		stage('Config IIS for Marketing Service'){
@@ -630,7 +638,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "windows/DeployMS/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployMS/IIS/IISConfig.ps1"
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
@@ -652,7 +660,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "windows/DeployTT/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployTT/IIS/IISConfig.ps1"
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
@@ -675,7 +683,7 @@ pipeline{
 			}
 			steps{
 				script{
-					def iisScript = libraryResource "windows/DeployWidgets/IIS/IISConfig.ps1" 
+					def iisScript = libraryResource "windows/DeployWidgets/IIS/IISConfig.ps1"
 					powershell script: iisScript, label: 'update iis config'
 				}
 			}
@@ -696,11 +704,11 @@ pipeline{
 				}
 			}
 			steps{
-				script{ 
-					def List scriptFile = readJSON (file: POST_MS_JSON) 
+				script{
+					def List scriptFile = readJSON (file: POST_MS_JSON)
 					parallel (
 						getParralelDeliveryMap(
-							jsonMap: scriptFile, 
+							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
 				}
@@ -722,11 +730,11 @@ pipeline{
 				}
 			}
 			steps{
-				script{ 
-					def List scriptFile = readJSON (file: POST_TT_JSON) 
+				script{
+					def List scriptFile = readJSON (file: POST_TT_JSON)
 					parallel (
 						getParralelDeliveryMap(
-							jsonMap: scriptFile, 
+							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
 				}
@@ -748,11 +756,11 @@ pipeline{
 				}
 			}
 			steps{
-				script{ 
-					def List scriptFile = readJSON (file: POST_WPARSER_JSON) 
+				script{
+					def List scriptFile = readJSON (file: POST_WPARSER_JSON)
 					parallel (
 						getParralelDeliveryMap(
-							jsonMap: scriptFile, 
+							jsonMap: scriptFile,
 							stage: STAGE_NAME.replaceAll("\\s",""))
 					)
 				}
@@ -768,11 +776,11 @@ pipeline{
 		}
 
 		stage('Post'){
-			steps{ 
-				script{ 
-					def List scriptFile =readJSON (file: POST_JSON) 
+			steps{
+				script{
+					def List scriptFile =readJSON (file: POST_JSON)
 					parallel (getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
 				}
@@ -780,11 +788,11 @@ pipeline{
 		}
 
 		stage('Tests'){
-			steps{ 
-				script{ 
-					def List scriptFile =readJSON (file: TESTS_JSON) 
+			steps{
+				script{
+					def List scriptFile =readJSON (file: TESTS_JSON)
 					parallel (getParralelDeliveryMap(
-								jsonMap: scriptFile, 
+								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
 				}
