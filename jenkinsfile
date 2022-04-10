@@ -44,25 +44,32 @@ def getParralelDeliveryMap(Map config = [:]){
 	def result = config.jsonMap.collectEntries {[
 		(it['name']) : {
 			stage(it['name']){
-				generateStages(it, config.stage, (isUnix() ? "linux" : "windows"))
+				generateStages(
+					job:it, 
+					stageName: config.stage,
+					envOS: (isUnix() ? "linux" : "windows"))
 			}
 		}]
 	}
 	return result
 }
 
-def generateStages(job, stageName, envOS) {
+def generateStages(Map config = [:] ) {
     Closure stagesResult = {}
-    for (stageScript in job['source']) {
+    for (stageScript in config.job['source']) {
 		def subStageName = stageScript.split('\\.')[0]
-		def libScriptPath = envOS + "/" + stageName + "/" + job['name']+ "/" + stageScript 
+		def libScriptPath = [
+			config.envOS,
+			config.stageName,
+			config.job['name'],
+			stageScript].join('/')
 		def libScript =libraryResource libScriptPath
 		switch(stageScript.split('\\.')[-1]){
 			case 'ps1':
 				stagesResult << stage(subStageName){ 
 					powershell (
 							encoding: 'UTF8', 
-							script: libScript,
+							script:  libScript,
 							label: libScriptPath
 							)
 					} 
@@ -87,8 +94,7 @@ def generateStages(job, stageName, envOS) {
 					sh (
 							encoding: 'UTF8', 
 							script: libScript,
-							label: libScriptPath
-							)
+							label: libScriptPath)
 				} 
 				break
 			default:
@@ -157,9 +163,12 @@ pipeline{
 			)
 	}
 
+	agent {label "${TESTVM}" }
+
 	environment {
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
+		REDIS_CREDS = credentials('RedisCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
@@ -168,9 +177,12 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
+		NAMESPACE=TESTVM
+		REDIS_PORT=30100 + TESTVM.replaceAll("\\D+","").toInteger()
+		RABBIT_WEB_PORT=30300 + TESTVM.replaceAll("\\D+","").toInteger()
+		RABBIT_PORT=30200 + TESTVM.replaceAll("\\D+","").toInteger()
 	}
 
-	agent {label "${TESTVM}" }
 
 	tools {
 		maven 'maven382'
@@ -281,17 +293,17 @@ pipeline{
 			steps{
 				script{
 					def List scriptFile = readJSON (file: KUBER_JSON ) 
-						parallel (getParralelDeliveryMap(
-									jsonMap: scriptFile, 
-									stage: 'Deploy')
-								)
+					parallel (
+						getParralelDeliveryMap(
+								jsonMap: scriptFile, 
+								stage: 'Deploy'))
+					}
 				}
 			}
 //			stages{
 //				stage('set vars'){
 //					steps{
 //						script{
-//							MACHINE_ID = TESTVM.replaceAll("\\D+","").toInteger()
 //								redis_port = 30100 + MACHINE_ID
 //								rabbit_port = 30200 + MACHINE_ID
 //								rabbit_web_port = 30300 + MACHINE_ID
