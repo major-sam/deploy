@@ -135,6 +135,7 @@ pipeline{
 	parameters {
 		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getVmList(100)
+		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
 			name: "CUSTOM_TAG",
 			description:'Enable tag chooser',
@@ -244,6 +245,19 @@ pipeline{
 						def newDescr = descr.setAllowDescr(couse:couse)
 						currentBuild.description = newDescr
 						findResult.resource.setReservedBy(couse.userName)
+						locks.setNotes(
+							vmName: TESTVM,
+							branch: Task,
+							widgets: DEPLOY_WIDGETS,
+							tt: DEPLOY_TT,
+							webParser: DEPLOY_WPARSER,
+							ms: DEPLOY_MS,
+							pay: DEPLOY_PAY,
+							comments: Comments,
+							buildUrl: BUILD_URL,
+							buildNumber: BUILD_NUMBER,
+							buildStatus: "<a href='${BUILD_URL}'>" +
+								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>")
 					}
 					currentBuild.description = utils.addToDescription(
 							description: currentBuild.description,
@@ -308,44 +322,6 @@ pipeline{
 				}
 			}
 		}
-//			stages{
-//				stage('set vars'){
-//					steps{
-//						script{
-//								redis_port = 30100 + MACHINE_ID
-//								rabbit_port = 30200 + MACHINE_ID
-//								rabbit_web_port = 30300 + MACHINE_ID
-//								redis_pass = "pwd"
-//								rabbit_usr = 'test'
-//								rabbit_pwd = 'test'
-//						}
-//					}
-//				}
-//				stage('redis'){
-//					steps{
-//						sh (
-//								script:"""
-//								helm upgrade -i redis bitnami/redis \
-//								--version 16.5.2 \
-//								--namespace ${TESTVM} \
-//								--create-namespace \
-//								--set master.service.nodePorts.redis=${redis_port} \
-//								--set master.service.type="NodePort" \
-//								--set auth.password=${redis_pass}
-//								""",
-//								label: "deploy redis helm chart")
-//					}
-//				}
-//				stage('rabbit'){
-//					steps{
-//						sh (
-//								script:"ls",
-//								label: "deploy rabbit helm chart")
-//					}
-//				}
-//			}
-//		}
-
 		stage('Configure'){
 			steps{
 				withCredentials([
