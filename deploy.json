@@ -11,6 +11,12 @@
             "CupisIntegrationServiceDB.ps1"
         ]
     }, {
+        "name": "ApkClient",
+        "source": [
+            "clientConfig.ps1",
+            "settingsConfig.ps1"
+        ]
+    }, {
         "name": "Kernel",
         "source": [
             "kernelDb_v2.ps1",
