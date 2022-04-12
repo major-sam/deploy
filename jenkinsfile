@@ -183,13 +183,14 @@ pipeline{
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$TESTVM"
+		VM_ID="${TESTVM.replaceAll('\\D+','')}"
 		REDIS_PORT= kuberPortShift(
 			port:30100,
 			VM:TESTVM)
-		RABBIT_WEB_PORT=kuberPortShift(
+		RABBIT_PORT=kuberPortShift(
 			port:30200,
 			VM:TESTVM)
-		RABBIT_PORT=kuberPortShift(
+		RABBIT_WEB_PORT=kuberPortShift(
 			port:30300,
 			VM:TESTVM)
 	}
@@ -782,8 +783,8 @@ pipeline{
 						User: ${currentBuild.getBuildCauses()[0].userId}
 						=============================================="""
 					echo MavenDeployResult
-					touch file: "c:\\Services\\Deploy_bundle.json"
-					writeFile file: "c:\\Services\\Deploy_bundle.json", text: MavenDeployResult
+					touch file: "c:\\Services\\Deploy_bundle.txt"
+					writeFile file: "c:\\Services\\Deploy_bundle.txt", text: MavenDeployResult
 				}
 			}
 		}
