@@ -72,8 +72,7 @@
     }, {
         "name": "conf",
         "source": [
-            "cert.ps1",
-            "rabbitmq.ps1"
+            "cert.ps1"
         ]
     }, {
         "name": "IdentificationDocumentService",
