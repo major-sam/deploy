@@ -32,7 +32,6 @@ TTBadgeId = 'TTBadgeId'
 MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
-MACHINE_ID = 0
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
@@ -174,6 +173,7 @@ pipeline{
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
+		RABBIT_CREDS = credentials('RedisCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
@@ -184,6 +184,8 @@ pipeline{
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$TESTVM"
 		VM_ID="${TESTVM.replaceAll('\\D+','')}"
+		REDIS_HOST = '10.0.254.39'
+		RABBIT_HOST = '10.0.254.39'
 		REDIS_PORT= kuberPortShift(
 			port:30100,
 			VM:TESTVM)
