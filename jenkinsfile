@@ -13,7 +13,6 @@ TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
-POST_PAY_JSON = 'post_pay.json'
 POST_MS_JSON = 'post_ms.json'
 POST_WPARSER_JSON = 'post_wparser.json'
 POST_WIDGETS_JSON = 'post_widgets.json'
@@ -125,10 +124,6 @@ def getVmList(int max){
 	return VM_LIST
 }
 
-def kuberPortShift(Map config=[:]){
-	return config.port + config.VM.replaceAll("\\D+","").toInteger()
-	}
-
 pipeline{
 
 	parameters {
@@ -143,11 +138,6 @@ pipeline{
 		booleanParam (
 			name: "DEPLOY_MS",
 			description:'Deploy Marketing Service',
-			defaultValue: false
-			)
-		booleanParam (
-			name: "DEPLOY_PAY",
-			description:'Deploy Payment Balanser',
 			defaultValue: false
 			)
 		booleanParam (
@@ -255,7 +245,6 @@ pipeline{
 							tt: DEPLOY_TT,
 							webParser: DEPLOY_WPARSER,
 							ms: DEPLOY_MS,
-							pay: DEPLOY_PAY,
 							comments: Comments,
 							buildUrl: BUILD_URL,
 							buildNumber: BUILD_NUMBER,
