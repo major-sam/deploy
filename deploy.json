@@ -4,7 +4,7 @@
         "NotificationGateWay.ps1",
         "NotificationGateWayDB.ps1"
     ]
-    },{
+    }, {
         "name": "CupisIS",
         "source": [
             "CupisIntegrationService.ps1",
@@ -157,6 +157,13 @@
         "name": "EventService",
         "source": [
             "EventService.ps1"
+        ]
+    },{
+        "name": "AccountStatisticsService",
+        "source": [
+            "AccountStatisticsServiceDB.ps1",
+            "AccountStatisticsServiceHost.ps1",
+            "AccountStatisticsServiceGrpcHost.ps1"
         ]
     }, {
         "name": "UniBonusService",

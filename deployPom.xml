@@ -407,6 +407,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/BaltBetPaymentAdmin</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>Accountstatisticsservice</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/AccountStatisticsService</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				
