@@ -39,6 +39,15 @@
 			<configuration>
 				<artifactItems>
 					<artifactItem>
+						<groupId>ApkClient-Testers</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Testers</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/ApkClient</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>CupisIntegrationService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
@@ -371,7 +380,43 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UpdateApk</outputDirectory>								
+						<outputDirectory>c:/Services/UpdateApk</outputDirectory>
+					</artifactItem>
+					<artifactItem>
+						<groupId>UniAccountRecoveryService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/UniAccountRecoveryService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>NotificationGateway</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/NotificationGateWay</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>BaltBetPaymentAdmin</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/BaltBetPaymentAdmin</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>Accountstatisticsservice</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/AccountStatisticsService</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniAuthService</groupId>

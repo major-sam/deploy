@@ -1,0 +1,13 @@
+[
+    {
+        "name": "rabbit",
+        "source": [
+            "rabbit.sh"
+        ]
+    }, {
+        "name": "redis",
+        "source": [
+            "redis.sh"
+        ]
+    }
+]

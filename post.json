@@ -1,4 +1,10 @@
-[{
+[
+    {
+        "name": "NotificationGateWay",
+        "source": [
+            "NotificationGateWay.ps1"
+        ]
+    },{
         "name": "CIS",
         "source": [
             "CIS.ps1"
@@ -6,13 +12,13 @@
     }, {
         "name": "Kernel",
         "source": [
+            "ComAccounts.ps1",
+            "AddRestoreComAccountTemplate.ps1",
             "Tasks.ps1",
-           "updateConfig.ps1",
-           "updateKernelLogConfig.ps1",
-           "updateKernelUnityConfig.ps1",
-           "ComAccounts.ps1",
-           "AddRestoreComAccountTemplate.ps1",
-           "RegisterService.ps1"
+            "updateConfig.ps1",
+            "updateKernelLogConfig.ps1",
+            "updateKernelUnityConfig.ps1",
+            "RegisterService.ps1"
         ]
     }, {
         "name": "Services",
@@ -96,6 +102,11 @@
         "source": [
             "RegisterService.ps1"
         ]
+    },{
+        "name": "AccountStatisticsService",
+        "source": [
+            "AccountStatisticsServiceGrpcHost.ps1"
+        ]
     }, {
         "name": "CurrencyConverter",
         "source": [
@@ -103,9 +114,19 @@
             "CurrencyConverter.ps1"
         ]
     }, {
+        "name": "UniAccountRecoveryService",
+        "source": [
+            "UniAccountRecoveryService.ps1"
+        ]
+    }, {
         "name": "UpdateApkService",
         "source": [
             "UpdateApkService.ps1"
+        ]
+    }, {
+        "name": "BaltBetPaymentAdmin",
+        "source": [
+            "BaltBetPaymentAdmin.ps1"
         ]
     }, {
         "name": "UniAuthService",

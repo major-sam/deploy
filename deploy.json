@@ -1,8 +1,20 @@
 [{
+    "name": "NotificationGateWay",
+    "source": [
+        "NotificationGateWay.ps1",
+        "NotificationGateWayDB.ps1"
+    ]
+    }, {
         "name": "CupisIS",
         "source": [
             "CupisIntegrationService.ps1",
             "CupisIntegrationServiceDB.ps1"
+        ]
+    }, {
+        "name": "ApkClient",
+        "source": [
+            "clientConfig.ps1",
+            "settingsConfig.ps1"
         ]
     }, {
         "name": "Kernel",
@@ -58,8 +70,7 @@
     }, {
         "name": "conf",
         "source": [
-            "cert.ps1",
-            "rabbitmq.ps1"
+            "cert.ps1"
         ]
     }, {
         "name": "IdentificationDocumentService",
@@ -140,6 +151,13 @@
         "source": [
             "EventService.ps1"
         ]
+    },{
+        "name": "AccountStatisticsService",
+        "source": [
+            "AccountStatisticsServiceDB.ps1",
+            "AccountStatisticsServiceHost.ps1",
+            "AccountStatisticsServiceGrpcHost.ps1"
+        ]
     }, {
         "name": "UniBonusService",
         "source": [
@@ -157,6 +175,16 @@
         "source": [
             "UpdateApkService.ps1",
             "UpdateApkServiceDB.ps1"
+        ]
+    }, {
+        "name": "UniAccountRecoveryService",
+        "source": [
+            "UniAccountRecoveryService.ps1"
+        ]
+    }, {
+        "name": "BaltBetPaymentAdmin",
+        "source": [
+            "BaltBetPaymentAdmin.ps1"
         ]
     }, {
         "name": "UniAuthService",
