@@ -5,6 +5,11 @@
             "NotificationGateWay.ps1"
         ]
     },{
+        "name": "ApkClient",
+        "source": [
+            "shareClient.ps1"
+        ]
+    },{
         "name": "CIS",
         "source": [
             "CIS.ps1"

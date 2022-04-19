@@ -44,6 +44,11 @@
             "db.ps1"
         ]
     }, {
+        "name": "FavoritesService",
+        "source": [
+            "FavoritesService.ps1"
+        ]
+    }, {
         "name": "UniPaymentsService",
         "source": [
             "UniPaymentsService.ps1"
