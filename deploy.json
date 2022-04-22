@@ -193,5 +193,11 @@
         "source": [
             "BaltBetPaymentAdmin.ps1"
         ]
-    }
+    }, {
+        "name": "PhotonServer",
+        "source": [
+            "PhotonServer.ps1",
+            "PhotonServerDB.ps1"
+        ]
+    }            
 ]
