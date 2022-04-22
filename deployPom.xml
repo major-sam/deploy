@@ -416,6 +416,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/AccountStatisticsService</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>PhotonServer</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/PhotonServer</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				
