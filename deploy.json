@@ -199,5 +199,11 @@
             "PhotonServer.ps1",
             "PhotonServerDB.ps1"
         ]
+    }, {
+        "name": "UniAdministration",
+        "source": [
+            "UniAdministration.ps1",
+            "UniAdministrationDB.ps1"
+        ]
     }            
 ]

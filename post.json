@@ -138,5 +138,11 @@
         "source": [
             "PhotonServer.ps1"
         ]
+    }, {
+        "name": "UniAdministration",
+        "source": [
+            "UniAdministration.ps1",
+            "Tasks.ps1"
+        ]
     }
 ]
