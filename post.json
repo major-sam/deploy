@@ -5,6 +5,11 @@
             "NotificationGateWay.ps1"
         ]
     },{
+        "name": "ApkClient",
+        "source": [
+            "shareClient.ps1"
+        ]
+    },{
         "name": "CIS",
         "source": [
             "CIS.ps1"
@@ -127,6 +132,11 @@
         "name": "BaltBetPaymentAdmin",
         "source": [
             "BaltBetPaymentAdmin.ps1"
+        ]
+    }, {
+        "name": "PhotonServer",
+        "source": [
+            "PhotonServer.ps1"
         ]
     }, {
         "name": "UniAuthService",

@@ -42,6 +42,11 @@
             "db.ps1"
         ]
     }, {
+        "name": "FavoritesService",
+        "source": [
+            "FavoritesService.ps1"
+        ]
+    }, {
         "name": "UniPaymentsService",
         "source": [
             "UniPaymentsService.ps1"
@@ -185,6 +190,12 @@
         "name": "BaltBetPaymentAdmin",
         "source": [
             "BaltBetPaymentAdmin.ps1"
+        ]
+    }, {
+        "name": "PhotonServer",
+        "source": [
+            "PhotonServer.ps1",
+            "PhotonServerDB.ps1"
         ]
     }, {
         "name": "UniAuthService",

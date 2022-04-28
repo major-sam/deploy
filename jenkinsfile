@@ -13,7 +13,6 @@ TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
-POST_PAY_JSON = 'post_pay.json'
 POST_MS_JSON = 'post_ms.json'
 POST_WPARSER_JSON = 'post_wparser.json'
 POST_WIDGETS_JSON = 'post_widgets.json'
@@ -32,7 +31,6 @@ TTBadgeId = 'TTBadgeId'
 MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
-MACHINE_ID = 0
 
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
@@ -126,10 +124,6 @@ def getVmList(int max){
 	return VM_LIST
 }
 
-def kuberPortShift(Map config=[:]){
-	return config.port + config.VM.replaceAll("\\D+","").toInteger()
-	}
-
 pipeline{
 
 	parameters {
@@ -144,11 +138,6 @@ pipeline{
 		booleanParam (
 			name: "DEPLOY_MS",
 			description:'Deploy Marketing Service',
-			defaultValue: false
-			)
-		booleanParam (
-			name: "DEPLOY_PAY",
-			description:'Deploy Payment Balanser',
 			defaultValue: false
 			)
 		booleanParam (
@@ -174,6 +163,7 @@ pipeline{
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
+		RABBIT_CREDS = credentials('RedisCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
@@ -184,6 +174,8 @@ pipeline{
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$TESTVM"
 		VM_ID="${TESTVM.replaceAll('\\D+','')}"
+		REDIS_HOST = '10.0.254.39'
+		RABBIT_HOST = '10.0.254.39'
 		REDIS_PORT= kuberPortShift(
 			port:30100,
 			VM:TESTVM)
@@ -253,7 +245,6 @@ pipeline{
 							tt: DEPLOY_TT,
 							webParser: DEPLOY_WPARSER,
 							ms: DEPLOY_MS,
-							pay: DEPLOY_PAY,
 							comments: Comments,
 							buildUrl: BUILD_URL,
 							buildNumber: BUILD_NUMBER,
