@@ -138,5 +138,11 @@
         "source": [
             "PhotonServer.ps1"
         ]
+    }, {
+        "name": "PaymentAntifraud",
+        "source": [            
+            "AntifraudServiceHost.ps1",
+            "AntifraudClient.ps1"
+        ]
     }
 ]

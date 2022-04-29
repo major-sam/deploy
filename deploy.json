@@ -199,5 +199,12 @@
             "PhotonServer.ps1",
             "PhotonServerDB.ps1"
         ]
+    }, {
+        "name": "PaymentAntifraud",
+        "source": [            
+            "AntifraudDB.ps1",
+            "AntifraudServiceHost.ps1",
+            "AntifraudClient.ps1"
+        ]
     }            
 ]
