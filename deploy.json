@@ -200,10 +200,9 @@
             "PhotonServerDB.ps1"
         ]
     }, {
-        "name": "UniAdministration",
+        "name": "WebAdministration",
         "source": [
-            "UniAdministration.ps1",
-            "UniAdministrationDB.ps1"
+            "WebAdministration.ps1"
         ]
     }            
 ]

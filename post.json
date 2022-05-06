@@ -139,9 +139,9 @@
             "PhotonServer.ps1"
         ]
     }, {
-        "name": "UniAdministration",
+        "name": "WebAdministration",
         "source": [
-            "UniAdministration.ps1",
+            "WebAdministration.ps1",
             "Tasks.ps1"
         ]
     }

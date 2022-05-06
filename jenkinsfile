@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@feature/UniAdministration"]) _
+@Library(["JenkinsCI", "DeployLib@feature/WebAdministration"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
