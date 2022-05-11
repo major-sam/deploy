@@ -26,6 +26,8 @@ DEPLOY_WIDGETS_JSON = "deploy_widgets.json"
 
 CLEAN_JSON = 'cleanup.json'
 
+MINIKUBE_LABEL = 'test_minikube'
+
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
 MSBadgeId = 'MSBadgeId'
@@ -174,15 +176,19 @@ pipeline{
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$TESTVM"
 		VM_ID="${TESTVM.replaceAll('\\D+','')}"
-		REDIS_HOST = '10.0.254.39'
-		RABBIT_HOST = '10.0.254.39'
-		REDIS_PORT= kuberPortShift(
+		REDIS_HOST = utils.getKuberNodeIP(
+			nodeLabel:MINIKUBE_LABEL,
+			VM:TESTVM)
+		RABBIT_HOST = utils.getKuberNodeIP(
+			nodeLabel:MINIKUBE_LABEL,
+			VM:TESTVM)
+		REDIS_PORT= utils.kuberPortShift(
 			port:30100,
 			VM:TESTVM)
-		RABBIT_PORT=kuberPortShift(
+		RABBIT_PORT=utils.kuberPortShift(
 			port:30200,
 			VM:TESTVM)
-		RABBIT_WEB_PORT=kuberPortShift(
+		RABBIT_WEB_PORT=utils.kuberPortShift(
 			port:30300,
 			VM:TESTVM)
 	}
@@ -225,7 +231,10 @@ pipeline{
 		stage('Set Description'){
 			steps{
 				script{
-					def all_lockable_resources = org.jenkins.plugins.lockableresources.LockableResourcesManager.get().resources
+					def all_lockable_resources = org.jenkins.plugins
+						.lockableresources
+						.LockableResourcesManager
+						.get().resources
 					def Map findResult = locks.findLocks(all_lockable_resources)
 					if (findResult.accessDeny){
 						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
@@ -274,36 +283,52 @@ pipeline{
 				}
 			}
 		}
-		stage('Prepare env'){
-			parallel{
-				stage('kuber cleanup'){
-					agent{label 'test_kuber'}
-					steps{
-						script{
-							sh(
-							script:"kubectl delete ns ${TESTVM}|| echo 'NameSpace already removed'" ,
-							label:'clean ns')
-						}
-					}
-				}
-				stage('Get maven packages'){
-					when{
-						expression {
-							true
-						}
-					}
-					steps{
-						script{
-							def result = utils.doMavenDeploy(params.Task)
+
+		stage('kuber cleanup'){
+			steps{
+				script{
+					def minikubeNodes = nodesByLabel 'test_minikube'
+					Map tasks = [:]
+					tasks['Get Maven Packages']={
+							stage('maven'){
+								def result = utils.doMavenDeploy(params.Task)
 								MavenDeployResult = MavenDeployResult + result.trim()
+							}
+						}
+					minikubeNodes.each{ minikubeNode ->
+						tasks[minikubeNode]={
+							node(minikubeNode){
+								stage("cleanup"){
+									sh(
+										script:"kubectl delete ns ${TESTVM}|| echo 'NameSpace already removed'" ,
+										label:'clean ns')
+								}
+							}
 						}
 					}
+					parallel(tasks)
 				}
 			}
 		}
 
+	//	stage('Get maven packages'){
+	//		when{
+	//			expression {
+	//				true
+	//			}
+	//		}
+	//		steps{
+	//			script{
+	//				def result = utils.doMavenDeploy(params.Task)
+	//				MavenDeployResult = MavenDeployResult + result.trim()
+	//			}
+	//		}
+	//	}
+
 		stage('Kuber deploy'){
-			agent{label 'test_kuber'}
+			agent{label utils.getKuberNodeLabel(
+					VM:TESTVM,
+					nodeLabel:MINIKUBE_LABEL)}
 			steps{
 				script{
 					def List scriptFile = readJSON (file: KUBER_JSON )
