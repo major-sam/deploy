@@ -178,10 +178,10 @@ pipeline{
 		VM_ID="${TESTVM.replaceAll('\\D+','')}"
 		REDIS_HOST = utils.getKuberNodeIP(
 			nodeLabel:MINIKUBE_LABEL,
-			VM:TESTVM)
+			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
 		RABBIT_HOST = utils.getKuberNodeIP(
 			nodeLabel:MINIKUBE_LABEL,
-			VM:TESTVM)
+			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
 		REDIS_PORT= utils.kuberPortShift(
 			port:30100,
 			VM:TESTVM)
@@ -311,23 +311,9 @@ pipeline{
 			}
 		}
 
-	//	stage('Get maven packages'){
-	//		when{
-	//			expression {
-	//				true
-	//			}
-	//		}
-	//		steps{
-	//			script{
-	//				def result = utils.doMavenDeploy(params.Task)
-	//				MavenDeployResult = MavenDeployResult + result.trim()
-	//			}
-	//		}
-	//	}
-
 		stage('Kuber deploy'){
 			agent{label utils.getKuberNodeLabel(
-					VM:TESTVM,
+					KuberID:env.VM_ID.toInteger() % 2 == 0 ? 1 : 0 ,
 					nodeLabel:MINIKUBE_LABEL)}
 			steps{
 				script{
