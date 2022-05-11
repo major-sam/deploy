@@ -202,7 +202,8 @@
     }, {
         "name": "WebAdministration",
         "source": [
-            "WebAdministration.ps1"
+            "WebAdministration.ps1",
+            "WebAdministrationDB.ps1"
         ]
     }            
 ]
