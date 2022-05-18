@@ -434,6 +434,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/PhotonServer</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>KernelWeb</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>				
