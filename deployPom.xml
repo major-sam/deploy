@@ -45,7 +45,7 @@
 						<classifier>Testers</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/ApkClient</outputDirectory>								
+						<outputDirectory>c:/ApkClient</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>CupisIntegrationService</groupId>
@@ -54,7 +54,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/CupisIntegrationService</outputDirectory>								
+						<outputDirectory>c:/Services/CupisIntegrationService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>ActionLogService</groupId>
@@ -309,6 +309,15 @@
 						<type>zip</type>
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/UniStatisticsLogger</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>KernelWeb</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/KernelWeb</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>Kernel</groupId>
