@@ -110,7 +110,7 @@
     },{
         "name": "AccountStatisticsService",
         "source": [
-            "AccountStatisticsServiceGrpcHost.ps1"
+            "AccountStatisticsServiceHost.ps1"
         ]
     }, {
         "name": "CurrencyConverter",
