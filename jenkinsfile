@@ -579,7 +579,7 @@ pipeline{
 					}
 					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
 					Тогда могут понадобиться и пост и деплой*/
-					stage('DeployWIDGETS'){
+					stage('DeployWidgets'){
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
 							getParralelDeliveryMap(
