@@ -1,0 +1,9 @@
+[
+    {
+        "name": "WidgetService",
+        "source": [
+            "WidgetService.ps1",
+            "WidgetServiceXml.ps1"
+        ]
+    }
+]
