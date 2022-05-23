@@ -578,15 +578,15 @@ pipeline{
 						}
 					}
 					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
-					Тогда могут понадобиться и пост и деплой
-					stage('DeployWIDGETS'){
+					Тогда могут понадобиться и пост и деплой*/
+					stage('DeployWidgets'){
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
 							getParralelDeliveryMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
-					}*/
+					}
 				}
 			}
 			/*
@@ -653,7 +653,7 @@ pipeline{
 			}
 		}
 
-		stage('Config IIS For BaltWidgetsClient'){
+		stage('Config IIS For BaltWidgets'){
 			when{
 				expression {
 					params.DEPLOY_WIDGETS
