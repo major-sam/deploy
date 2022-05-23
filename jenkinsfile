@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib"]) _
+@Library(["JenkinsCI", "DeployLib@feature/WidgetService"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -578,7 +578,7 @@ pipeline{
 						}
 					}
 					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
-					Тогда могут понадобиться и пост и деплой
+					Тогда могут понадобиться и пост и деплой*/
 					stage('DeployWIDGETS'){
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
@@ -586,7 +586,7 @@ pipeline{
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
-					}*/
+					}
 				}
 			}
 			/*
@@ -653,7 +653,7 @@ pipeline{
 			}
 		}
 
-		stage('Config IIS For BaltWidgetsClient'){
+		stage('Config IIS For BaltWidgets'){
 			when{
 				expression {
 					params.DEPLOY_WIDGETS
