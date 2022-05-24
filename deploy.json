@@ -202,8 +202,7 @@
         "name": "WebAdministration",
         "source": [
             "WebAdministration.ps1",
-            "WebAdministrationDB.ps1",
-            "WAMoveSettings.ps1"
+            "WebAdministrationDB.ps1"
         ]
     }            
 ]
