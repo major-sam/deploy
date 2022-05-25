@@ -199,11 +199,17 @@
             "PhotonServerDB.ps1"
         ]
     }, {
+        "name": "WebAdministration",
+        "source": [
+            "WebAdministration.ps1",
+            "WebAdministrationDB.ps1"
+        ]
+    } , {
         "name": "PaymentAntifraud",
         "source": [            
             "AntifraudDB.ps1",
             "AntifraudServiceHost.ps1",
             "AntifraudClient.ps1"
         ]
-    }            
+    }           
 ]
