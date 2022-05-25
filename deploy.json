@@ -207,8 +207,7 @@
         "source": [
             "UniAuthService.ps1",
             "UniAuthServiceDB.ps1",
-            "UniAuthServiceGrpc.ps1",
-            "UniRuDB.ps1"
+            "UniAuthServiceGrpc.ps1"
         ]
     }            
 ]

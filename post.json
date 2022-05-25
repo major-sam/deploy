@@ -44,7 +44,8 @@
         "name": "UniRu",
         "source": [
             "CIS.ps1",
-            "WAMoveSettings.ps1",
+            "WAMoveSettings.ps1",            
+            "UniAuthService.ps1",
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
