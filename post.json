@@ -43,6 +43,9 @@
     }, {
         "name": "UniRu",
         "source": [
+            "CIS.ps1",
+            "WAMoveSettings.ps1",
+            "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
     }, {
@@ -124,11 +127,6 @@
             "UniAccountRecoveryService.ps1"
         ]
     }, {
-        "name": "UpdateApkService",
-        "source": [
-            "UpdateApkService.ps1"
-        ]
-    }, {
         "name": "BaltBetPaymentAdmin",
         "source": [
             "BaltBetPaymentAdmin.ps1"
@@ -137,6 +135,12 @@
         "name": "PhotonServer",
         "source": [
             "PhotonServer.ps1"
+        ]
+    }, {
+        "name": "WebAdministration",
+        "source": [
+            "WebAdministration.ps1",
+            "Tasks.ps1"
         ]
     }, {
         "name": "UniAuthService",

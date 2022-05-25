@@ -197,6 +197,12 @@
             "PhotonServerDB.ps1"
         ]
     }, {
+        "name": "WebAdministration",
+        "source": [
+            "WebAdministration.ps1",
+            "WebAdministrationDB.ps1"
+        ]
+    }, {
         "name": "UniAuthService",
         "source": [
             "UniAuthService.ps1",
@@ -204,5 +210,5 @@
             "UniAuthServiceGrpc.ps1",
             "UniRuDB.ps1"
         ]
-    }
+    }            
 ]
