@@ -143,9 +143,9 @@
             "Tasks.ps1"
         ]
     }, {
-        "name": "PaymenSystemHandlers",
+        "name": "PaymentSystemHandlers",
         "source": [
-            "PaymenSystemHandlers.ps1"
+            "PaymentSystemHandlers.ps1"
         ]
     }
 ]
