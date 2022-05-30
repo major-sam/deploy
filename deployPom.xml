@@ -243,7 +243,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/PaymenSystemHandlers</outputDirectory>								
+						<outputDirectory>c:/Services/PaymenSystemHandlers</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
 						<groupId>PaymentCupisService</groupId>

@@ -142,5 +142,10 @@
             "WebAdministration.ps1",
             "Tasks.ps1"
         ]
+    }, {
+        "name": "PaymenSystemHandlers",
+        "source": [
+            "PaymenSystemHandlers.ps1"
+        ]
     }
 ]
