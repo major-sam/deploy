@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@feature/newPaymenSystemHandlers"]) _
+@Library(["JenkinsCI", "DeployLib@feature/newPaymentSystemHandlers"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
