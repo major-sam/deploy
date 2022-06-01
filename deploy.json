@@ -181,6 +181,11 @@
             "UpdateApkServiceDB.ps1"
         ]
     }, {
+        "name": "UpdateApkServiceAdmin",
+        "source": [
+            "UpdateApkServiceAdmin.ps1"
+        ]
+    }, {
         "name": "UniAccountRecoveryService",
         "source": [
             "UniAccountRecoveryService.ps1"

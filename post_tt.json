@@ -3,7 +3,8 @@
         "source": [
             "tt.ps1",
             "addLinkedServer.ps1",
-            "kernel.sql"
+            "kernel.sql",
+            "UpdateSequences.sql"
         ]
     },{
         "name": "Services",
