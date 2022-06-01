@@ -390,6 +390,15 @@
 						<outputDirectory>c:/Services/UpdateApk</outputDirectory>
 					</artifactItem>
 					<artifactItem>
+						<groupId>UpdateApkServiceAdmin</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/UpdateApk</outputDirectory>
+					</artifactItem>
+					<artifactItem>
 						<groupId>UniAccountRecoveryService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
