@@ -129,7 +129,7 @@ def getVmList(int max){
 pipeline{
 
 	parameters {
-		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
+		string name:'Task', defaultValue: "feature-UNICOM-288", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getVmList(100)
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
