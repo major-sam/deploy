@@ -44,7 +44,7 @@
         "name": "UniRu",
         "source": [
             "CIS.ps1",
-            "WAMoveSettings.ps1",
+            "UniAdmMoveSettings.ps1",
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
@@ -137,9 +137,9 @@
             "PhotonServer.ps1"
         ]
     }, {
-        "name": "WebAdministration",
+        "name": "UniAdministration",
         "source": [
-            "WebAdministration.ps1",
+            "UniAdministration.ps1",
             "Tasks.ps1"
         ]
     }
