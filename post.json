@@ -44,7 +44,8 @@
         "name": "UniRu",
         "source": [
             "CIS.ps1",
-            "UniAdmMoveSettings.ps1",
+            "UniAdmMoveSettings.ps1",            
+            "UniAuthService.ps1",
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
@@ -135,6 +136,12 @@
         "name": "PhotonServer",
         "source": [
             "PhotonServer.ps1"
+        ]
+    }, {
+        "name": "UniAuthService",
+        "source": [
+            "UniAuthService.ps1",
+            "UniAuthServiceGrpc.ps1"
         ]
     }, {
         "name": "UniAdministration",
