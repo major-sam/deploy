@@ -227,6 +227,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/TicketService</outputDirectory>								
 					</artifactItem>
+					<!--
 					<artifactItem>
 						<groupId>WebApiAuth</groupId>
 						<artifactId>master</artifactId>
@@ -236,6 +237,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/inetpub/WebApiAuth</outputDirectory>								
 					</artifactItem>
+					-->
 					<artifactItem>
 						<groupId>PaymenSystemHandlers</groupId>
 						<artifactId>master</artifactId>
@@ -444,6 +446,16 @@
 						<outputDirectory>c:/Services/PhotonServer</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>UniAuthService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/UniAuthService</outputDirectory>								
+					</artifactItem>
+				</artifactItems>
+					<artifactItem>
 						<groupId>AntiFraud</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
@@ -452,7 +464,6 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>								
 					</artifactItem>
-				</artifactItems>
 			</configuration>
 		</plugin>				
 	</plugins>
