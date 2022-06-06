@@ -43,9 +43,9 @@
     }, {
         "name": "UniRu",
         "source": [
-            "CIS.ps1",
-            "UniAdmMoveSettings.ps1",            
+            "CIS.ps1",           
             "UniAuthService.ps1",
+            "UniAdmMoveSettings.ps1", 
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
