@@ -146,6 +146,7 @@
     }, {
         "name": "UniAuthService",
         "source": [
+            "WebAdministration.sql",
             "UniAuthService.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
