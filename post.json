@@ -44,7 +44,8 @@
         "name": "UniRu",
         "source": [
             "CIS.ps1",
-            "WAMoveSettings.ps1",
+            "WAMoveSettings.ps1",            
+            "UniAuthService.ps1",
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
@@ -141,6 +142,12 @@
         "source": [
             "WebAdministration.ps1",
             "Tasks.ps1"
+        ]
+    }, {
+        "name": "UniAuthService",
+        "source": [
+            "UniAuthService.ps1",
+            "UniAuthServiceGrpc.ps1"
         ]
     }
 ]

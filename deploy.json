@@ -33,9 +33,7 @@
             "WebsiteComDB.ps1",
             "WebTouchPublic.ps1",
             "WebsiteComPublic.ps1",
-            "Website.ps1",
-            "WebApiAuth.ps1",
-            "WebApiAuthDB.ps1"
+            "Website.ps1"
         ]
     }, {
         "name": "PromoExpressService",
@@ -208,6 +206,13 @@
         "source": [
             "WebAdministration.ps1",
             "WebAdministrationDB.ps1"
+        ]
+    }, {
+        "name": "UniAuthService",
+        "source": [
+            "UniAuthService.ps1",
+            "UniAuthServiceDB.ps1",
+            "UniAuthServiceGrpc.ps1"
         ]
     }            
 ]
