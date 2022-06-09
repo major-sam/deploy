@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@feature/MARKET-1141"]) _
+@Library(["JenkinsCI", "DeployLib"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
