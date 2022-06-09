@@ -149,5 +149,11 @@
             "UniAuthService.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
+    }, {
+        "name": "AchievementService",
+        "source": [
+            "EditKernelSettings.ps1",
+            "AchievementService.ps1"
+        ]
     }
 ]
