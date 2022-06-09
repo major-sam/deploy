@@ -526,6 +526,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>AchievementService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/AchievementService</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>

@@ -257,4 +257,11 @@
             "IntegrationService.ps1"
         ]
     }
+    }, {
+        "name": "AchievementService",
+        "source": [
+            "AchievementService.ps1",
+            "AchievementServiceDB.ps1"
+        ]
+    }            
 ]
