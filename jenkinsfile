@@ -261,6 +261,11 @@ pipeline{
 		}
 
 		stage('Cleanup env'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			steps{
 				script{
 					def funcFile =libraryResource 'windows/sideFunctions.psm1'
@@ -276,6 +281,11 @@ pipeline{
 		}
 
 		stage('kuber cleanup'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			steps{
 				script{
 					def minikubeNodes = nodesByLabel 'test_minikube'
@@ -303,6 +313,11 @@ pipeline{
 		}
 
 		stage('Kuber deploy'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			agent{label utils.getKuberNodeLabel(
 					KuberID:env.VM_ID.toInteger() % 2 == 0 ? 1 : 0 ,
 					nodeLabel:MINIKUBE_LABEL)}
