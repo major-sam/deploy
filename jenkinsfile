@@ -34,10 +34,10 @@ MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
 
+
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
-	subject: "Windows Deploy"
-	)
+	subject: "Windows Deploy")
 
 
 def getParralelDeliveryMap(Map config = [:]){
@@ -120,7 +120,7 @@ def generateStages(Map config = [:] ) {
 pipeline{
 
 	parameters {
-		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
+		string name:'Task', defaultValue: "feature-MSG-263", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getNodeList()
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
@@ -280,7 +280,7 @@ pipeline{
 			}
 		}
 
-		stage('kuber cleanup'){
+		stage('Maven & Kuber'){
 			when{
 				expression {
 					not { env.JENKINS_DEVELOPER }

@@ -63,7 +63,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/ActionLogService</outputDirectory>								
+						<outputDirectory>c:/Services/ActionLogService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>WebMobile</groupId>
@@ -72,7 +72,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebMobile</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebMobile</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniPaymentsService</groupId>
@@ -81,7 +81,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniPaymentsService</outputDirectory>								
+						<outputDirectory>c:/Services/UniPaymentsService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>ClientWorkPlace</groupId>
@@ -90,7 +90,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/ClientWorkPlace</outputDirectory>								
+						<outputDirectory>c:/inetpub/ClientWorkPlace</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>KRM</groupId>
@@ -99,7 +99,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/KRM</outputDirectory>								
+						<outputDirectory>c:/inetpub/KRM</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>WebTouch</groupId>
@@ -108,7 +108,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebTouch</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebTouch</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>WebTouch-Public</groupId>
@@ -117,7 +117,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebTouch-Public</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebTouch-Public</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>WebsiteCom</groupId>
@@ -126,7 +126,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebsiteCom</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebsiteCom</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>WebsiteCom-Public</groupId>
@@ -135,7 +135,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PaymentBalanceReport</groupId>
@@ -144,7 +144,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/Payments/PaymentBalanceReport</outputDirectory>								
+						<outputDirectory>c:/Services/Payments/PaymentBalanceReport</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PaymentBalancing</groupId>
@@ -153,7 +153,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/Payments/PaymentBalancing</outputDirectory>								
+						<outputDirectory>c:/Services/Payments/PaymentBalancing</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>Website</groupId>
@@ -162,7 +162,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/Website</outputDirectory>								
+						<outputDirectory>c:/inetpub/Website</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>MessageService</groupId>
@@ -171,7 +171,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>AdminMessageService</groupId>
@@ -180,7 +180,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PromoExpressService</groupId>
@@ -189,7 +189,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PromoExpressService</outputDirectory>								
+						<outputDirectory>c:/Services/PromoExpressService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PromocodeService</groupId>
@@ -198,7 +198,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PushService</groupId>
@@ -207,7 +207,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>								
+						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>IdentificationDocumentService</groupId>
@@ -216,7 +216,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/IdentificationDocumentService</outputDirectory>								
+						<outputDirectory>c:/Services/IdentificationDocumentService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>TicketService</groupId>
@@ -225,7 +225,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/TicketService</outputDirectory>								
+						<outputDirectory>c:/Services/TicketService</outputDirectory>
 					</artifactItem>
 					<!--
 					<artifactItem>
@@ -235,7 +235,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebApiAuth</outputDirectory>								
+						<outputDirectory>c:/inetpub/WebApiAuth</outputDirectory>
 					</artifactItem>
 					-->
 					<artifactItem>
@@ -245,7 +245,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/PaymenSystemHandlers</outputDirectory>								
+						<outputDirectory>c:/inetpub/PaymenSystemHandlers</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PaymentCupisService</groupId>
@@ -254,7 +254,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/Payments/PaymentCupisService</outputDirectory>								
+						<outputDirectory>c:/Services/Payments/PaymentCupisService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>BaltBetDomainService</groupId>
@@ -263,7 +263,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/BaltBetDomainService</outputDirectory>								
+						<outputDirectory>c:/inetpub/BaltBetDomainService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>ReportService</groupId>
@@ -272,7 +272,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/ReportService</outputDirectory>								
+						<outputDirectory>c:/Services/ReportService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>SuperExpressService</groupId>
@@ -281,7 +281,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/SuperExpressService</outputDirectory>								
+						<outputDirectory>c:/Services/SuperExpressService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>CoefService</groupId>
@@ -290,7 +290,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/CoefService</outputDirectory>								
+						<outputDirectory>c:/Services/CoefService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>CashBookService</groupId>
@@ -299,7 +299,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/CashBookService</outputDirectory>								
+						<outputDirectory>c:/Services/CashBookService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniStatisticsLogger</groupId>
@@ -308,7 +308,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniStatisticsLogger</outputDirectory>								
+						<outputDirectory>c:/Services/UniStatisticsLogger</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>KernelWeb</groupId>
@@ -317,7 +317,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/KernelWeb</outputDirectory>								
+						<outputDirectory>c:/KernelWeb</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>Kernel</groupId>
@@ -326,7 +326,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/</outputDirectory>								
+						<outputDirectory>c:/</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>CashRegisterOperationService</groupId>
@@ -335,7 +335,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/</outputDirectory>								
+						<outputDirectory>c:/Services/</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>EventService</groupId>
@@ -344,7 +344,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/</outputDirectory>								
+						<outputDirectory>c:/Services/</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>FavoritesService</groupId>
@@ -353,7 +353,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/FavoritesService</outputDirectory>								
+						<outputDirectory>c:/Services/FavoritesService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniIdentService</groupId>
@@ -362,7 +362,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/UniIdentService</outputDirectory>								
+						<outputDirectory>c:/inetpub/UniIdentService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniBonusService</groupId>
@@ -371,7 +371,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniBonusService</outputDirectory>								
+						<outputDirectory>c:/Services/UniBonusService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>CurrencyConverter</groupId>
@@ -380,7 +380,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/CurrencyConverter</outputDirectory>								
+						<outputDirectory>c:/Services/CurrencyConverter</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UpdateApkService</groupId>
@@ -407,7 +407,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniAccountRecoveryService</outputDirectory>								
+						<outputDirectory>c:/Services/UniAccountRecoveryService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>NotificationGateway</groupId>
@@ -416,7 +416,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/NotificationGateWay</outputDirectory>								
+						<outputDirectory>c:/Services/NotificationGateWay</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>BaltBetPaymentAdmin</groupId>
@@ -425,7 +425,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/BaltBetPaymentAdmin</outputDirectory>								
+						<outputDirectory>c:/Services/BaltBetPaymentAdmin</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>Accountstatisticsservice</groupId>
@@ -434,7 +434,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/AccountStatisticsService</outputDirectory>								
+						<outputDirectory>c:/Services/AccountStatisticsService</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>PhotonServer</groupId>
@@ -443,7 +443,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PhotonServer</outputDirectory>								
+						<outputDirectory>c:/Services/PhotonServer</outputDirectory>
 					</artifactItem>
 					<artifactItem>
 						<groupId>UniAuthService</groupId>
@@ -452,11 +452,11 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniAuthService</outputDirectory>								
+						<outputDirectory>c:/Services/UniAuthService</outputDirectory>
 					</artifactItem>
 				</artifactItems>
 			</configuration>
-		</plugin>				
+		</plugin>
 	</plugins>
 </build>
 <groupId>Mvn</groupId>
