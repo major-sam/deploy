@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@feature/UniAdministration"]) _
+@Library(["JenkinsCI", "DeployLib@feature/UniAdministrationLDAP"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -120,7 +120,7 @@ def generateStages(Map config = [:] ) {
 pipeline{
 
 	parameters {
-		string name:'Task', defaultValue: "feature-UNICOM-288", trim: true, description: "Branch(Task)"
+		string name:'Task', defaultValue: "feature-ARCHI-412", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getNodeList()
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
