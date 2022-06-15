@@ -448,7 +448,7 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
+									fileId: 'pomxml_v2',
 									targetLocation: pomName)
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -503,7 +503,7 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
+									fileId: 'pomxml_v2',
 									targetLocation: 'pomxml')
 								]){
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -555,7 +555,7 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
+									fileId: 'pomxml_v2',
 									targetLocation:pomName )
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
