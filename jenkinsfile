@@ -34,10 +34,11 @@ MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
 
+pomName = 'pom.xml'
+
 def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
-	subject: "Windows Deploy"
-	)
+	subject: "Windows Deploy")
 
 
 def getParralelDeliveryMap(Map config = [:]){
@@ -261,6 +262,11 @@ pipeline{
 		}
 
 		stage('Cleanup env'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			steps{
 				script{
 					def funcFile =libraryResource 'windows/sideFunctions.psm1'
@@ -275,7 +281,12 @@ pipeline{
 			}
 		}
 
-		stage('kuber cleanup'){
+		stage('Maven & Kuber'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			steps{
 				script{
 					def minikubeNodes = nodesByLabel 'test_minikube'
@@ -303,6 +314,11 @@ pipeline{
 		}
 
 		stage('Kuber deploy'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
 			agent{label utils.getKuberNodeLabel(
 					KuberID:env.VM_ID.toInteger() % 2 == 0 ? 1 : 0 ,
 					nodeLabel:MINIKUBE_LABEL)}
@@ -372,29 +388,24 @@ pipeline{
 					stage('Get marketing maven packages'){
 						MSBadge = addEmbeddableBadgeConfiguration(
 							id: MSBadgeId,
-							subject: "Marketing Deploy"
-							)
+							subject: "Marketing Deploy")
 						MSBadge.setStatus('running')
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'>" +
 									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
 								position: 1)
-						configFileProvider(
-								[
+						configFileProvider( [
 								configFile(
-									fileId: 'mavenSettingsGlobal',
-									targetLocation: 'MAVEN_SETTINGS.xml'),
-								configFile(
-									fileId: 'defaultPOM',
-									targetLocation: 'pomxml')
+									fileId: 'pomxml_v2',
+									targetLocation: pomName )
 								]){
 							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\Marketing",
 									branch: params.Task,
 									groupId: "Marketing",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
+									pom: pomName,
+									repo: ".mvn")
 						}
 					}
 					stage('DeployMS'){
@@ -428,29 +439,24 @@ pipeline{
 					stage('Get TT maven packages'){
 						TTBadge = addEmbeddableBadgeConfiguration(
 							id: TTBadgeId,
-							subject: "TT Deploy"
-							)
+							subject: "TT Deploy")
 						TTBadge.setStatus('running')
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'>"+
 									"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
 								position: 1)
-						configFileProvider(
-								[
-								configFile(
-									fileId: 'mavenSettingsGlobal',
-									targetLocation: 'MAVEN_SETTINGS.xml'),
+						configFileProvider( [
 								configFile(
 									fileId: 'defaultPOM',
-									targetLocation: 'pomxml')
+									targetLocation: pomName)
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\TradingTool",
 									branch: params.Task,
+									pom: pomName,
 									groupId: "TradingTool",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
+									repo: ".mvn")
 						}
 					}
 
@@ -489,17 +495,13 @@ pipeline{
 					stage('Get WebParser maven packages'){
 						WPARSERBadge = addEmbeddableBadgeConfiguration(
 								id: WParserBadgeId,
-								subject: "WebParser Deploy"
-								)
+								subject: "WebParser Deploy")
 						WPARSERBadge.setStatus('running')
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${WParserBadgeId}'></a>",
 								position: 1)
-						configFileProvider(
-								[configFile(
-									fileId: 'mavenSettingsGlobal',
-									targetLocation: 'MAVEN_SETTINGS.xml'),
+						configFileProvider( [
 								configFile(
 									fileId: 'defaultPOM',
 									targetLocation: 'pomxml')
@@ -507,9 +509,9 @@ pipeline{
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\WebParser",
 									branch: params.Task,
+									pom: pomName,
 									groupId: "WebParser",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
+									repo: ".mvn")
 						}
 					}
 					stage('Deploy WebParser'){
@@ -551,21 +553,17 @@ pipeline{
 								html: "<a href='${BUILD_URL}'>" +
 									"<img src='${BUILD_URL}badge/icon?config=${WIDGETSBadgeId}'></a>",
 								position: 1)
-						configFileProvider(
-								[
-								configFile(
-									fileId: 'mavenSettingsGlobal',
-									targetLocation: 'MAVEN_SETTINGS.xml'),
+						configFileProvider( [
 								configFile(
 									fileId: 'defaultPOM',
-									targetLocation: 'pomxml')
+									targetLocation:pomName )
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\BaltWidgets",
 									branch: params.Task,
 									groupId: "BaltWidgets",
-									repo: "${env.WORKSPACE}\\.mvn\\"
-									)
+									pom: pomName,
+									repo: ".mvn")
 						}
 					}
 					/* Пока добавил деплой веб морды, но планируется выпуск парсера под этот сервис, который надо деплоить вместе с ним.
