@@ -448,7 +448,7 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
+									fileId: 'pomxml_v2',
 									targetLocation: pomName)
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
@@ -503,8 +503,8 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
-									targetLocation: 'pomxml')
+									fileId: 'pomxml_v2',
+									targetLocation:pomName)
 								]){
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\WebParser",
@@ -555,7 +555,7 @@ pipeline{
 								position: 1)
 						configFileProvider( [
 								configFile(
-									fileId: 'defaultPOM',
+									fileId: 'pomxml_v2',
 									targetLocation:pomName )
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
