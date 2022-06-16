@@ -504,7 +504,7 @@ pipeline{
 						configFileProvider( [
 								configFile(
 									fileId: 'pomxml_v2',
-									targetLocation: 'pomxml')
+									targetLocation:pomName)
 								]){
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\WebParser",
