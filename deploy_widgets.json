@@ -2,7 +2,8 @@
     {
         "name": "WidgetService",
         "source": [
-            "WidgetService.ps1"
+            "WidgetService.ps1",
+            "BaltWidgetsClient.ps1"
         ]
     }
 ]
