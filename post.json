@@ -150,6 +150,11 @@
             "UniAuthServiceGrpc.ps1"
         ]
     }, {
+        "name": "PaymentSystemHandlers",
+        "source": [
+            "PaymentSystemHandlers.ps1"
+        ]
+    }, {
         "name": "UniAdministration",
         "source": [
             "UniAdministration.ps1",
