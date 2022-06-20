@@ -1,12 +1,12 @@
 [
     {
         "name": "rabbit",
-        "source": [
+        "stages": [
             "rabbit.sh"
         ]
     }, {
         "name": "redis",
-        "source": [
+        "stages": [
             "redis.sh"
         ]
     }

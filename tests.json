@@ -1,21 +1,21 @@
 [{
     "name": "CIS",
-    "source": [
+    "stages": [
         "CIS.ps1"
     ]
 }, {
 "name": "Kernel",
-"source": [
+"stages": [
     "Kernel.ps1" 
 ]
 }, {
 "name": "PDA",
-"source": [
+"stages": [
     "PDA.ps1" 
 ]
 }, {
     "name": "UniRu",
-    "source": [
+    "stages": [
         "UniRu.ps1" 
     ]
 }]

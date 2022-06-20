@@ -3,6 +3,9 @@
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
 import jenkins.model.Jenkins
+import groovy.xml.*
+
+ARTIFACT_ITEMS =[:]
 
 MavenDeployResult = """\
 ==============================
@@ -155,6 +158,7 @@ pipeline{
 		stage('Set Description'){
 			steps{
 				script{
+					ARTIFACT_ITEMS = utils.getArtifacts()
 					def all_lockable_resources = org.jenkins.plugins
 						.lockableresources
 						.LockableResourcesManager
@@ -207,6 +211,7 @@ pipeline{
 							text: funcFile)
 					parallel (generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CLEAN_JSON),
+								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Cleanup')
 							)
 				}
@@ -260,6 +265,7 @@ pipeline{
 					parallel (
 						generators.getParralelStagesMap(
 								jsonMap: scriptFile,
+								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Deploy'))
 				}
 			}
@@ -301,6 +307,7 @@ pipeline{
 					script{
 						def List scriptFile = readJSON (file: DEPLOY_JSON)
 						parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
@@ -344,8 +351,9 @@ pipeline{
 						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
 						parallel (
 							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
-								stage: STAGE_NAME)
+								stage:STAGE_NAME)
 						)
 					}
 				}
@@ -399,6 +407,7 @@ pipeline{
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 								parallel (
 									generators.getParralelStagesMap(
+										artifactItems: ARTIFACT_ITEMS,
 										jsonMap: scriptFile,
 										stage: STAGE_NAME)
 								)
@@ -450,6 +459,7 @@ pipeline{
 						def List scriptFile =readJSON (file: DEPLOY_WPARSER_JSON)
 						parallel (
 							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME.replaceAll("\\s",""))
 						)
@@ -504,6 +514,7 @@ pipeline{
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
 							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
@@ -608,6 +619,7 @@ pipeline{
 					def List scriptFile = readJSON (file: POST_MS_JSON)
 					parallel (
 						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -634,6 +646,7 @@ pipeline{
 					def List scriptFile = readJSON (file: POST_TT_JSON)
 					parallel (
 						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -660,6 +673,7 @@ pipeline{
 					def List scriptFile = readJSON (file: POST_WPARSER_JSON)
 					parallel (
 						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME.replaceAll("\\s",""))
 					)
@@ -680,6 +694,7 @@ pipeline{
 				script{
 					def List scriptFile =readJSON (file: POST_JSON)
 					parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
@@ -692,6 +707,7 @@ pipeline{
 				script{
 					def List scriptFile =readJSON (file: TESTS_JSON)
 					parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)

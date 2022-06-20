@@ -1,22 +1,22 @@
 [
     {
         "name": "NotificationGateWay",
-        "source": [
+        "stages": [
             "NotificationGateWay.ps1"
         ]
     },{
         "name": "ApkClient",
-        "source": [
+        "stages": [
             "shareClient.ps1"
         ]
     },{
         "name": "CIS",
-        "source": [
+        "stages": [
             "CIS.ps1"
         ]
     }, {
         "name": "Kernel",
-        "source": [
+        "stages": [
             "ComAccounts.ps1",
             "AddRestoreComAccountTemplate.ps1",
             "Tasks.ps1",
@@ -27,14 +27,14 @@
         ]
     }, {
         "name": "Services",
-        "source": [
+        "stages": [
             "rabbitmq.ps1",
             "Logs.ps1",
             "Memurai.ps1"
         ]
     }, {
         "name": "PaymentBalancing",
-        "source": [
+        "stages": [
             "init.ps1",
             "update.sql",
             "kernel.ps1",
@@ -42,7 +42,7 @@
         ]
     }, {
         "name": "UniRu",
-        "source": [
+        "stages": [
             "CIS.ps1",
             "UniAuthService.ps1",
             "WAMoveSettings.ps1",            
@@ -51,101 +51,101 @@
         ]
     }, {
         "name": "PromoExpressService",
-        "source": [
+        "stages": [
             "PromoExpressService.ps1"
         ]
     }, {
         "name": "PersonalInfoCenter",
-        "source": [
+        "stages": [
             "Tasks.ps1",
             "PersonalInfoCenter.ps1"
         ]
     }, {
         "name": "PaymentCupis",
-        "source": [
+        "stages": [
             "PaymentCupis.ps1"
         ]
     }, {
         "name": "ReportService",
-        "source": [
+        "stages": [
             "ReportService.ps1"
         ]
     }, {
         "name": "ActionLogService",
-        "source": [
+        "stages": [
             "ActionLogService.ps1"
         ]
     }, {
         "name": "SuperExpressService",
-        "source": [
+        "stages": [
             "SuperExpressService.ps1"
         ]
     }, {
         "name": "CoefService",
-        "source": [
+        "stages": [
             "CoefService.ps1"
         ]
     }, {
         "name": "CashBookService",
-        "source": [
+        "stages": [
             "CashBookService.ps1"
         ]
     }, {
         "name": "IdentificationDocumentService",
-        "source": [
+        "stages": [
             "IdentificationDocumentService.ps1"
         ]
     }, {
         "name": "TicketService",
-        "source": [
+        "stages": [
             "TicketService.ps1"
         ]
     }, {
         "name": "CashRegisterOperationService",
-        "source": [
+        "stages": [
             "Tasks.ps1",
             "CashRegisterOperationService.ps1"
         ]
     }, {
         "name": "FavoritesService",
-        "source": [
+        "stages": [
             "RegisterService.ps1"
         ]
     },{
         "name": "AccountStatisticsService",
-        "source": [
+        "stages": [
             "AccountStatisticsServiceHost.ps1"
         ]
     }, {
         "name": "CurrencyConverter",
-        "source": [
+        "stages": [
             "Tasks.ps1",
             "CurrencyConverter.ps1"
         ]
     }, {
         "name": "UniAccountRecoveryService",
-        "source": [
+        "stages": [
             "UniAccountRecoveryService.ps1"
         ]
     }, {
         "name": "BaltBetPaymentAdmin",
-        "source": [
+        "stages": [
             "BaltBetPaymentAdmin.ps1"
         ]
     }, {
         "name": "PhotonServer",
-        "source": [
+        "stages": [
             "PhotonServer.ps1"
         ]
     }, {
         "name": "WebAdministration",
-        "source": [
+        "stages": [
             "WebAdministration.ps1",
             "Tasks.ps1"
         ]
     }, {
         "name": "UniAuthService",
-        "source": [
+        "stages": [
             "UniAuthService.ps1",
             "UniAuthServiceGrpc.ps1"
         ]

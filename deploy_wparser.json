@@ -1,10 +1,10 @@
 [
     {
         "name": "WebParserDB",
-        "source": ["db.ps1"]
+        "stages": ["db.ps1"]
     },
     {
         "name": "WebParser",
-        "source": ["webparser.ps1"]
+        "stages": ["webparser.ps1"]
     }
 ]
