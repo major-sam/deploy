@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib"]) _
+@Library(["JenkinsCI", "DeployLib@sam"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -40,7 +40,6 @@ def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
 	subject: "Windows Deploy")
 
-
 def getNodeList(label = 'windows'){
 	return Jenkins
 		.instance
@@ -48,81 +47,6 @@ def getNodeList(label = 'windows'){
 		.findAll{ it.getLabelString().contains(label) }
 		.findAll{ it.toComputer().isOnline() }
 		.name as List
-}
-
-def getParralelStagesMap(Map config = [:]){
-	def result = config.jsonMap.collectEntries {[
-		(it.name) : {
-			stage(it.name]){
-				generateStages(
-					job:it,
-					stageName: config.stage,
-					envOS: (isUnix() ? "linux" : "windows"))
-			}
-		}]
-	}
-	return result
-}
-@NonCPS
-def generateStages(Map config = [:] ) {
-	Closure stagesResults = {}
-	if (config.job.source){
-		print '111111111111111111111'
-		print config.job.source}
-	else{
-		print '000000'}
-	config.job.source.each{stageScript ->  
-		def subStageName = stageScript.split('\\.')[0]
-		def libScriptPath = [
-			config.envOS,
-			config.stageName,
-			config.job.name,
-			stageScript].join('/')
-		def libScript =libraryResource libScriptPath 
-		def stagesResult = getSubStage(
-			scriptCase:stageScript.split('\\.')[-1],
-			stageName:subStageName,
-			script: libScript,
-			scriptPath:libScriptPath)
-		stagesResults << stagesResult
-	}
-	return stagesResults
-}
-
-def getSubStage(Map config = [:]){
-	switch(config.scriptCase){
-		case 'ps1':
-			return stage(config.stageName){
-				powershell (
-						encoding: 'UTF8',
-						script: config.script,
-						label: config.scriptPath)
-			}
-		case 'sql':
-			def PsScript = """ Invoke-Sqlcmd -Query {$config.script} `
-				-verbose `
-				-QueryTimeout 0 `
-				-ServerInstance localhost `
-				-ErrorAction stop"""
-			return stage(config.stageName){
-				println "SQL SCRIPTS RUNS ON MASTER! \n For other db USE statment requered"
-					powershell (
-							encoding: 'UTF8',
-							script: PsScript,
-							label: "Runs on master: ${config.scriptPath}")
-				}
-		case 'sh':
-			return stage(config.stageName){
-				sh (
-						encoding: 'UTF8',
-						script: config.script,
-						label: config.scriptPath)
-			}
-		default:
-			return stage("${config.stageName}"){
-				println "not suported script extention:" + config.scriptCase
-			}
-	}
 }
 
 
@@ -281,7 +205,7 @@ pipeline{
 					writeFile (
 							file: '.\\scripts\\sideFunctions.psm1',
 							text: funcFile)
-					parallel (getParralelStagesMap(
+					parallel (generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CLEAN_JSON),
 								stage: 'Cleanup')
 							)
@@ -334,7 +258,7 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: KUBER_JSON )
 					parallel (
-						getParralelStagesMap(
+						generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: 'Deploy'))
 				}
@@ -376,7 +300,7 @@ pipeline{
 				]){
 					script{
 						def List scriptFile = readJSON (file: DEPLOY_JSON)
-						parallel (getParralelStagesMap(
+						parallel (generators.getParralelStagesMap(
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
@@ -419,7 +343,7 @@ pipeline{
 					stage('DeployMS'){
 						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
 						parallel (
-							getParralelStagesMap(
+							generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
@@ -474,7 +398,7 @@ pipeline{
 								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 								parallel (
-									getParralelStagesMap(
+									generators.getParralelStagesMap(
 										jsonMap: scriptFile,
 										stage: STAGE_NAME)
 								)
@@ -525,7 +449,7 @@ pipeline{
 					stage('Deploy WebParser'){
 						def List scriptFile =readJSON (file: DEPLOY_WPARSER_JSON)
 						parallel (
-							getParralelStagesMap(
+							generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME.replaceAll("\\s",""))
 						)
@@ -579,7 +503,7 @@ pipeline{
 					stage('DeployWidgets'){
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
-							getParralelStagesMap(
+							generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
@@ -683,7 +607,7 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_MS_JSON)
 					parallel (
-						getParralelStagesMap(
+						generators.getParralelStagesMap(
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -709,7 +633,7 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_TT_JSON)
 					parallel (
-						getParralelStagesMap(
+						generators.getParralelStagesMap(
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -735,7 +659,7 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_WPARSER_JSON)
 					parallel (
-						getParralelStagesMap(
+						generators.getParralelStagesMap(
 							jsonMap: scriptFile,
 							stage: STAGE_NAME.replaceAll("\\s",""))
 					)
@@ -755,7 +679,7 @@ pipeline{
 			steps{
 				script{
 					def List scriptFile =readJSON (file: POST_JSON)
-					parallel (getParralelStagesMap(
+					parallel (generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
@@ -767,7 +691,7 @@ pipeline{
 			steps{
 				script{
 					def List scriptFile =readJSON (file: TESTS_JSON)
-					parallel (getParralelStagesMap(
+					parallel (generators.getParralelStagesMap(
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
