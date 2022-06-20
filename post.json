@@ -1,11 +1,5 @@
 [
     {
-    "name": "Consul",
-    "source": [
-        "ConsulService.ps1"
-    ]
-    },
-    {
         "name": "NotificationGateWay",
         "source": [
             "NotificationGateWay.ps1"

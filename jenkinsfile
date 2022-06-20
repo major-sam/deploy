@@ -19,6 +19,7 @@ POST_WIDGETS_JSON = 'post_widgets.json'
 
 DEPLOY_JSON = "deploy.json"
 KUBER_JSON = "kuber.json"
+CONSUL_JSON = "consul.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
 DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
@@ -333,6 +334,27 @@ pipeline{
 				}
 			}
 		}
+
+		stage('Consul deploy'){
+			when{
+				expression {
+					not { env.JENKINS_DEVELOPER }
+				}
+			}
+			steps{
+				script{
+					def funcFile =libraryResource 'windows/sideFunctions.psm1'
+					writeFile (
+							file: '.\\scripts\\sideFunctions.psm1',
+							text: funcFile)
+					parallel (getParralelDeliveryMap(
+								jsonMap: readJSON (file: CONSUL_JSON),
+								stage: 'Deploy')
+							)
+				}
+			}
+		}
+
 		stage('Configure'){
 			steps{
 				withCredentials([
