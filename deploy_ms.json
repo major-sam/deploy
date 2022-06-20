@@ -2,6 +2,9 @@
         "name": "Admin",
         "source": ["Marketing_Admin_Angular.ps1"]
     }, {
+        "name": "Bookmakers",
+        "source": ["Marketing_Bookmakers_Angular.ps1"]
+    }, {
         "name": "APKService",
         "source": ["MarketingService.ApkService.ps1"]
     }, {
