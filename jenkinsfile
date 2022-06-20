@@ -183,6 +183,7 @@ pipeline{
 		RABBIT_WEB_PORT=utils.kuberPortShift(
 			port:30300,
 			VM:TESTVM)
+		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 	}
 
 
