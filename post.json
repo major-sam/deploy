@@ -45,7 +45,7 @@
         "stages": [
             "CIS.ps1",
             "UniAuthService.ps1",
-            "WAMoveSettings.ps1",            
+            "UniAdmMoveSettings.ps1", 
             "UpdateApkService.ps1",
             "UniRu.ps1"
         ]
@@ -138,12 +138,6 @@
             "PhotonServer.ps1"
         ]
     }, {
-        "name": "WebAdministration",
-        "stages": [
-            "WebAdministration.ps1",
-            "Tasks.ps1"
-        ]
-    }, {
         "name": "UniAuthService",
         "stages": [
             "UniAuthService.ps1",
@@ -153,6 +147,12 @@
         "name": "PaymentSystemHandlers",
         "stages": [
             "PaymentSystemHandlers.ps1"
+        ]
+    }, {
+        "name": "UniAdministration",
+        "source": [
+            "UniAdministration.ps1",
+            "Tasks.ps1"
         ]
     }
 ]

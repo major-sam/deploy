@@ -463,6 +463,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/UniAuthService</outputDirectory>
 					</artifactItem>
+					<artifactItem>
+						<groupId>UniAdministration</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>

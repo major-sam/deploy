@@ -208,10 +208,10 @@
             "deploy.ps1"
         ]
     }, {
-        "name": "WebAdministration",
+        "name": "UniAdministration",
         "stages": [
-            "WebAdministration.ps1",
-            "WebAdministrationDB.ps1"
+            "UniAdministration.ps1",
+            "UniAdministrationDB.ps1"
         ]
     }, {
         "name": "UniAuthService",
