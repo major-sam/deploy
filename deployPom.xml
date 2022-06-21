@@ -239,7 +239,7 @@
 					</artifactItem>
 					-->
 					<artifactItem>
-						<groupId>PaymenSystemHandlers</groupId>
+						<groupId>PaymentSystemHandlers</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
 						<classifier>Release</classifier>
