@@ -90,6 +90,7 @@ pipeline{
 	agent {label "${TESTVM}" }
 
 	environment {
+		SIDE_FUNCTIONS = '.\\scripts\\sideFunctions.psm1' 
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
@@ -209,7 +210,7 @@ pipeline{
 				script{
 					def funcFile =libraryResource 'windows/sideFunctions.psm1'
 					writeFile (
-							file: '.\\scripts\\sideFunctions.psm1',
+							file: env.SIDE_FUNCTIONS,
 							text: funcFile)
 					parallel (generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CLEAN_JSON),
