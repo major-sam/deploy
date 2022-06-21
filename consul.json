@@ -1,0 +1,8 @@
+[
+    {
+        "name": "Consul",
+        "source": [
+            "ConsulServiceInstall.ps1"
+        ]
+    }
+]

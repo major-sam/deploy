@@ -247,13 +247,13 @@
 						<outputDirectory>c:/inetpub/WebApiAuth</outputDirectory>
 					</artifactItem>
 					<artifactItem>
-						<groupId>PaymenSystemHandlers</groupId>
+						<groupId>PaymentSystemHandlers</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/PaymenSystemHandlers</outputDirectory>
+						<outputDirectory>c:/Services/PaymentSystemHandlers</outputDirectory>								
 					</artifactItem>
 					-->
 					<artifactItem>

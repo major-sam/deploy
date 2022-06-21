@@ -1,4 +1,5 @@
-[{
+[
+    {
     "name": "NotificationGateWay",
     "stages": [
         "NotificationGateWay.ps1",
@@ -93,6 +94,11 @@
         "stages": [
             "balancing.ps1",
             "report.ps1"
+        ]
+    }, {
+        "name": "PaymentSystemHandlers",
+        "source": [
+            "PaymentSystemHandlers.ps1"
         ]
     }, {
         "name": "PaymentCupis",

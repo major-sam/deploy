@@ -18,5 +18,10 @@
         "stages": [
             "addRunAsSvc.ps1"
         ]
+    }, {
+        "name": "Consul",
+        "source": [
+            "FullCleanupConsul.ps1"
+        ]
     }
 ]
