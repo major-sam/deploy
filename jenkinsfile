@@ -231,11 +231,11 @@ pipeline{
 					def minikubeNodes = nodesByLabel 'test_minikube'
 					Map tasks = [:]
 					tasks['Get Maven Packages']={
-							stage('maven'){
-								def result = utils.doMavenDeploy(params.Task)
-								MavenDeployResult = MavenDeployResult + result.trim()
-							}
+						stage('maven'){
+							def result = utils.doMavenDeploy(params.Task)
+							MavenDeployResult = MavenDeployResult + result.trim()
 						}
+					}
 					minikubeNodes.each{ minikubeNode ->
 						tasks[minikubeNode]={
 							node(minikubeNode){
@@ -281,11 +281,8 @@ pipeline{
 			}
 			steps{
 				script{
-					def funcFile =libraryResource 'windows/sideFunctions.psm1'
-					writeFile (
-							file: '.\\scripts\\sideFunctions.psm1',
-							text: funcFile)
-					parallel (getParralelDeliveryMap(
+					parallel (
+						generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CONSUL_JSON),
 								stage: 'Deploy')
 							)

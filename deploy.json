@@ -97,7 +97,7 @@
         ]
     }, {
         "name": "PaymentSystemHandlers",
-        "source": [
+        "stages": [
             "PaymentSystemHandlers.ps1"
         ]
     }, {
