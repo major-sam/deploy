@@ -246,6 +246,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/inetpub/WebApiAuth</outputDirectory>
 					</artifactItem>
+					-->
 					<artifactItem>
 						<groupId>PaymentSystemHandlers</groupId>
 						<artifactId>master</artifactId>
@@ -255,7 +256,6 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/PaymentSystemHandlers</outputDirectory>								
 					</artifactItem>
-					-->
 					<artifactItem>
 						<groupId>PaymentCupisService</groupId>
 						<artifactId>master</artifactId>

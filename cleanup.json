@@ -20,7 +20,7 @@
         ]
     }, {
         "name": "Consul",
-        "source": [
+        "stages": [
             "FullCleanupConsul.ps1"
         ]
     }
