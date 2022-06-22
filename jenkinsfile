@@ -121,6 +121,7 @@ pipeline{
 			port:30300,
 			VM:TESTVM)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
+		UNI_REG_ENCRYPTION_PASSPHRASE = credential('UniRegistrationEncryprionPassphrase')
 	}
 
 
