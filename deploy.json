@@ -217,7 +217,7 @@
         ]
     }, {
         "name": "PaymentAntifraud",
-        "source": [            
+        "stages": [            
             "AntifraudDB.ps1",
             "AntifraudServiceHost.ps1",
             "AntifraudClient.ps1"
