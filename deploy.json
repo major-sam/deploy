@@ -208,6 +208,7 @@
             "CreateLiveMonitorDb.ps1",
             "configureLiveMonitor.ps1",
             "configureLiveMonitorAdmin.ps1",
+            "configureLiveMonitorContent.ps1",
             "RegisterLiveMonitorAdminService.ps1",
             "RegisterLiveMonitorService.ps1"
         ]
@@ -224,5 +225,5 @@
             "UniAuthServiceDB.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
-    }            
+    }
 ]
