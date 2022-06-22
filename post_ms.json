@@ -1,9 +1,9 @@
 [{
         "name": "ApkService",
-        "source": ["ApkService.ps1"]
+        "stages": ["ApkService.ps1"]
     }, {
         "name": "Service",
-        "source": [
+        "stages": [
             "Service.ps1"
         ]
     }

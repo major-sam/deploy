@@ -1,26 +1,26 @@
 [{
         "name": "Admin",
-        "source": ["Marketing_Admin_Angular.ps1"]
+        "stages": ["Marketing_Admin_Angular.ps1"]
     }, {
         "name": "Bookmakers",
-        "source": ["Marketing_Bookmakers_Angular.ps1"]
+        "stages": ["Marketing_Bookmakers_Angular.ps1"]
     }, {
         "name": "APKService",
-        "source": ["MarketingService.ApkService.ps1"]
+        "stages": ["MarketingService.ApkService.ps1"]
     }, {
         "name": "Client",
-        "source": [
+        "stages": [
             "Marketing_Client_Angular.ps1",
             "MarketingImages.ps1"
         ]
     }, {
         "name": "Service",
-        "source": [
+        "stages": [
             "Service.ps1"
         ]
     }, {
         "name": "DB",
-        "source": [
+        "stages": [
             "DB.ps1"
         ]
     }
