@@ -472,7 +472,6 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services</outputDirectory>								
 					</artifactItem>
-				</artifactItems>
 					<artifactItem>
 						<groupId>AntiFraud</groupId>
 						<artifactId>master</artifactId>
@@ -482,6 +481,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>								
 					</artifactItem>
+				</artifactItems>					
 			</configuration>
 		</plugin>
 	</plugins>
