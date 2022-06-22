@@ -205,7 +205,7 @@
     }, {
         "name": "LiveMonitor",
         "inCodeStages": [
-            "deploy.ps1"
+            "configureLiveMonitor.ps1"
         ]
     }, {
         "name": "UniAdministration",
