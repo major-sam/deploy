@@ -203,11 +203,6 @@
             "PhotonServerDB.ps1"
         ]
     }, {
-        "name": "LiveMonitor",
-        "inCodeStages": [
-            "configureLiveMonitor.ps1"
-        ]
-    }, {
         "name": "UniAdministration",
         "stages": [
             "UniAdministration.ps1",
