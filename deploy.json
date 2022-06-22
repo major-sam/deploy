@@ -192,6 +192,12 @@
             "UniAccountRecoveryService.ps1"
         ]
     }, {
+        "name": "ScheduleService",
+        "inCodeStages": [
+            "configureService.ps1",
+            "RegisterService.ps1"
+        ]
+    }, {
         "name": "BaltBetPaymentAdmin",
         "stages": [
             "BaltBetPaymentAdmin.ps1"

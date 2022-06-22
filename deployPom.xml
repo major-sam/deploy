@@ -248,6 +248,15 @@
 					</artifactItem>
 					-->
 					<artifactItem>
+						<groupId>ScheduleService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/ScheduleService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>PaymentSystemHandlers</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
