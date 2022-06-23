@@ -154,5 +154,10 @@
             "UniAdministration.ps1",
             "Tasks.ps1"
         ]
+    }, {
+        "name": "UniRegistrationService",
+        "stages": [
+            "UniRegistrationService.ps1"
+        ]
     }
 ]

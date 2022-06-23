@@ -231,5 +231,11 @@
             "UniAuthServiceDB.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
+    }, {
+        "name": "UniRegistrationService",
+        "stages": [
+            "UniRegistrationService.ps1",
+            "UniRegistrationService.ps1"
+        ]
     }
 ]
