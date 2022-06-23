@@ -235,7 +235,7 @@
         "name": "UniRegistrationService",
         "stages": [
             "UniRegistrationService.ps1",
-            "UniRegistrationService.ps1"
+            "UniRegistrationServiceDB.ps1"
         ]
     }
 ]
