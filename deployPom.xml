@@ -165,6 +165,15 @@
 						<outputDirectory>c:/inetpub/Website</outputDirectory>
 					</artifactItem>
 					<artifactItem>
+						<groupId>LiveMonitor</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/LiveMonitor</outputDirectory>
+					</artifactItem>
+					<artifactItem>
 						<groupId>MessageService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
@@ -239,7 +248,16 @@
 					</artifactItem>
 					-->
 					<artifactItem>
-						<groupId>PaymenSystemHandlers</groupId>
+						<groupId>ScheduleService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/ScheduleService</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
+						<groupId>PaymentSystemHandlers</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
 						<classifier>Release</classifier>

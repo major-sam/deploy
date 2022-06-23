@@ -3,6 +3,9 @@
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
 import jenkins.model.Jenkins
+import groovy.xml.*
+
+ARTIFACT_ITEMS =[:]
 
 MavenDeployResult = """\
 ==============================
@@ -41,21 +44,6 @@ def BuildBadge = addEmbeddableBadgeConfiguration(
 	id: mainBadgeId,
 	subject: "Windows Deploy")
 
-
-def getParralelDeliveryMap(Map config = [:]){
-	def result = config.jsonMap.collectEntries {[
-		(it['name']) : {
-			stage(it['name']){
-				generateStages(
-					job:it,
-					stageName: config.stage,
-					envOS: (isUnix() ? "linux" : "windows"))
-			}
-		}]
-	}
-	return result
-}
-
 def getNodeList(label = 'windows'){
 	return Jenkins
 		.instance
@@ -63,59 +51,6 @@ def getNodeList(label = 'windows'){
 		.findAll{ it.getLabelString().contains(label) }
 		.findAll{ it.toComputer().isOnline() }
 		.name as List
-}
-
-def generateStages(Map config = [:] ) {
-    Closure stagesResult = {}
-    for (stageScript in config.job['source']) {
-		def subStageName = stageScript.split('\\.')[0]
-		def libScriptPath = [
-			config.envOS,
-			config.stageName,
-			config.job['name'],
-			stageScript].join('/')
-		def libScript =libraryResource libScriptPath
-		switch(stageScript.split('\\.')[-1]){
-			case 'ps1':
-				stagesResult << stage(subStageName){
-					powershell (
-							encoding: 'UTF8',
-							script:  libScript,
-							label: libScriptPath
-							)
-					}
-				break
-			case 'sql':
-				def libPsScript = '''
-					$q= @'
-					'''+libScript + ''''@
-					Invoke-Sqlcmd -verbose -QueryTimeout 720 -ServerInstance '''+
-					'$env:COMPUTERNAME -Query $q -ErrorAction stop'
-				stagesResult << stage(subStageName){
-					println "SQL SCRIPTS RUNS ON MASTER! \n For other db USE statment requered"
-					powershell (
-							encoding: 'UTF8',
-							script: libPsScript,
-							label: 'Runs on master '+ libScriptPath
-							)
-				}
-				break
-			case 'sh':
-				stagesResult << stage(subStageName){
-					sh (
-							encoding: 'UTF8',
-							script: libScript,
-							label: libScriptPath)
-				}
-				break
-			default:
-				stagesResult << stage(subStageName){
-					println "not suported script extention:" +
-						stageScript.split('\\.')[-1]
-				}
-		}
-	}
-    return stagesResult
 }
 
 
@@ -155,6 +90,7 @@ pipeline{
 	agent {label "${TESTVM}" }
 
 	environment {
+		SIDE_FUNCTIONS = '.\\scripts\\sideFunctions.psm1' 
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
@@ -185,6 +121,7 @@ pipeline{
 			port:30300,
 			VM:TESTVM)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
+		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 	}
 
 
@@ -225,6 +162,7 @@ pipeline{
 		stage('Set Description'){
 			steps{
 				script{
+					ARTIFACT_ITEMS = utils.getArtifacts()
 					def all_lockable_resources = org.jenkins.plugins
 						.lockableresources
 						.LockableResourcesManager
@@ -273,10 +211,11 @@ pipeline{
 				script{
 					def funcFile =libraryResource 'windows/sideFunctions.psm1'
 					writeFile (
-							file: '.\\scripts\\sideFunctions.psm1',
+							file: env.SIDE_FUNCTIONS,
 							text: funcFile)
-					parallel (getParralelDeliveryMap(
+					parallel (generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CLEAN_JSON),
+								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Cleanup')
 							)
 				}
@@ -294,11 +233,11 @@ pipeline{
 					def minikubeNodes = nodesByLabel 'test_minikube'
 					Map tasks = [:]
 					tasks['Get Maven Packages']={
-							stage('maven'){
-								def result = utils.doMavenDeploy(params.Task)
-								MavenDeployResult = MavenDeployResult + result.trim()
-							}
+						stage('maven'){
+							def result = utils.doMavenDeploy(params.Task)
+							MavenDeployResult = MavenDeployResult + result.trim()
 						}
+					}
 					minikubeNodes.each{ minikubeNode ->
 						tasks[minikubeNode]={
 							node(minikubeNode){
@@ -328,8 +267,9 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: KUBER_JSON )
 					parallel (
-						getParralelDeliveryMap(
+						generators.getParralelStagesMap(
 								jsonMap: scriptFile,
+								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Deploy'))
 				}
 			}
@@ -343,11 +283,8 @@ pipeline{
 			}
 			steps{
 				script{
-					def funcFile =libraryResource 'windows/sideFunctions.psm1'
-					writeFile (
-							file: '.\\scripts\\sideFunctions.psm1',
-							text: funcFile)
-					parallel (getParralelDeliveryMap(
+					parallel (
+						generators.getParralelStagesMap(
 								jsonMap: readJSON (file: CONSUL_JSON),
 								stage: 'Deploy')
 							)
@@ -391,7 +328,8 @@ pipeline{
 				]){
 					script{
 						def List scriptFile = readJSON (file: DEPLOY_JSON)
-						parallel (getParralelDeliveryMap(
+						parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
@@ -434,9 +372,10 @@ pipeline{
 					stage('DeployMS'){
 						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
 						parallel (
-							getParralelDeliveryMap(
+							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
-								stage: STAGE_NAME)
+								stage:STAGE_NAME)
 						)
 					}
 				}
@@ -489,7 +428,8 @@ pipeline{
 								string(credentialsId: 'TTADFSClientId', variable: 'ADFSClientId'),
 								file(credentialsId: 'TTadfs', variable: 'TTADFS')]){
 								parallel (
-									getParralelDeliveryMap(
+									generators.getParralelStagesMap(
+										artifactItems: ARTIFACT_ITEMS,
 										jsonMap: scriptFile,
 										stage: STAGE_NAME)
 								)
@@ -540,7 +480,8 @@ pipeline{
 					stage('Deploy WebParser'){
 						def List scriptFile =readJSON (file: DEPLOY_WPARSER_JSON)
 						parallel (
-							getParralelDeliveryMap(
+							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME.replaceAll("\\s",""))
 						)
@@ -594,7 +535,8 @@ pipeline{
 					stage('DeployWidgets'){
 						def List scriptFile =readJSON (file: DEPLOY_WIDGETS_JSON)
 						parallel (
-							getParralelDeliveryMap(
+							generators.getParralelStagesMap(
+								artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 						)
@@ -698,7 +640,8 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_MS_JSON)
 					parallel (
-						getParralelDeliveryMap(
+						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -724,7 +667,8 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_TT_JSON)
 					parallel (
-						getParralelDeliveryMap(
+						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME)
 					)
@@ -750,7 +694,8 @@ pipeline{
 				script{
 					def List scriptFile = readJSON (file: POST_WPARSER_JSON)
 					parallel (
-						getParralelDeliveryMap(
+						generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 							jsonMap: scriptFile,
 							stage: STAGE_NAME.replaceAll("\\s",""))
 					)
@@ -770,7 +715,8 @@ pipeline{
 			steps{
 				script{
 					def List scriptFile =readJSON (file: POST_JSON)
-					parallel (getParralelDeliveryMap(
+					parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
@@ -782,7 +728,8 @@ pipeline{
 			steps{
 				script{
 					def List scriptFile =readJSON (file: TESTS_JSON)
-					parallel (getParralelDeliveryMap(
+					parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)

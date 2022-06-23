@@ -1,33 +1,33 @@
 [
 	{
         "name": "API",
-        "source": [
+        "stages": [
                 "api.ps1"
         ]
 	},{
         "name": "DB",
-        "source": [
+        "stages": [
                 "UpdateConfig.ps1",
                 "proxies.ps1",
                 "DBUpdater.ps1"
         ]
 	},{
         "name": "Importer",
-        "source": ["importer.ps1"]
+        "stages": ["importer.ps1"]
 	},{
         "name": "Matcher",
-        "source": ["matcher.ps1"]
+        "stages": ["matcher.ps1"]
 	},{
         "name": "Resulter",
-        "source": ["resulter.ps1"]
+        "stages": ["resulter.ps1"]
 	},{
         "name": "Scrappers",
-        "source": ["scrappers.ps1"]
+        "stages": ["scrappers.ps1"]
 	},{
         "name": "conf",
-        "source": ["cert.ps1"]
+        "stages": ["cert.ps1"]
 	},{
         "name": "Client",
-        "source": ["client.ps1"]
+        "stages": ["client.ps1"]
     }
 ]

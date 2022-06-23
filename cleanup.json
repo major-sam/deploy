@@ -1,26 +1,26 @@
 [{
         "name": "DB",
-        "source": [
+        "stages": [
             "FullCleanupDB.ps1"
         ]
     }, {
         "name": "IIS",
-        "source": [
+        "stages": [
             "FullCleanupIIS.ps1"
         ]
     }, {
         "name": "Services",
-        "source": [
+        "stages": [
             "FullCleanupFiles.ps1"
         ]
     }, {
         "name": "Fixes",
-        "source": [
+        "stages": [
             "addRunAsSvc.ps1"
         ]
     }, {
         "name": "Consul",
-        "source": [
+        "stages": [
             "FullCleanupConsul.ps1"
         ]
     }
