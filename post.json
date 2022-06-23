@@ -150,7 +150,7 @@
         ]
     }, {
         "name": "UniAdministration",
-        "source": [
+        "stages": [
             "UniAdministration.ps1",
             "Tasks.ps1"
         ]
