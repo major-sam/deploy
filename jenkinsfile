@@ -753,7 +753,13 @@ pipeline{
 	post{
 		always {
 			script{
-				if(false){	cleanWs notFailBuild: true}
+	//			requests.updateConfluence(
+	//				vm: TESTVM,
+	//				root: '104268990',
+	//				spacekey: 'DEV',
+	//				body: currentBuild.description,
+	//				auth: 'jenkinsAD')
+				if(false){cleanWs notFailBuild: true}
 			}
 		}
 		success{
