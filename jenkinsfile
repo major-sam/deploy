@@ -190,12 +190,12 @@ pipeline{
 							buildUrl: BUILD_URL,
 							buildNumber: BUILD_NUMBER,
 							buildStatus: "<a href='${BUILD_URL}'>" +
-								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>")
+								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}' /></a>")
 					}
 					currentBuild.description = utils.addToDescription(
 							description: currentBuild.description,
 							html: "<a href='${BUILD_URL}'>" +
-								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}'></a>",
+								"<img src='${BUILD_URL}badge/icon?config=${mainBadgeId}' /></a>",
 							position: 0 )
 				}
 			}
@@ -354,7 +354,7 @@ pipeline{
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'>" +
-									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}'></a>",
+									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}' /></a>",
 								position: 1)
 						configFileProvider( [
 								configFile(
@@ -406,7 +406,7 @@ pipeline{
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'>"+
-									"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}'></a>",
+									"<img src='${BUILD_URL}badge/icon?config=${TTBadgeId}' /></a>",
 								position: 1)
 						configFileProvider( [
 								configFile(
@@ -462,7 +462,7 @@ pipeline{
 						WPARSERBadge.setStatus('running')
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${WParserBadgeId}'></a>",
+								html: "<a href='${BUILD_URL}'><img src='${BUILD_URL}badge/icon?config=${WParserBadgeId}' /></a>",
 								position: 1)
 						configFileProvider( [
 								configFile(
@@ -515,7 +515,7 @@ pipeline{
 						currentBuild.description = utils.addToDescription(
 								description: currentBuild.description,
 								html: "<a href='${BUILD_URL}'>" +
-									"<img src='${BUILD_URL}badge/icon?config=${WIDGETSBadgeId}'></a>",
+									"<img src='${BUILD_URL}badge/icon?config=${WIDGETSBadgeId}' /></a>",
 								position: 1)
 						configFileProvider( [
 								configFile(
@@ -753,7 +753,13 @@ pipeline{
 	post{
 		always {
 			script{
-				if(false){	cleanWs notFailBuild: true}
+				requests.updateConfluence(
+					vm: TESTVM,
+					root: '104268990',
+					spacekey: 'DEV',
+					body: currentBuild.description,
+					auth: 'jenkinsAD')
+				if(false){cleanWs notFailBuild: true}
 			}
 		}
 		success{
