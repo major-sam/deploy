@@ -1,7 +1,7 @@
 [
     {
         "name": "WebParser",
-        "source": [
+        "stages": [
             "Tasks.ps1",
             "kernelConnection.ps1"]
     }

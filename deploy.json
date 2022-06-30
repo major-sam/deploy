@@ -1,24 +1,25 @@
-[{
+[
+    {
     "name": "NotificationGateWay",
-    "source": [
+    "stages": [
         "NotificationGateWay.ps1",
         "NotificationGateWayDB.ps1"
     ]
     }, {
         "name": "CupisIS",
-        "source": [
+        "stages": [
             "CupisIntegrationService.ps1",
             "CupisIntegrationServiceDB.ps1"
         ]
     }, {
         "name": "ApkClient",
-        "source": [
+        "stages": [
             "clientConfig.ps1",
             "settingsConfig.ps1"
         ]
     }, {
         "name": "Kernel",
-        "source": [
+        "stages": [
             "kernelDb_v2.ps1",
             "UpdateEvents.ps1",
             "kernelAppsettings.ps1",
@@ -26,7 +27,7 @@
         ]
     }, {
         "name": "Web",
-        "source": [
+        "stages": [
             "WebMobile.ps1",
             "WebTouch.ps1",
             "WebsiteCom.ps1",
@@ -37,36 +38,36 @@
         ]
     }, {
         "name": "PromoExpressService",
-        "source": [
+        "stages": [
             "config.ps1",
             "db.ps1"
         ]
     }, {
         "name": "FavoritesService",
-        "source": [
+        "stages": [
             "FavoritesService.ps1"
         ]
     }, {
         "name": "UniPaymentsService",
-        "source": [
+        "stages": [
             "UniPaymentsService.ps1"
         ]
     }, {
         "name": "Uni",
-        "source": [
+        "stages": [
             "UniRu.ps1",
             "UniRuApi.ps1",
             "UniRuSql.ps1"
         ]
     }, {
         "name": "KRM",
-        "source": [
+        "stages": [
             "KRMDB.ps1",
             "KRM.ps1"
         ]
     }, {
         "name": "PIC",
-        "source": [
+        "stages": [
             "AdminMessageService.ps1",
             "PromoCodeService.ps1",
             "PushService.ps1",
@@ -74,67 +75,67 @@
         ]
     }, {
         "name": "conf",
-        "source": [
+        "stages": [
             "cert.ps1"
         ]
     }, {
         "name": "IdentificationDocumentService",
-        "source": [
+        "stages": [
             "IdentificationDocumentService.ps1"
         ]
     }, {
         "name": "TicketService",
-        "source": [
+        "stages": [
             "TicketService.ps1"
         ]
 
     }, {
         "name": "PaymentBalancing",
-        "source": [
+        "stages": [
             "balancing.ps1",
             "report.ps1"
         ]
     }, {
-        "name": "PaymenSystemHandlers",
-        "source": [
-            "PaymenSystemHandlers.ps1"
+        "name": "PaymentSystemHandlers",
+        "stages": [
+            "PaymentSystemHandlers.ps1"
         ]
     }, {
         "name": "PaymentCupis",
-        "source": [
+        "stages": [
             "PaymentCupisDB.ps1",
             "PaymentCupisApi.ps1",
             "PaymentCupis.ps1"
         ]
     }, {
         "name": "BaltBetDomainService",
-        "source": [
+        "stages": [
             "BaltBetDomainService.ps1",
             "BaltBetDomainServiceDb.ps1"
         ]
     }, {
         "name": "ReportService",
-        "source": [
+        "stages": [
             "ReportService.ps1"
         ]
     }, {
         "name": "ActionLogService",
-        "source": [
+        "stages": [
             "ActionLogService.ps1"
         ]
     }, {
         "name": "SuperExpressService",
-        "source": [
+        "stages": [
             "SuperExpressService.ps1"
         ]
     }, {
         "name": "CoefService",
-        "source": [
+        "stages": [
             "CoefService.ps1"
         ]
     }, {
         "name": "CashBookService",
-        "source": [
+        "stages": [
             "CashBookService.ps1",
             "DeployDb.ps1",
             "InitDb.ps1",
@@ -142,81 +143,97 @@
         ]
     }, {
         "name": "UniStatisticsLogger",
-        "source": [
+        "stages": [
             "UniStatisticsLogger.ps1"
         ]
     }, {
         "name": "CashRegisterOperationService",
-        "source": [
+        "stages": [
             "CashRegisterOperationService.ps1",
             "CashRegisterOperationServiceDB.ps1"
         ]
     }, {
         "name": "EventService",
-        "source": [
+        "stages": [
             "EventService.ps1"
         ]
     },{
         "name": "AccountStatisticsService",
-        "source": [
+        "stages": [
             "AccountStatisticsServiceDB.ps1",
             "AccountStatisticsServiceHost.ps1"
         ]
     }, {
         "name": "UniBonusService",
-        "source": [
+        "stages": [
             "UniBonusService.ps1"
         ]
     }, {
         "name": "CurrencyConverter",
-        "source": [
+        "stages": [
             "CurrencyConverter.ps1",
             "CurrencyConverterDB.ps1",
             "CurrencyConverterEditKernel.ps1"
         ]
     }, {
         "name": "UpdateApkService",
-        "source": [
+        "stages": [
             "UpdateApkService.ps1",
             "UpdateApkServiceDB.ps1"
         ]
     }, {
         "name": "UpdateApkServiceAdmin",
-        "source": [
+        "stages": [
             "UpdateApkServiceAdmin.ps1"
         ]
     }, {
         "name": "UniAccountRecoveryService",
-        "source": [
+        "stages": [
             "UniAccountRecoveryService.ps1"
         ]
     }, {
+        "name": "ScheduleService",
+        "inCodeStages": [
+            "configureService.ps1",
+            "RegisterService.ps1"
+        ]
+    }, {
         "name": "BaltBetPaymentAdmin",
-        "source": [
+        "stages": [
             "BaltBetPaymentAdmin.ps1"
         ]
     }, {
         "name": "PhotonServer",
-        "source": [
+        "stages": [
             "PhotonServer.ps1",
             "PhotonServerDB.ps1"
         ]
     }, {
-        "name": "WebAdministration",
-        "source": [
-            "WebAdministration.ps1",
-            "WebAdministrationDB.ps1"
+        "name": "LiveMonitor",
+        "inCodeStages": [
+            "CreateLiveMonitorDb.ps1",
+            "configureLiveMonitor.ps1",
+            "configureLiveMonitorAdmin.ps1",
+            "configureLiveMonitorContent.ps1",
+            "RegisterLiveMonitorAdminService.ps1",
+            "RegisterLiveMonitorService.ps1"
+        ]
+    }, {
+        "name": "UniAdministration",
+        "stages": [
+            "UniAdministration.ps1",
+            "UniAdministrationDB.ps1"
         ]
     }, {
         "name": "UniAuthService",
-        "source": [
+        "stages": [
             "UniAuthService.ps1",
             "UniAuthServiceDB.ps1",
             "UniAuthServiceGrpc.ps1"
         ]
     }, {
         "name": "AchievementService",
-        "source": [
+        "stages": [
             "AchievementService.ps1",
             "AchievementServiceDB.ps1"
         ]

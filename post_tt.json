@@ -1,6 +1,6 @@
 [{
         "name": "DB",
-        "source": [
+        "stages": [
             "tt.ps1",
             "addLinkedServer.ps1",
             "kernel.sql",
@@ -8,7 +8,7 @@
         ]
     },{
         "name": "Services",
-        "source": [
+        "stages": [
             "install.ps1",
             "shareClient.ps1"
         ]
