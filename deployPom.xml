@@ -482,6 +482,14 @@
 						<outputDirectory>c:/Services</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>Consul</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>win</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Consul</outputDirectory>								
+					</artifactItem>
 						<groupId>AntiFraud</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
@@ -490,7 +498,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>								
 					</artifactItem>
-				</artifactItems>					
+				</artifactItems>
 			</configuration>
 		</plugin>
 	</plugins>
