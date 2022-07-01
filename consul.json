@@ -1,7 +1,7 @@
 [
     {
         "name": "Consul",
-        "source": [
+        "stages": [
             "ConsulServiceInstall.ps1"
         ]
     }
