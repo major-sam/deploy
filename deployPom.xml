@@ -490,6 +490,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Consul</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>EraiService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>
