@@ -490,6 +490,7 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Consul</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
 						<groupId>AntiFraud</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
