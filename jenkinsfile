@@ -320,7 +320,7 @@ pipeline{
 							variable:'TESTCUPISCA'),
 						file(
 							credentialsId:'testERAI',
-							variable:'TESTERAICERT')
+							variable:'TESTERAICERT'),
 						string(
 							credentialsId:'Asterisk_Secret',
 							variable:'AsteriskSecret'),
