@@ -497,7 +497,7 @@
 						<classifier>Release</classifier>
 						<type>zip</type>
 						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services</outputDirectory>								
+						<outputDirectory>c:/Services/ERAI</outputDirectory>								
 					</artifactItem>
 				</artifactItems>
 			</configuration>
