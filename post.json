@@ -157,6 +157,7 @@
     }, {
         "name": "EraiService",
         "stages": [
+            "Tasks.ps1",
             "EraiService.ps1",
             "EraiServiceWebUI.ps1"
         ]
