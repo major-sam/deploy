@@ -499,6 +499,15 @@
 						<overWrite>true</overWrite>
 						<outputDirectory>c:/Services/ERAI</outputDirectory>								
 					</artifactItem>
+					<artifactItem>
+						<groupId>AntiFraud</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>								
+					</artifactItem>
 				</artifactItems>
 			</configuration>
 		</plugin>

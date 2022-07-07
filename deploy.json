@@ -238,5 +238,12 @@
             "EraiServiceDB.ps1",
             "EraiServiceWebUI.ps1"
         ]
+    }, {
+        "name": "PaymentAntifraud",
+        "stages": [            
+            "AntifraudDB.ps1",
+            "AntifraudServiceHost.ps1",
+            "AntifraudClient.ps1"
+        ]
     }
 ]
