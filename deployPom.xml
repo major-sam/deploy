@@ -491,6 +491,15 @@
 						<outputDirectory>c:/Consul</outputDirectory>								
 					</artifactItem>
 					<artifactItem>
+						<groupId>EraiService</groupId>
+						<artifactId>master</artifactId>
+						<version>LATEST</version>
+						<classifier>Release</classifier>
+						<type>zip</type>
+						<overWrite>true</overWrite>
+						<outputDirectory>c:/Services/ERAI</outputDirectory>								
+					</artifactItem>
+					<artifactItem>
 						<groupId>UniRegistrationService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>

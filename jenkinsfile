@@ -122,6 +122,8 @@ pipeline{
 			VM:TESTVM)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
+		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
+		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 	}
 
 
@@ -316,6 +318,9 @@ pipeline{
 						file(
 							credentialsId:'testCupisCA',
 							variable:'TESTCUPISCA'),
+						file(
+							credentialsId:'testERAI',
+							variable:'TESTERAICERT'),
 						string(
 							credentialsId:'Asterisk_Secret',
 							variable:'AsteriskSecret'),
