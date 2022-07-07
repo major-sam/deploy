@@ -162,6 +162,12 @@
             "EraiServiceWebUI.ps1"
         ]
     }, {
+        "name": "PaymentAntifraud",
+        "stages": [            
+            "AntifraudServiceHost.ps1",
+            "AntifraudClient.ps1"
+        ]
+    }, {
         "name": "UniRegistrationService",
         "stages": [
             "UniRegistrationService.ps1"
