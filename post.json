@@ -154,5 +154,12 @@
             "UniAdministration.ps1",
             "Tasks.ps1"
         ]
+    }, {
+        "name": "EraiService",
+        "stages": [
+            "Tasks.ps1",
+            "EraiService.ps1",
+            "EraiServiceWebUI.ps1"
+        ]
     }
 ]

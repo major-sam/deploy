@@ -23,5 +23,10 @@
         "stages": [
             "FullCleanupConsul.ps1"
         ]
+    }, {
+        "name": "Users",
+        "stages": [
+            "LogoffAllUsers.ps1"
+        ]
     }
 ]
