@@ -1,8 +1,13 @@
 [
     {
-        "name": "WidgetService",
+        "name": "BaltWidgetService",
         "stages": [
-            "WidgetService.ps1",
+            "WidgetService.ps1"
+        ]
+    },
+    {
+        "name":"BaltWidgetClient",
+        "stages":[
             "BaltWidgetsClient.ps1"
         ]
     }
