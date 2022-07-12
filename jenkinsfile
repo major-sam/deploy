@@ -528,9 +528,15 @@ pipeline{
 									targetLocation:pomName )
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\BaltWidgets",
+									deployDir: "c:\\Services\\BaltWidgets\\BaltWidgetsService",
 									branch: params.Task,
-									groupId: "BaltWidgets",
+									groupId: "BaltWidgetsService",
+									pom: pomName,
+									repo: ".mvn")
+							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
+									deployDir: "c:\\Services\\BaltWidgets\\BaltWidgetsClient",
+									branch: params.Task,
+									groupId: "BaltWidgetsClient",
 									pom: pomName,
 									repo: ".mvn")
 						}
