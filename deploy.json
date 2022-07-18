@@ -246,5 +246,15 @@
             "AntifraudServiceHost.ps1",
             "AntifraudClient.ps1"
         ]
+    }, {
+        "name": "EmployeeService",
+        "stages": [            
+            "EmployeeService.ps1"
+        ]
+    }, {
+        "name": "IntegrationService",
+        "stages": [            
+            "IntegrationService.ps1"
+        ]
     }
 ]
