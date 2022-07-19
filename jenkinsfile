@@ -57,7 +57,7 @@ def getNodeList(label = 'windows'){
 pipeline{
 
 	parameters {
-		string name:'Task', defaultValue: "", trim: true, description: "Branch(Task)"
+		string name:'Task', defaultValue: "feature-BON-2", trim: true, description: "Branch(Task)"
 		choice name:"TESTVM", choices: getNodeList()
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
