@@ -154,12 +154,6 @@
             "Tasks.ps1"
         ]
     }, {
-        "name": "AchievementService",
-        "stages": [
-            "EditKernelSettings.ps1",
-            "AchievementService.ps1"
-        ]
-    }, {
         "name": "EraiService",
         "stages": [
             "Tasks.ps1",
@@ -184,7 +178,7 @@
         ]
     }, {
         "name": "AchievementService",
-        "source": [
+        "stages": [
             "EditKernelSettings.ps1",
             "AchievementService.ps1"
         ]
