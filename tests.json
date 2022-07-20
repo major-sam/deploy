@@ -13,9 +13,4 @@
 "stages": [
     "PDA.ps1" 
 ]
-}, {
-    "name": "UniRu",
-    "stages": [
-        "UniRu.ps1" 
-    ]
 }]

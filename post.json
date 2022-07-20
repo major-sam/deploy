@@ -47,7 +47,7 @@
             "UniAuthService.ps1",
             "UniAdmMoveSettings.ps1", 
             "UpdateApkService.ps1",
-            "UniRu.ps1"
+            "UniAdministration.ps1"
         ]
     }, {
         "name": "PromoExpressService",
@@ -151,7 +151,6 @@
     }, {
         "name": "UniAdministration",
         "stages": [
-            "UniAdministration.ps1",
             "Tasks.ps1"
         ]
     }, {
@@ -166,6 +165,16 @@
         "stages": [            
             "AntifraudServiceHost.ps1",
             "AntifraudClient.ps1"
+        ]
+    }, {
+        "name": "EmployeeService",
+        "stages": [            
+            "EmployeeService.ps1"
+        ]
+    }, {
+        "name": "IntegrationService",
+        "stages": [            
+            "IntegrationService.ps1"
         ]
     }, {
         "name": "UniRegistrationService",

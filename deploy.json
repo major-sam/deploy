@@ -15,6 +15,7 @@
         "name": "ApkClient",
         "stages": [
             "clientConfig.ps1",
+            "unityConfig.ps1",
             "settingsConfig.ps1"
         ]
     }, {
@@ -244,6 +245,16 @@
             "AntifraudDB.ps1",
             "AntifraudServiceHost.ps1",
             "AntifraudClient.ps1"
+        ]
+    }, {
+        "name": "EmployeeService",
+        "stages": [            
+            "EmployeeService.ps1"
+        ]
+    }, {
+        "name": "IntegrationService",
+        "stages": [            
+            "IntegrationService.ps1"
         ]
     }, {
         "name": "UniRegistrationService",
