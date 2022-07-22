@@ -57,8 +57,8 @@ def getNodeList(label = 'windows'){
 pipeline{
 
 	parameters {
-		string name:'Task', defaultValue: "feature-BON-2", trim: true, description: "Branch(Task)"
-		choice name:"TESTVM", choices: getNodeList()
+		string name:'Branch', defaultValue: "feature-BON-2", trim: true, description: "Branch(Task)"
+		choice name:"DEPLOY_AGENT", choices: getNodeList()
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
 			name: "CUSTOM_TAG",
@@ -87,7 +87,7 @@ pipeline{
 			)
 	}
 
-	agent {label "${TESTVM}" }
+	agent {label "${DEPLOY_AGENT}" }
 
 	environment {
 		SIDE_FUNCTIONS = '.\\scripts\\sideFunctions.psm1' 
@@ -103,8 +103,8 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
-		NAMESPACE="$TESTVM"
-		VM_ID="${TESTVM.replaceAll('\\D+','')}"
+		NAMESPACE="$DEPLOY_AGENT"
+		VM_ID="${DEPLOY_AGENT.replaceAll('\\D+','')}"
 		REDIS_HOST = utils.getKuberNodeIP(
 			nodeLabel:MINIKUBE_LABEL,
 			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
@@ -113,13 +113,13 @@ pipeline{
 			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
 		REDIS_PORT= utils.kuberPortShift(
 			port:30100,
-			VM:TESTVM)
+			VM:DEPLOY_AGENT)
 		RABBIT_PORT=utils.kuberPortShift(
 			port:30200,
-			VM:TESTVM)
+			VM:DEPLOY_AGENT)
 		RABBIT_WEB_PORT=utils.kuberPortShift(
 			port:30300,
-			VM:TESTVM)
+			VM:DEPLOY_AGENT)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
@@ -165,25 +165,26 @@ pipeline{
 			steps{
 				script{
 					ARTIFACT_ITEMS = utils.getArtifacts()
-					def all_lockable_resources = org.jenkins.plugins
-						.lockableresources
-						.LockableResourcesManager
-						.get().resources
-					def Map findResult = locks.findLocks(all_lockable_resources)
+					def Map findResult = locks.findLocks(resource:params.DEPLOY_AGENT)
 					if (findResult.accessDeny){
 						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
-						descr.setDenyDescr(lastDescr)
+							descr.setDenyDescr(
+									vmName: "${params.DEPLOY_AGENT}",
+									descr:lastDescr)
 						currentBuild.result = 'NOT_BUILT'
 						error('VM is LOCKED. Check Lockable Resources')
 					}
 					else{
 						def couse = currentBuild.getBuildCauses()[0]
-						def newDescr = descr.setAllowDescr(couse:couse)
+						def newDescr = descr.setAllowDescr(
+								couse: couse,
+								vmName: "${params.DEPLOY_AGENT}",
+								task: params.Branch)
 						currentBuild.description = newDescr
 						findResult.resource.setReservedBy(couse.userName)
 						locks.setNotes(
-							vmName: TESTVM,
-							branch: Task,
+							vmName: DEPLOY_AGENT,
+							branch: params.Branch,
 							widgets: DEPLOY_WIDGETS,
 							tt: DEPLOY_TT,
 							webParser: DEPLOY_WPARSER,
@@ -236,7 +237,7 @@ pipeline{
 					Map tasks = [:]
 					tasks['Get Maven Packages']={
 						stage('maven'){
-							def result = utils.doMavenDeploy(params.Task)
+							def result = utils.doMavenDeploy(params.Branch)
 							MavenDeployResult = MavenDeployResult + result.trim()
 						}
 					}
@@ -245,7 +246,7 @@ pipeline{
 							node(minikubeNode){
 								stage("cleanup"){
 									sh(
-										script:"kubectl delete ns ${TESTVM}|| echo 'NameSpace already removed'" ,
+										script:"kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'" ,
 										label:'clean ns')
 								}
 							}
@@ -368,7 +369,7 @@ pipeline{
 								]){
 							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\Marketing",
-									branch: params.Task,
+									branch: params.Branch,
 									groupId: "Marketing",
 									pom: pomName,
 									repo: ".mvn")
@@ -420,7 +421,7 @@ pipeline{
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\TradingTool",
-									branch: params.Task,
+									branch: params.Branch,
 									pom: pomName,
 									groupId: "TradingTool",
 									repo: ".mvn")
@@ -476,7 +477,7 @@ pipeline{
 								]){
 							MavenDeployResult =MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\WebParser",
-									branch: params.Task,
+									branch: params.Branch,
 									pom: pomName,
 									groupId: "WebParser",
 									repo: ".mvn")
@@ -529,13 +530,13 @@ pipeline{
 								]){
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\BaltWidgets\\BaltWidgetsService",
-									branch: params.Task,
+									branch: params.Branch,
 									groupId: "BaltWidgetsService",
 									pom: pomName,
 									repo: ".mvn")
 							MavenDeployResult = MavenDeployResult + utils.doSingleServiceMavenDeploy(
 									deployDir: "c:\\Services\\BaltWidgets\\BaltWidgetsClient",
-									branch: params.Task,
+									branch: params.Branch,
 									groupId: "BaltWidgetsClient",
 									pom: pomName,
 									repo: ".mvn")
@@ -765,7 +766,7 @@ pipeline{
 		always {
 			script{
 				requests.updateConfluence(
-					vm: TESTVM,
+					vm: DEPLOY_AGENT,
 					root: env.CONFLUENCE_LOG_PAGE_ID,
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
