@@ -168,9 +168,9 @@ pipeline{
 					def Map findResult = locks.findLocks(resource:params.DEPLOY_AGENT)
 					if (findResult.accessDeny){
 						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
-							descr.setDenyDescr(
-									vmName: "${params.DEPLOY_AGENT}",
-									descr:lastDescr)
+						descr.setDenyDescr(
+								vmName: "${params.DEPLOY_AGENT}",
+								descr:lastDescr)
 						currentBuild.result = 'NOT_BUILT'
 						error('VM is LOCKED. Check Lockable Resources')
 					}
@@ -766,7 +766,7 @@ pipeline{
 		always {
 			script{
 				requests.updateConfluence(
-					vm: DEPLOY_AGENT,
+					vm: params.DEPLOY_AGENT,
 					root: env.CONFLUENCE_LOG_PAGE_ID,
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
