@@ -1,242 +1,240 @@
-<project  xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
-<build>
-	<plugins>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>versions-maven-plugin</artifactId>
-			<version>2.7</version>
-			<executions>
-				<execution>
-					<id>deploy</id>
-					<phase>package</phase>
-					<goals>
-						<goal>use-latest-releases</goal>
-					</goals>
-					<configuration>
-						<excludes>
-							<exclude>org.apache.commons:commons-collections4</exclude>
-						</excludes>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-dependency-plugin</artifactId>
-			<version>3.2.0</version>
-			<executions>
-				<execution>
-					<id>unpack</id>
-					<phase>package</phase>
-					<goals>
-						<goal>unpack</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<artifactItems>
-					<artifactItem>
-						<groupId>ApkClient-Testers</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Testers</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/ApkClient</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>CupisIntegrationService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/CupisIntegrationService</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>ActionLogService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/ActionLogService</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>WebMobile</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebMobile</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>UniPaymentsService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/UniPaymentsService</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>ClientWorkPlace</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/ClientWorkPlace</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>KRM</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/KRM</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>WebTouch</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebTouch</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>WebTouch-Public</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebTouch-Public</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>WebsiteCom</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebsiteCom</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>WebsiteCom-Public</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>PaymentBalanceReport</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/Payments/PaymentBalanceReport</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>PaymentBalancing</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/Payments/PaymentBalancing</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>Website</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/inetpub/Website</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>LiveMonitor</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/LiveMonitor</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>MessageService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>AdminMessageService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>PromoExpressService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PromoExpressService</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>PromocodeService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>PushService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>IdentificationDocumentService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/IdentificationDocumentService</outputDirectory>
-					</artifactItem>
-					<artifactItem>
-						<groupId>TicketService</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/TicketService</outputDirectory>
-					</artifactItem>
-					<!--
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>deploy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>use-latest-releases</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>org.apache.commons:commons-collections4</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>ApkClient-Testers</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Testers</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/ApkClient</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>CupisIntegrationService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/CupisIntegrationService</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>ActionLogService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/ActionLogService</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>WebMobile</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/WebMobile</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>UniPaymentsService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/UniPaymentsService</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>ClientWorkPlace</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/ClientWorkPlace</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>KRM</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/KRM</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>WebTouch</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/WebTouch</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>WebTouch-Public</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/WebTouch-Public</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>WebsiteCom</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/WebsiteCom</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>WebsiteCom-Public</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/WebsiteCom-Public</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>PaymentBalanceReport</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/Payments/PaymentBalanceReport</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>PaymentBalancing</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/Payments/PaymentBalancing</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>Website</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/inetpub/Website</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>LiveMonitor</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/LiveMonitor</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>MessageService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>AdminMessageService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>PromoExpressService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/PromoExpressService</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>PromocodeService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>PushService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/PersonalInfoCenter</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>IdentificationDocumentService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/IdentificationDocumentService</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>TicketService</groupId>
+							<artifactId>master</artifactId>
+							<version>LATEST</version>
+							<classifier>Release</classifier>
+							<type>zip</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>c:/Services/TicketService</outputDirectory>
+						</artifactItem>
+						<!--
 						<artifactItem>
 						<groupId>WebApiAuth</groupId>
 						<artifactId>master</artifactId>
@@ -254,7 +252,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services/ScheduleService</outputDirectory>								
+							<outputDirectory>c:/Services/ScheduleService</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>PaymentSystemHandlers</groupId>
@@ -263,7 +261,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services/PaymentSystemHandlers</outputDirectory>								
+							<outputDirectory>c:/Services/PaymentSystemHandlers</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>PaymentCupisService</groupId>
@@ -479,7 +477,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services</outputDirectory>								
+							<outputDirectory>c:/Services</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>Consul</groupId>
@@ -488,15 +486,16 @@
 							<classifier>win</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Consul</outputDirectory>								
-							</artifactItem><artifactItem>
+							<outputDirectory>c:/Consul</outputDirectory>
+						</artifactItem>
+						<artifactItem>
 							<groupId>AchievementService</groupId>
 							<artifactId>master</artifactId>
 							<version>LATEST</version>
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services/AchievementService</outputDirectory>								
+							<outputDirectory>c:/Services/AchievementService</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>EraiService</groupId>
@@ -505,7 +504,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services/ERAI</outputDirectory>								
+							<outputDirectory>c:/Services/ERAI</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>AntiFraud</groupId>
@@ -514,7 +513,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>								
+							<outputDirectory>c:/Services/Payments/AntiFraud</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>EmployeeService</groupId>
@@ -523,7 +522,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services</outputDirectory>								
+							<outputDirectory>c:/Services</outputDirectory>
 						</artifactItem>
 						<artifactItem>
 							<groupId>IntegrationService</groupId>
@@ -532,7 +531,7 @@
 							<classifier>Release</classifier>
 							<type>zip</type>
 							<overWrite>true</overWrite>
-							<outputDirectory>c:/Services</outputDirectory>								
+							<outputDirectory>c:/Services</outputDirectory>
 						</artifactItem>
 					</artifactItems>
 				</configuration>
