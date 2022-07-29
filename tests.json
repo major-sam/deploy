@@ -1,16 +1,26 @@
-[{
-    "name": "CIS",
-    "stages": [
-        "CIS.ps1"
-    ]
-}, {
-"name": "Kernel",
-"stages": [
-    "Kernel.ps1" 
+[
+    {
+        "name": "CIS",
+        "stages": [
+            "CIS.ps1"
+        ]
+    },
+    {
+        "name": "Kernel",
+        "stages": [
+            "Kernel.ps1"
+        ]
+    },
+    {
+        "name": "PDA",
+        "stages": [
+            "PDA.ps1"
+        ]
+    },
+    {
+        "name": "UniAuthService",
+        "stages": [
+            "UniAuthService.ps1"
+        ]
+    }
 ]
-}, {
-"name": "PDA",
-"stages": [
-    "PDA.ps1" 
-]
-}]
