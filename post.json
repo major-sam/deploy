@@ -20,7 +20,7 @@
             "ComAccounts.ps1",
             "AddRestoreComAccountTemplate.ps1",
             "Tasks.ps1",
-            "mexp.ps1",
+            "AddExpressCoupons.ps1",
             "updateConfig.ps1",
             "updateKernelLogConfig.ps1",
             "updateKernelUnityConfig.ps1",
@@ -153,7 +153,7 @@
         "name": "UniAdministration",
         "stages": [
             "Tasks.ps1",
-            "mexp.ps1"
+            "EnableBaltPress.ps1"
         ]
     }, {
         "name": "EraiService",
