@@ -152,8 +152,10 @@
     }, {
         "name": "UniAdministration",
         "stages": [
-            "Tasks.ps1",
-            "EnableBaltPress.ps1"
+            "EnableBaltPress.ps1",
+            "WebApiSettings.ps1",
+            "Broadcast.ps1",
+            "Global.ps1"
         ]
     }, {
         "name": "EraiService",
