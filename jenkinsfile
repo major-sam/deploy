@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@sam"]) _
+@Library(["JenkinsCI", "DeployLib"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -98,7 +98,7 @@ pipeline{
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
-		RABBIT_CREDS = credentials('RedisCreds')
+		RABBIT_CREDS = credentials('RabbitCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
@@ -244,6 +244,9 @@ pipeline{
 				script{
 					minikubeNode = "kube-$DEPLOY_AGENT"
 					Map tasks = [:]
+					tasks = generators.getParralelStagesMap(
+								jsonMap: readJSON (file: CONSUL_JSON),
+								stage: 'Deploy')
 					tasks['Get Maven Packages']={
 						stage('maven'){
 							def result = utils.doMavenDeploy(params.Branch)
@@ -279,23 +282,6 @@ pipeline{
 								jsonMap: scriptFile,
 								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Deploy'))
-				}
-			}
-		}
-
-		stage('Consul deploy'){
-			when{
-				expression {
-					not { env.JENKINS_DEVELOPER }
-				}
-			}
-			steps{
-				script{
-					parallel (
-						generators.getParralelStagesMap(
-								jsonMap: readJSON (file: CONSUL_JSON),
-								stage: 'Deploy')
-							)
 				}
 			}
 		}
