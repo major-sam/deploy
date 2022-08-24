@@ -210,16 +210,6 @@
             "PhotonServerDB.ps1"
         ]
     }, {
-        "name": "LiveMonitor",
-        "inCodeStages": [
-            "CreateLiveMonitorDb.ps1",
-            "configureLiveMonitor.ps1",
-            "configureLiveMonitorAdmin.ps1",
-            "configureLiveMonitorContent.ps1",
-            "RegisterLiveMonitorAdminService.ps1",
-            "RegisterLiveMonitorService.ps1"
-        ]
-    }, {
         "name": "UniAdministration",
         "stages": [
             "UniAdministration.ps1",

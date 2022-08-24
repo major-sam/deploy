@@ -165,15 +165,6 @@
 						<outputDirectory>c:/inetpub/Website</outputDirectory>
 					</artifactItem>
 					<artifactItem>
-						<groupId>LiveMonitor</groupId>
-						<artifactId>master</artifactId>
-						<version>LATEST</version>
-						<classifier>Release</classifier>
-						<type>zip</type>
-						<overWrite>true</overWrite>
-						<outputDirectory>c:/Services/LiveMonitor</outputDirectory>
-					</artifactItem>
-					<artifactItem>
 						<groupId>MessageService</groupId>
 						<artifactId>master</artifactId>
 						<version>LATEST</version>
