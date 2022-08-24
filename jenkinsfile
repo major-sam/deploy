@@ -53,11 +53,6 @@ def getNodeList(label = 'windows'){
 		.name as List
 }
 
-def getKuberIP(Map config= [:]){
-	shift_id = config.agent_vm.find( /\d+/ ).toInteger()
-	return "10.0.253.${100+shift_id}"
-}
-
 pipeline{
 
 	parameters {
@@ -108,7 +103,7 @@ pipeline{
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$DEPLOY_AGENT"
-		KUBER_IP = getKuberIP(agent_vm:DEPLOY_AGENT)
+		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
 		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}" 
 	// TODO REMOVE LEGACY
@@ -765,7 +760,6 @@ pipeline{
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
 					auth: 'jenkinsAD')
-				if(false){cleanWs notFailBuild: true}
 			}
 		}
 		success{
@@ -779,7 +773,6 @@ pipeline{
 			script {
 				BuildBadge.setStatus('failing')
 				defaultPostFail()
-				makeLogs('Fail')
 			}
 		}
 		unstable {
@@ -787,14 +780,12 @@ pipeline{
 				BuildBadge.setStatus('unstable')
 				BuildBadge.setColor('orange')
 				defaultPostUnstable()
-				makeLogs('Unstable')
 			}
 		}
 		aborted {
 			script {
 				BuildBadge.setStatus('aborted')
 				defaultPostAborted()
-				makeLogs('Aborted')
 			}
 		}
 	}
