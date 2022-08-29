@@ -53,7 +53,6 @@ def getNodeList(label = 'windows'){
 		.name as List
 }
 
-
 pipeline{
 
 	parameters {
@@ -94,7 +93,7 @@ pipeline{
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
-		RABBIT_CREDS = credentials('RedisCreds')
+		RABBIT_CREDS = credentials('RabbitCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
 		NEXUS_CREDS = credentials('jenkinsAD')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
@@ -104,22 +103,26 @@ pipeline{
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
 		NAMESPACE="$DEPLOY_AGENT"
-		VM_ID="${DEPLOY_AGENT.replaceAll('\\D+','')}"
-		REDIS_HOST = utils.getKuberNodeIP(
-			nodeLabel:MINIKUBE_LABEL,
-			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-		RABBIT_HOST = utils.getKuberNodeIP(
-			nodeLabel:MINIKUBE_LABEL,
-			KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-		REDIS_PORT= utils.kuberPortShift(
-			port:30100,
-			VM:DEPLOY_AGENT)
-		RABBIT_PORT=utils.kuberPortShift(
-			port:30200,
-			VM:DEPLOY_AGENT)
-		RABBIT_WEB_PORT=utils.kuberPortShift(
-			port:30300,
-			VM:DEPLOY_AGENT)
+		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
+		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
+		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}" 
+	// TODO REMOVE LEGACY
+	//	VM_ID="${DEPLOY_AGENT.replaceAll('\\D+','')}"
+	//	REDIS_HOST = utils.getKuberNodeIP(
+	//		nodeLabel:MINIKUBE_LABEL,
+	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
+	//	RABBIT_HOST = utils.getKuberNodeIP(
+	//		nodeLabel:MINIKUBE_LABEL,
+	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
+	//	REDIS_PORT= utils.kuberPortShift(
+	//		port:30100,
+	//		VM:DEPLOY_AGENT)
+	//	RABBIT_PORT=utils.kuberPortShift(
+	//		port:30200,
+	//		VM:DEPLOY_AGENT)
+	//	RABBIT_WEB_PORT=utils.kuberPortShift(
+	//		port:30300,
+	//		VM:DEPLOY_AGENT)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
@@ -234,22 +237,23 @@ pipeline{
 			}
 			steps{
 				script{
-					def minikubeNodes = nodesByLabel 'test_minikube'
+					minikubeNode = "kube-$DEPLOY_AGENT"
 					Map tasks = [:]
+					tasks = generators.getParralelStagesMap(
+								jsonMap: readJSON (file: CONSUL_JSON),
+								stage: 'Deploy')
 					tasks['Get Maven Packages']={
 						stage('maven'){
 							def result = utils.doMavenDeploy(params.Branch)
 							MavenDeployResult = MavenDeployResult + result.trim()
 						}
 					}
-					minikubeNodes.each{ minikubeNode ->
-						tasks[minikubeNode]={
-							node(minikubeNode){
-								stage("cleanup"){
-									sh(
-										script:"kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'" ,
-										label:'clean ns')
-								}
+					tasks[minikubeNode]={
+						node(minikubeNode){
+							stage("cleanup"){
+								sh(
+									script:"kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'" ,
+									label:'clean ns')
 							}
 						}
 					}
@@ -264,9 +268,7 @@ pipeline{
 					not { env.JENKINS_DEVELOPER }
 				}
 			}
-			agent{label utils.getKuberNodeLabel(
-					KuberID:env.VM_ID.toInteger() % 2 == 0 ? 1 : 0 ,
-					nodeLabel:MINIKUBE_LABEL)}
+			agent{label "kube-$DEPLOY_AGENT"}
 			steps{
 				script{
 					def List scriptFile = readJSON (file: KUBER_JSON )
@@ -275,23 +277,6 @@ pipeline{
 								jsonMap: scriptFile,
 								artifactItems: ARTIFACT_ITEMS,
 								stage: 'Deploy'))
-				}
-			}
-		}
-
-		stage('Consul deploy'){
-			when{
-				expression {
-					not { env.JENKINS_DEVELOPER }
-				}
-			}
-			steps{
-				script{
-					parallel (
-						generators.getParralelStagesMap(
-								jsonMap: readJSON (file: CONSUL_JSON),
-								stage: 'Deploy')
-							)
 				}
 			}
 		}
@@ -775,7 +760,6 @@ pipeline{
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
 					auth: 'jenkinsAD')
-				if(false){cleanWs notFailBuild: true}
 			}
 		}
 		success{
@@ -789,7 +773,6 @@ pipeline{
 			script {
 				BuildBadge.setStatus('failing')
 				defaultPostFail()
-				makeLogs('Fail')
 			}
 		}
 		unstable {
@@ -797,14 +780,12 @@ pipeline{
 				BuildBadge.setStatus('unstable')
 				BuildBadge.setColor('orange')
 				defaultPostUnstable()
-				makeLogs('Unstable')
 			}
 		}
 		aborted {
 			script {
 				BuildBadge.setStatus('aborted')
 				defaultPostAborted()
-				makeLogs('Aborted')
 			}
 		}
 	}
