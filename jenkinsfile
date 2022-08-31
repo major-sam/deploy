@@ -171,10 +171,8 @@ pipeline{
 					ARTIFACT_ITEMS = utils.getArtifacts()
 					def Map findResult = locks.findLocks(resource:params.DEPLOY_AGENT)
 					if (findResult.accessDeny){
-						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
 						descr.setDenyDescr(
-								vmName: "${params.DEPLOY_AGENT}",
-								descr:lastDescr)
+								vmName: "${params.DEPLOY_AGENT}")
 						currentBuild.result = 'NOT_BUILT'
 						error('VM is LOCKED. Check Lockable Resources')
 					}
