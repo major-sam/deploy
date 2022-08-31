@@ -88,6 +88,11 @@ pipeline{
 			description: 'Deploy LiveMonitor(new version)',
 			defaultValue: false
 			)
+		booleanParam (
+			name: "_Deploy_Services_LotoService",
+			description: 'Deploy Loto Service(new version)',
+			defaultValue: false
+			)
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
@@ -744,7 +749,7 @@ pipeline{
 													name: 'Folder', 
 													value: param
 														.getKey()
-														.replaceAll('_DEPLOY','')
+														.replaceAll('_Deploy','')
 														.replaceAll('_','\\\\')),
 												string(name: 'Version', value: 'LATEST'),
 												booleanParam(name: 'Cleanup', value: true),
