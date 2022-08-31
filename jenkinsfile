@@ -84,6 +84,11 @@ pipeline{
 			description: 'Deploy BaltWidgets',
 			defaultValue: false
 			)
+		booleanParam (
+			name: "_DEPLOY_SERVICE_LIVEMONITOR",
+			description: 'Deploy LiveMonitor(new version)',
+			defaultValue: false
+			)
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
@@ -721,6 +726,42 @@ pipeline{
 								jsonMap: scriptFile,
 								stage: STAGE_NAME)
 					)
+				}
+			}
+		}
+		stage('Deploy other builds'){
+			steps{
+				script{
+					params.each{ param ->
+						if (param.getValue() && param.getKey().contains('_DEPLOY_')){
+							def b_name = param.getKey().tokenize('_')[-1]
+							withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+								def choices = requests.getBranches(
+										searchUrl:env.nexusApiSearchURL,
+										creds: creds,
+										repo:b_name,
+										groupid:b_name)
+							}
+							def br_name = params.Branch in choices.contains ? params.Branch : 'master'
+							build (
+									job:param.getKey().replaceAll('_','/'), 
+									parameters: [
+										booleanParam(name: 'Reload', value: false),
+										string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+										string(name: 'BG', value: 'Blue'),
+										string(name: 'Branch', value: br_name),
+										string(
+											name: 'Folder', 
+											value: param
+												.getKey()
+												.replaceAll('_DEPLOY','')
+												.replaceAll('_','\\')),
+										string(name: 'Version', value: 'LATEST'),
+										booleanParam(name: 'Cleanup', value: true),
+										booleanParam(name: 'WinSvc', value: true),
+										booleanParam(name: 'CreateDB', value: true) ])
+						}
+					}
 				}
 			}
 		}
