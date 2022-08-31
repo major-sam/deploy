@@ -54,7 +54,6 @@ def getNodeList(label = 'windows'){
 }
 
 pipeline{
-
 	parameters {
 		string name:'Branch', defaultValue: "", trim: true, description: "Branch(Task)"
 		choice name:"DEPLOY_AGENT", choices: getNodeList()
@@ -85,7 +84,7 @@ pipeline{
 			defaultValue: false
 			)
 		booleanParam (
-			name: "_DEPLOY_SERVICE_LIVEMONITOR",
+			name: "_Deploy_Services_LiveMonitor",
 			description: 'Deploy LiveMonitor(new version)',
 			defaultValue: false
 			)
@@ -111,23 +110,6 @@ pipeline{
 		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
 		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}" 
-	// TODO REMOVE LEGACY
-	//	VM_ID="${DEPLOY_AGENT.replaceAll('\\D+','')}"
-	//	REDIS_HOST = utils.getKuberNodeIP(
-	//		nodeLabel:MINIKUBE_LABEL,
-	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-	//	RABBIT_HOST = utils.getKuberNodeIP(
-	//		nodeLabel:MINIKUBE_LABEL,
-	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-	//	REDIS_PORT= utils.kuberPortShift(
-	//		port:30100,
-	//		VM:DEPLOY_AGENT)
-	//	RABBIT_PORT=utils.kuberPortShift(
-	//		port:30200,
-	//		VM:DEPLOY_AGENT)
-	//	RABBIT_WEB_PORT=utils.kuberPortShift(
-	//		port:30300,
-	//		VM:DEPLOY_AGENT)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
@@ -731,37 +713,42 @@ pipeline{
 		}
 		stage('Deploy other builds'){
 			steps{
-				script{
-					params.each{ param ->
-						if (param.getValue() && param.getKey().contains('_DEPLOY_')){
-							def b_name = param.getKey().tokenize('_')[-1]
-							withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
-								def choices = requests.getBranches(
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+					script{
+						Map b_map = [:]
+						params.each{ param ->
+							if (param.getValue() && param.getKey().contains('_Deploy_')){
+								def b_name = param.getKey().tokenize('_')[-1]
+								println b_name
+								choices = requests.getBranches(
 										searchUrl:env.nexusApiSearchURL,
 										creds: creds,
 										repo:b_name,
 										groupid:b_name)
+								def br_name = params.Branch in choices ? params.Branch : 'master'
+								b_map[b_name] = {
+									build (
+											job:param.getKey().replaceAll('_','/'), 
+											parameters: [
+												booleanParam(name: 'Reload', value: false),
+												string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+												string(name: 'BG', value: 'Blue'),
+												string(name: 'Branch', value: br_name),
+												string(
+													name: 'Folder', 
+													value: param
+														.getKey()
+														.replaceAll('_DEPLOY','')
+														.replaceAll('_','\\\\')),
+												string(name: 'Version', value: 'LATEST'),
+												booleanParam(name: 'Cleanup', value: true),
+												booleanParam(name: 'WinSvc', value: true),
+												booleanParam(name: 'CreateDB', value: true) ])
+								}
 							}
-							def br_name = params.Branch in choices.contains ? params.Branch : 'master'
-							build (
-									job:param.getKey().replaceAll('_','/'), 
-									parameters: [
-										booleanParam(name: 'Reload', value: false),
-										string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
-										string(name: 'BG', value: 'Blue'),
-										string(name: 'Branch', value: br_name),
-										string(
-											name: 'Folder', 
-											value: param
-												.getKey()
-												.replaceAll('_DEPLOY','')
-												.replaceAll('_','\\')),
-										string(name: 'Version', value: 'LATEST'),
-										booleanParam(name: 'Cleanup', value: true),
-										booleanParam(name: 'WinSvc', value: true),
-										booleanParam(name: 'CreateDB', value: true) ])
 						}
-					}
+						parallel b_map
+					} 
 				}
 			}
 		}
