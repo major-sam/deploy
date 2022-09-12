@@ -64,11 +64,6 @@ pipeline{
 			defaultValue: false
 			)
 		booleanParam (
-			name: "DEPLOY_MS",
-			description:'Deploy Marketing Service',
-			defaultValue: false
-			)
-		booleanParam (
 			name: "DEPLOY_TT",
 			description:'Deploy Trading Tool',
 			defaultValue: false
@@ -81,6 +76,16 @@ pipeline{
 		booleanParam (
 			name: "DEPLOY_WIDGETS",
 			description: 'Deploy BaltWidgets',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_Marketing",
+			description: 'Deploy Marketing(new version)',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_BaltBetPaymentEmulator",
+			description: 'Deploy BaltBetPaymentEmulator(new version)',
 			defaultValue: false
 			)
 		booleanParam (
