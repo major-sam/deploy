@@ -239,9 +239,6 @@ pipeline{
 				script{
 					minikubeNode = "kube-$DEPLOY_AGENT"
 					Map tasks = [:]
-					tasks = generators.getParralelStagesMap(
-								jsonMap: readJSON (file: CONSUL_JSON),
-								stage: 'Deploy')
 					tasks['Get Maven Packages']={
 						stage('maven'){
 							def result = utils.doMavenDeploy(params.Branch)
@@ -262,7 +259,7 @@ pipeline{
 			}
 		}
 
-		stage('Kuber deploy'){
+		stage('Kuber & Consul deploy'){
 			when{
 				expression {
 					not { env.JENKINS_DEVELOPER }
