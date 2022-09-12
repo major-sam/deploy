@@ -24,7 +24,6 @@ DEPLOY_JSON = "deploy.json"
 KUBER_JSON = "kuber.json"
 CONSUL_JSON = "consul.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
-DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
 DEPLOY_WIDGETS_JSON = "deploy_widgets.json"
 
@@ -34,7 +33,6 @@ MINIKUBE_LABEL = 'test_minikube'
 
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
-MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
 
@@ -195,7 +193,6 @@ pipeline{
 							widgets: DEPLOY_WIDGETS,
 							tt: DEPLOY_TT,
 							webParser: DEPLOY_WPARSER,
-							ms: DEPLOY_MS,
 							comments: Comments,
 							buildUrl: BUILD_URL,
 							buildNumber: BUILD_NUMBER,
@@ -333,58 +330,6 @@ pipeline{
 						)
 					}
 				}
-			}
-		}
-
-		stage('Deploy Marketing Service'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					stage('Get marketing maven packages'){
-						MSBadge = addEmbeddableBadgeConfiguration(
-							id: MSBadgeId,
-							subject: "Marketing Deploy")
-						MSBadge.setStatus('running')
-						currentBuild.description = utils.addToDescription(
-								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'>" +
-									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}' /></a>",
-								position: 1)
-						configFileProvider( [
-								configFile(
-									fileId: 'pomxml_v2',
-									targetLocation: pomName )
-								]){
-							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\Marketing",
-									branch: params.Branch,
-									groupId: "Marketing",
-									pom: pomName,
-									repo: ".mvn")
-						}
-					}
-					stage('DeployMS'){
-						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
-						parallel (
-							generators.getParralelStagesMap(
-								artifactItems: ARTIFACT_ITEMS,
-								jsonMap: scriptFile,
-								stage:STAGE_NAME)
-						)
-					}
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-						MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
 			}
 		}
 
@@ -567,28 +512,6 @@ pipeline{
 			}
 		}
 
-		stage('Config IIS for Marketing Service'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					def iisScript = libraryResource "windows/DeployMS/IIS/IISConfig.ps1"
-					powershell script: iisScript, label: 'update iis config'
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-						MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
-			}
-		}
-
 		stage('Config IIS For Trading Tool'){
 			when{
 				expression {
@@ -631,33 +554,6 @@ pipeline{
 					WIDGETSBadge.setStatus('unstable')
 						WIDGETSBadge.setColor('orange')}}
 				aborted {script {WIDGETSBadge.setStatus('aborted')}}
-			}
-		}
-
-		stage('PostMS'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					def List scriptFile = readJSON (file: POST_MS_JSON)
-					parallel (
-						generators.getParralelStagesMap(
-							artifactItems: ARTIFACT_ITEMS,
-							jsonMap: scriptFile,
-							stage: STAGE_NAME)
-					)
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-					MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
 			}
 		}
 
@@ -715,18 +611,6 @@ pipeline{
 			}
 		}
 
-		stage('Post'){
-			steps{
-				script{
-					def List scriptFile =readJSON (file: POST_JSON)
-					parallel (generators.getParralelStagesMap(
-							artifactItems: ARTIFACT_ITEMS,
-								jsonMap: scriptFile,
-								stage: STAGE_NAME)
-					)
-				}
-			}
-		}
 		stage('Deploy other builds'){
 			steps{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
@@ -769,6 +653,18 @@ pipeline{
 			}
 		}
 
+		stage('Post'){
+			steps{
+				script{
+					def List scriptFile =readJSON (file: POST_JSON)
+					parallel (generators.getParralelStagesMap(
+							artifactItems: ARTIFACT_ITEMS,
+								jsonMap: scriptFile,
+								stage: STAGE_NAME)
+					)
+				}
+			}
+		}
 		stage('Tests'){
 			steps{
 				script{
