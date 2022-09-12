@@ -40,6 +40,7 @@
     }, {
         "name": "PromoExpressService",
         "stages": [
+            "ConsulServiceInstall.ps1",
             "config.ps1",
             "db.ps1"
         ]
