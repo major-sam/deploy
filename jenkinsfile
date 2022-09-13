@@ -24,7 +24,6 @@ DEPLOY_JSON = "deploy.json"
 KUBER_JSON = "kuber.json"
 CONSUL_JSON = "consul.json"
 DEPLOY_TT_JSON = "deploy_tt.json"
-DEPLOY_MS_JSON = "deploy_ms.json"
 DEPLOY_WPARSER_JSON = "deploy_wparser.json"
 DEPLOY_WIDGETS_JSON = "deploy_widgets.json"
 
@@ -34,7 +33,6 @@ MINIKUBE_LABEL = 'test_minikube'
 
 mainBadgeId = 'mainBadgeId'
 TTBadgeId = 'TTBadgeId'
-MSBadgeId = 'MSBadgeId'
 WParserBadgeId = 'WParserBadgeId'
 WIDGETSBadgeId = 'WIDGETSBadgeId'
 
@@ -54,7 +52,6 @@ def getNodeList(label = 'windows'){
 }
 
 pipeline{
-
 	parameters {
 		string name:'Branch', defaultValue: "feature-UNR-768", trim: true, description: "Branch(Task)"
 		choice name:"DEPLOY_AGENT", choices: getNodeList()
@@ -62,11 +59,6 @@ pipeline{
 		booleanParam (
 			name: "CUSTOM_TAG",
 			description:'Enable tag chooser',
-			defaultValue: false
-			)
-		booleanParam (
-			name: "DEPLOY_MS",
-			description:'Deploy Marketing Service',
 			defaultValue: false
 			)
 		booleanParam (
@@ -82,6 +74,26 @@ pipeline{
 		booleanParam (
 			name: "DEPLOY_WIDGETS",
 			description: 'Deploy BaltWidgets',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_Marketing",
+			description: 'Deploy Marketing(new version)',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_BaltBetPaymentEmulator",
+			description: 'Deploy BaltBetPaymentEmulator(new version)',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_LiveMonitor",
+			description: 'Deploy LiveMonitor(new version)',
+			defaultValue: false
+			)
+		booleanParam (
+			name: "_Deploy_Services_LotoService",
+			description: 'Deploy Loto Service(new version)',
 			defaultValue: false
 			)
 	}
@@ -106,23 +118,6 @@ pipeline{
 		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
 		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}" 
-	// TODO REMOVE LEGACY
-	//	VM_ID="${DEPLOY_AGENT.replaceAll('\\D+','')}"
-	//	REDIS_HOST = utils.getKuberNodeIP(
-	//		nodeLabel:MINIKUBE_LABEL,
-	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-	//	RABBIT_HOST = utils.getKuberNodeIP(
-	//		nodeLabel:MINIKUBE_LABEL,
-	//		KuberID:VM_ID.toInteger() % 2 == 0 ? 1:0)
-	//	REDIS_PORT= utils.kuberPortShift(
-	//		port:30100,
-	//		VM:DEPLOY_AGENT)
-	//	RABBIT_PORT=utils.kuberPortShift(
-	//		port:30200,
-	//		VM:DEPLOY_AGENT)
-	//	RABBIT_WEB_PORT=utils.kuberPortShift(
-	//		port:30300,
-	//		VM:DEPLOY_AGENT)
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
@@ -171,12 +166,18 @@ pipeline{
 					ARTIFACT_ITEMS = utils.getArtifacts()
 					def Map findResult = locks.findLocks(resource:params.DEPLOY_AGENT)
 					if (findResult.accessDeny){
-						def lastDescr = utils.getLastSuccessfullTaskJobDescription(NODE_NAME)
 						descr.setDenyDescr(
-								vmName: "${params.DEPLOY_AGENT}",
-								descr:lastDescr)
+								vmName: "${params.DEPLOY_AGENT}")
 						currentBuild.result = 'NOT_BUILT'
 						error('VM is LOCKED. Check Lockable Resources')
+					}
+					else if(findResult.upstreamJob){
+						def couse = currentBuild.getBuildCauses()[0]
+						def newDescr = descr.setAllowDescr(
+								couse: couse,
+								vmName: "${params.DEPLOY_AGENT}",
+								task: params.Branch)
+						currentBuild.description = newDescr
 					}
 					else{
 						def couse = currentBuild.getBuildCauses()[0]
@@ -192,7 +193,6 @@ pipeline{
 							widgets: DEPLOY_WIDGETS,
 							tt: DEPLOY_TT,
 							webParser: DEPLOY_WPARSER,
-							ms: DEPLOY_MS,
 							comments: Comments,
 							buildUrl: BUILD_URL,
 							buildNumber: BUILD_NUMBER,
@@ -239,9 +239,6 @@ pipeline{
 				script{
 					minikubeNode = "kube-$DEPLOY_AGENT"
 					Map tasks = [:]
-					tasks = generators.getParralelStagesMap(
-								jsonMap: readJSON (file: CONSUL_JSON),
-								stage: 'Deploy')
 					tasks['Get Maven Packages']={
 						stage('maven'){
 							def result = utils.doMavenDeploy(params.Branch)
@@ -330,58 +327,6 @@ pipeline{
 						)
 					}
 				}
-			}
-		}
-
-		stage('Deploy Marketing Service'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					stage('Get marketing maven packages'){
-						MSBadge = addEmbeddableBadgeConfiguration(
-							id: MSBadgeId,
-							subject: "Marketing Deploy")
-						MSBadge.setStatus('running')
-						currentBuild.description = utils.addToDescription(
-								description: currentBuild.description,
-								html: "<a href='${BUILD_URL}'>" +
-									"<img src='${BUILD_URL}badge/icon?config=${MSBadgeId}' /></a>",
-								position: 1)
-						configFileProvider( [
-								configFile(
-									fileId: 'pomxml_v2',
-									targetLocation: pomName )
-								]){
-							MavenDeployResult= MavenDeployResult + utils.doSingleServiceMavenDeploy(
-									deployDir: "c:\\Services\\Marketing",
-									branch: params.Branch,
-									groupId: "Marketing",
-									pom: pomName,
-									repo: ".mvn")
-						}
-					}
-					stage('DeployMS'){
-						def List scriptFile =readJSON (file: DEPLOY_MS_JSON)
-						parallel (
-							generators.getParralelStagesMap(
-								artifactItems: ARTIFACT_ITEMS,
-								jsonMap: scriptFile,
-								stage:STAGE_NAME)
-						)
-					}
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-						MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
 			}
 		}
 
@@ -564,28 +509,6 @@ pipeline{
 			}
 		}
 
-		stage('Config IIS for Marketing Service'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					def iisScript = libraryResource "windows/DeployMS/IIS/IISConfig.ps1"
-					powershell script: iisScript, label: 'update iis config'
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-						MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
-			}
-		}
-
 		stage('Config IIS For Trading Tool'){
 			when{
 				expression {
@@ -628,33 +551,6 @@ pipeline{
 					WIDGETSBadge.setStatus('unstable')
 						WIDGETSBadge.setColor('orange')}}
 				aborted {script {WIDGETSBadge.setStatus('aborted')}}
-			}
-		}
-
-		stage('PostMS'){
-			when{
-				expression {
-					params.DEPLOY_MS
-				}
-			}
-			steps{
-				script{
-					def List scriptFile = readJSON (file: POST_MS_JSON)
-					parallel (
-						generators.getParralelStagesMap(
-							artifactItems: ARTIFACT_ITEMS,
-							jsonMap: scriptFile,
-							stage: STAGE_NAME)
-					)
-				}
-			}
-			post{
-				success{script {MSBadge.setStatus('passing')}}
-				failure{script {MSBadge.setStatus('failing')}}
-				unstable {script {
-					MSBadge.setStatus('unstable')
-					MSBadge.setColor('orange')}}
-				aborted {script {MSBadge.setStatus('aborted')}}
 			}
 		}
 
@@ -712,6 +608,48 @@ pipeline{
 			}
 		}
 
+		stage('Deploy other builds'){
+			steps{
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+					script{
+						Map b_map = [:]
+						params.each{ param ->
+							if (param.getValue() && param.getKey().contains('_Deploy_')){
+								def b_name = param.getKey().tokenize('_')[-1]
+								println b_name
+								choices = requests.getBranches(
+										searchUrl:env.nexusApiSearchURL,
+										creds: creds,
+										repo:b_name,
+										groupid:b_name)
+								def br_name = params.Branch in choices ? params.Branch : 'master'
+								b_map[b_name] = {
+									build (
+											job:param.getKey().replaceAll('_','/'), 
+											parameters: [
+												booleanParam(name: 'Reload', value: false),
+												string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+												string(name: 'BG', value: 'Blue'),
+												string(name: 'Branch', value: br_name),
+												string(
+													name: 'Folder', 
+													value: param
+														.getKey()
+														.replaceAll('_Deploy','')
+														.replaceAll('_','\\\\')),
+												string(name: 'Version', value: 'LATEST'),
+												booleanParam(name: 'Cleanup', value: true),
+												booleanParam(name: 'WinSvc', value: true),
+												booleanParam(name: 'CreateDB', value: true) ])
+								}
+							}
+						}
+						parallel b_map
+					} 
+				}
+			}
+		}
+
 		stage('Post'){
 			steps{
 				script{
@@ -724,7 +662,6 @@ pipeline{
 				}
 			}
 		}
-
 		stage('Tests'){
 			steps{
 				script{

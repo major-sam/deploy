@@ -77,6 +77,8 @@
     }, {
         "name": "conf",
         "stages": [
+            "ConsulServiceInstall.ps1",
+            "addLinkedServer.ps1",
             "cert.ps1"
         ]
     }, {
