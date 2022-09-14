@@ -330,6 +330,36 @@ pipeline{
 			}
 		}
 
+		stage('Deploy Core builds'){
+			steps{
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+					script{
+						Map core_b_map = [:]
+						// Map core_b_map = [
+						// myBuildFromNexus:'\jenkins\absolute\job\path',
+						// ... ,
+						// ... ]
+						core_b_map.each{ coreBuild , coreBuildPath ->
+							choices = requests.getBranches(
+									searchUrl:env.nexusApiSearchURL,
+									creds: creds,
+									repo: coreBuild ,
+									groupid: coreBuild )
+							def br_name = params.Branch in choices ? params.Branch : 'master'
+							core_b_map[coreBuild] = {
+								build (
+										job:coreBuildPath, 
+										parameters: [
+											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+											string(name: 'Branch', value: br_name) ]
+								)
+							}
+						}
+						parallel core_b_map 
+					} 
+				}
+			}
+		}
 		stage('Deploy Trading Tool'){
 			when{
 				expression {
