@@ -697,6 +697,7 @@ pipeline{
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
 					auth: 'jenkinsAD')
+					addDeployToDashboard(env: params.DEPLOY_AGENT, buildNumber: params.Branch)
 			}
 		}
 		success{
