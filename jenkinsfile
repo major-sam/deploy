@@ -16,7 +16,6 @@ TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
-POST_MS_JSON = 'post_ms.json'
 POST_WPARSER_JSON = 'post_wparser.json'
 POST_WIDGETS_JSON = 'post_widgets.json'
 
