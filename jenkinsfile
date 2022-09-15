@@ -77,22 +77,22 @@ pipeline{
 			)
 		booleanParam (
 			name: "_Deploy_Services_Marketing",
-			description: 'Deploy Marketing(new version)',
+			description: 'Deploy Marketing',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_BaltBetPaymentEmulator",
-			description: 'Deploy BaltBetPaymentEmulator(new version)',
+			description: 'Deploy BaltBetPaymentEmulator',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_LiveMonitor",
-			description: 'Deploy LiveMonitor(new version)',
+			description: 'Deploy LiveMonitor',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_LotoService",
-			description: 'Deploy Loto Service(new version)',
+			description: 'Deploy Loto Service',
 			defaultValue: false
 			)
 	}
