@@ -334,11 +334,8 @@ pipeline{
 			steps{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
 					script{
-						Map core_b_map = [:]
-						// Map core_b_map = [
-						// myBuildFromNexus:'\jenkins\absolute\job\path',
-						// ... ,
-						// ... ]
+						Map core_b_map = [
+							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
 							choices = requests.getBranches(
 									searchUrl:env.nexusApiSearchURL,
