@@ -649,7 +649,8 @@ pipeline{
 										creds: creds,
 										repo:b_name,
 										groupid:b_name)
-								def br_name = params.Branch in choices ? params.Branch : 'master'
+								def normalise_branch = defaultNexusNaming(params.Branch)
+								def br_name = normalise_branch in choices ? normalise_branch : 'master'
 								b_map[b_name] = {
 									build (
 											job:param.getKey().replaceAll('_','/'), 
