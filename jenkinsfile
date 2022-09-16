@@ -113,6 +113,7 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
+		AGENT_IP = "${utils.getNodeIPAddr(DEPLOY_AGENT)}"
 		NAMESPACE="$DEPLOY_AGENT"
 		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
@@ -271,10 +272,10 @@ pipeline{
 				withCredentials([
 					file(
 						credentialsId: 'bb-webapps-com-crt',
-						variable: 'BB_KEY'),
+						variable: 'BB_CRT'),
 					file(
 						credentialsId: 'bb-webapps-decrypt-key',
-						variable: 'BB_CRT')
+						variable: 'BB_KEY')
 					]) {
 					script{
 						def List scriptFile = readJSON (file: KUBER_JSON )
