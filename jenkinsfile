@@ -248,7 +248,9 @@ pipeline{
 						node(minikubeNode){
 							stage("cleanup"){
 								sh(
-									script:"kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'" ,
+									script:"""
+										kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'
+										/usr/bin/kubectl create ns ${DEPLOY_AGENT} """ ,
 									label:'clean ns')
 							}
 						}
