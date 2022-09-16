@@ -336,6 +336,9 @@ pipeline{
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
+						powershell(
+								script: /echo '10.0.253.101 website.bb-webapps.com'> C:\Windows\System32\drivers\etc\hosts/,
+								label: 'Update etc/hosts')
 					}
 				}
 			}
