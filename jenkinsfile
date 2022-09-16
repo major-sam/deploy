@@ -266,13 +266,15 @@ pipeline{
 			}
 			agent{label "kube-$DEPLOY_AGENT"}
 			steps{
-				script{
-					def List scriptFile = readJSON (file: KUBER_JSON )
-					parallel (
-						generators.getParralelStagesMap(
-								jsonMap: scriptFile,
-								artifactItems: ARTIFACT_ITEMS,
-								stage: 'Deploy'))
+				withCredentials([file(credentialsId: 'bb-webapps-com-crt', variable: 'BB_CRT')]) {
+					script{
+						def List scriptFile = readJSON (file: KUBER_JSON )
+						parallel (
+							generators.getParralelStagesMap(
+									jsonMap: scriptFile,
+									artifactItems: ARTIFACT_ITEMS,
+									stage: 'Deploy'))
+					}
 				}
 			}
 		}
