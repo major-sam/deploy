@@ -266,7 +266,14 @@ pipeline{
 			}
 			agent{label "kube-$DEPLOY_AGENT"}
 			steps{
-				withCredentials([file(credentialsId: 'bb-webapps-com-crt', variable: 'BB_CRT')]) {
+				withCredentials([
+					file(
+						credentialsId: 'bb-webapps-com-crt',
+						variable: 'BB_KEY'),
+					file(
+						credentialsId: 'bb-webapps-decrypt-key',
+						variable: 'BB_CRT')
+					]) {
 					script{
 						def List scriptFile = readJSON (file: KUBER_JSON )
 						parallel (
