@@ -356,7 +356,8 @@ pipeline{
 									creds: creds,
 									repo: coreBuild ,
 									groupid: coreBuild )
-							def br_name = params.Branch in choices ? params.Branch : 'master'
+							def normalise_branch = defaultNexusNaming(params.Branch)
+							def br_name = normalise_branch in choices ? normalise_branch : 'master'
 							core_b_map[coreBuild] = {
 								build (
 										job:coreBuildPath, 
