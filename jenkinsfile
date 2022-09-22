@@ -336,9 +336,13 @@ pipeline{
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
+<<<<<<< HEAD
 						def scriptLine = "echo ${KUBER_IP} website.bb-webapps.com'> C:\\Windows\\System32\\drivers\\etc\\hosts,"
+=======
+						def scriptLine = "echo '${AGENT_IP} website.bb-webapps.com' > C:\\Windows\\System32\\drivers\\etc\\hosts"
+>>>>>>> 70d6cda3731b8a2c790173b73aad4ae69ac7ce2e
 						powershell(
-								script: scriptLine ,
+								script: scriptLine,
 								label: 'Update etc/hosts')
 					}
 				}
