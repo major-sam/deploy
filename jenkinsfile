@@ -16,7 +16,6 @@ TESTS_JSON = 'tests.json'
 
 POST_JSON = 'post.json'
 POST_TT_JSON = 'post_tt.json'
-POST_MS_JSON = 'post_ms.json'
 POST_WPARSER_JSON = 'post_wparser.json'
 POST_WIDGETS_JSON = 'post_widgets.json'
 
@@ -78,22 +77,22 @@ pipeline{
 			)
 		booleanParam (
 			name: "_Deploy_Services_Marketing",
-			description: 'Deploy Marketing(new version)',
+			description: 'Deploy Marketing',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_BaltBetPaymentEmulator",
-			description: 'Deploy BaltBetPaymentEmulator(new version)',
+			description: 'Deploy BaltBetPaymentEmulator',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_LiveMonitor",
-			description: 'Deploy LiveMonitor(new version)',
+			description: 'Deploy LiveMonitor',
 			defaultValue: false
 			)
 		booleanParam (
 			name: "_Deploy_Services_LotoService",
-			description: 'Deploy Loto Service(new version)',
+			description: 'Deploy Loto Service',
 			defaultValue: false
 			)
 	}
@@ -114,6 +113,7 @@ pipeline{
 		CUPIS_GRPC_CERT_PASS = credentials('testCupisPasswd')
 		DEPLOYUSER = "${currentBuild.getBuildCauses()[0].userId}"
 		DEPLOY_USER_NAME = "${currentBuild.getBuildCauses()[0].userName}"
+		AGENT_IP = "${utils.getNodeIPAddr(DEPLOY_AGENT)}"
 		NAMESPACE="$DEPLOY_AGENT"
 		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
@@ -249,7 +249,9 @@ pipeline{
 						node(minikubeNode){
 							stage("cleanup"){
 								sh(
-									script:"kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'" ,
+									script:"""
+										kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'
+										/usr/bin/kubectl create ns ${DEPLOY_AGENT} """ ,
 									label:'clean ns')
 							}
 						}
@@ -267,13 +269,22 @@ pipeline{
 			}
 			agent{label "kube-$DEPLOY_AGENT"}
 			steps{
-				script{
-					def List scriptFile = readJSON (file: KUBER_JSON )
-					parallel (
-						generators.getParralelStagesMap(
-								jsonMap: scriptFile,
-								artifactItems: ARTIFACT_ITEMS,
-								stage: 'Deploy'))
+				withCredentials([
+					file(
+						credentialsId: 'bb-webapps-com-crt',
+						variable: 'BB_CRT'),
+					file(
+						credentialsId: 'bb-webapps-decrypt-key',
+						variable: 'BB_KEY')
+					]) {
+					script{
+						def List scriptFile = readJSON (file: KUBER_JSON )
+						parallel (
+							generators.getParralelStagesMap(
+									jsonMap: scriptFile,
+									artifactItems: ARTIFACT_ITEMS,
+									stage: 'Deploy'))
+					}
 				}
 			}
 		}
@@ -325,11 +336,43 @@ pipeline{
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
+						def scriptLine = "echo '${AGENT_IP} website.bb-webapps.com' > C:\\Windows\\System32\\drivers\\etc\\hosts"
+						powershell(
+								script: scriptLine,
+								label: 'Update etc/hosts')
 					}
 				}
 			}
 		}
 
+		stage('Deploy Core builds'){
+			steps{
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+					script{
+						Map core_b_map = [
+							Website:'/Deploy/Sites/Website']
+						core_b_map.each{ coreBuild , coreBuildPath ->
+							choices = requests.getBranches(
+									searchUrl:env.nexusApiSearchURL,
+									creds: creds,
+									repo: coreBuild ,
+									groupid: coreBuild )
+							def normalise_branch = defaultNexusNaming(params.Branch)
+							def br_name = normalise_branch in choices ? normalise_branch : 'master'
+							core_b_map[coreBuild] = {
+								build (
+										job:coreBuildPath, 
+										parameters: [
+											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+											string(name: 'Branch', value: br_name) ]
+								)
+							}
+						}
+						parallel core_b_map 
+					} 
+				}
+			}
+		}
 		stage('Deploy Trading Tool'){
 			when{
 				expression {
@@ -622,7 +665,8 @@ pipeline{
 										creds: creds,
 										repo:b_name,
 										groupid:b_name)
-								def br_name = params.Branch in choices ? params.Branch : 'master'
+								def normalise_branch = defaultNexusNaming(params.Branch)
+								def br_name = normalise_branch in choices ? normalise_branch : 'master'
 								b_map[b_name] = {
 									build (
 											job:param.getKey().replaceAll('_','/'), 
@@ -697,6 +741,7 @@ pipeline{
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
 					auth: 'jenkinsAD')
+					addDeployToDashboard(env: params.DEPLOY_AGENT, buildNumber: params.Branch)
 			}
 		}
 		success{

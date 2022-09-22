@@ -5,6 +5,11 @@
             "rabbit.sh"
         ]
     }, {
+        "name": "haproxy",
+        "stages": [
+            "haproxy.sh"
+        ]
+    }, {
         "name": "redis",
         "stages": [
             "redis.sh"

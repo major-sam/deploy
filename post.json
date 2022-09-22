@@ -62,6 +62,11 @@
             "PersonalInfoCenter.ps1"
         ]
     }, {
+        "name": "UniPaymentsService",
+        "stages": [
+            "UniPaymentsService.ps1"
+        ]
+    }, {
         "name": "PaymentCupis",
         "stages": [
             "PaymentCupis.ps1"
