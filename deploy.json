@@ -78,7 +78,8 @@
         "stages": [
             "ConsulServiceInstall.ps1",
             "addLinkedServer.ps1",
-            "cert.ps1"
+            "cert.ps1",
+            "openSSH.ps1"
         ]
     }, {
         "name": "IdentificationDocumentService",
