@@ -340,6 +340,10 @@ pipeline{
 						powershell(
 								script: scriptLine,
 								label: 'Update etc/hosts')
+						scriptLine = "echo '${AGENT_IP} ${DEPLOY_AGENT} ${DEPLOY_AGENT}.gkbaltbet.local ${DEPLOY_AGENT}.bb-webapps.com '>> C:\\Windows\\System32\\drivers\\etc\\hosts"
+						powershell(
+								script: scriptLine,
+								label: 'Update etc/hosts with local names')
 					}
 				}
 			}
