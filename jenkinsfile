@@ -86,6 +86,11 @@ pipeline{
 			defaultValue: false
 			)
 		booleanParam (
+			name: "_Deploy_Services_LiveMonitorLauncher",
+			description: 'Deploy LiveMonitorLauncher',
+			defaultValue: false
+			)
+		booleanParam (
 			name: "_Deploy_Services_LiveMonitor",
 			description: 'Deploy LiveMonitor',
 			defaultValue: false
@@ -94,7 +99,7 @@ pipeline{
 			name: "_Deploy_Services_LotoService",
 			description: 'Deploy Loto Service',
 			defaultValue: false
-			)
+			)		
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
