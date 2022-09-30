@@ -336,7 +336,13 @@ pipeline{
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
-						def scriptLine = "echo '${KUBER_IP} website.bb-webapps.com livemoncontent.bb-webapps.com'> C:\\Windows\\System32\\drivers\\etc\\hosts"
+						def List EtcHosts = [
+							'website.bb-webapps.com',
+							'livemon.bb-webapps.com',
+							'livemonadmin.bb-webapps.com',
+							'livemoncontent.bb-webapps.com'
+						]
+						def scriptLine = "echo '${KUBER_IP} ${EtcHosts.join(' ')}'> C:\\Windows\\System32\\drivers\\etc\\hosts"
 						powershell(
 								script: scriptLine,
 								label: 'Update etc/hosts')
