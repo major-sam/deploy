@@ -53,6 +53,7 @@
     }, {
         "name": "PromoExpressService",
         "stages": [
+            "Tasks.ps1",
             "PromoExpressService.ps1"
         ]
     }, {
