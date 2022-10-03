@@ -86,6 +86,11 @@ pipeline{
 			defaultValue: false
 			)
 		booleanParam (
+			name: "_Deploy_Services_LiveMonitorLauncher",
+			description: 'Deploy LiveMonitorLauncher',
+			defaultValue: false
+			)
+		booleanParam (
 			name: "_Deploy_Services_LiveMonitor",
 			description: 'Deploy LiveMonitor',
 			defaultValue: false
@@ -94,7 +99,7 @@ pipeline{
 			name: "_Deploy_Services_LotoService",
 			description: 'Deploy Loto Service',
 			defaultValue: false
-			)
+			)		
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
@@ -336,10 +341,20 @@ pipeline{
 							jsonMap: scriptFile,
 							stage: 'Deploy')
 						)
-						def scriptLine = "echo '${KUBER_IP} website.bb-webapps.com livemoncontent.bb-webapps.com'> C:\\Windows\\System32\\drivers\\etc\\hosts"
+						def List EtcHosts = [
+							'website.bb-webapps.com',
+							'livemon.bb-webapps.com',
+							'livemonadmin.bb-webapps.com',
+							'livemoncontent.bb-webapps.com'
+						]
+						def scriptLine = "echo '${KUBER_IP} ${EtcHosts.join(' ')}'> C:\\Windows\\System32\\drivers\\etc\\hosts"
 						powershell(
 								script: scriptLine,
 								label: 'Update etc/hosts')
+						scriptLine = "echo '${AGENT_IP} ${DEPLOY_AGENT} ${DEPLOY_AGENT}.gkbaltbet.local ${DEPLOY_AGENT}.bb-webapps.com '>> C:\\Windows\\System32\\drivers\\etc\\hosts"
+						powershell(
+								script: scriptLine,
+								label: 'Update etc/hosts with local names')
 					}
 				}
 			}
