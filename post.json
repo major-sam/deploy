@@ -186,5 +186,10 @@
         "stages": [            
             "IntegrationService.ps1"
         ]
+    }, {
+        "name": "UniRegistrationService",
+        "stages": [
+            "UniRegistrationService.ps1"
+        ]
     }
 ]
