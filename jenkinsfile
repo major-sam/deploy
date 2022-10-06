@@ -61,6 +61,11 @@ pipeline{
 			defaultValue: false
 			)
 		booleanParam (
+			name: "ENABLE_MATOMO",
+			description:'Enable Matomo Analytics',
+			defaultValue: false
+			)
+		booleanParam (
 			name: "DEPLOY_TT",
 			description:'Deploy Trading Tool',
 			defaultValue: false
@@ -99,12 +104,7 @@ pipeline{
 			name: "_Deploy_Services_LotoService",
 			description: 'Deploy Loto Service',
 			defaultValue: false
-			)
-		booleanParam (
-			name: "ENABLE_MATOMO",
-			description:'Enable Matomo Analytics',
-			defaultValue: false
-			)
+			)		
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
