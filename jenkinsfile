@@ -133,7 +133,7 @@ pipeline{
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
 		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
-		MATOMO_IS_ENABLED = params.ENABLE_MATOMO
+		MATOMO_IS_ENABLED = "${params.ENABLE_MATOMO}"
 	}
 
 
