@@ -161,7 +161,8 @@
             "WebApiSettings.ps1",
             "Broadcast.ps1",
             "Global.ps1",
-            "Pages.ps1"
+            "Pages.ps1",
+            "Matomo.ps1"
         ]
     }, {
         "name": "EraiService",
