@@ -20,7 +20,6 @@
             "ComAccounts.ps1",
             "AddRestoreComAccountTemplate.ps1",
             "Tasks.ps1",
-            "AddExpressCoupons.ps1",
             "updateConfig.ps1",
             "updateKernelLogConfig.ps1",
             "updateKernelUnityConfig.ps1",
@@ -161,7 +160,8 @@
             "WebApiSettings.ps1",
             "Broadcast.ps1",
             "Global.ps1",
-            "Pages.ps1"
+            "Pages.ps1",
+            "Matomo.ps1"
         ]
     }, {
         "name": "EraiService",
@@ -185,6 +185,11 @@
         "name": "IntegrationService",
         "stages": [            
             "IntegrationService.ps1"
+        ]
+    }, {
+        "name": "UniRegistrationService",
+        "stages": [
+            "UniRegistrationService.ps1"
         ]
     }, {
         "name": "AchievementService",
