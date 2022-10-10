@@ -20,7 +20,6 @@
             "ComAccounts.ps1",
             "AddRestoreComAccountTemplate.ps1",
             "Tasks.ps1",
-            "AddExpressCoupons.ps1",
             "updateConfig.ps1",
             "updateKernelLogConfig.ps1",
             "updateKernelUnityConfig.ps1",
