@@ -65,6 +65,12 @@ pipeline{
 			description:'Enable Matomo Analytics',
 			defaultValue: false
 			)
+		//TODO Remove ENABLE_NOTIFICATAION_SERVICE after release ARCHI-527
+		booleanParam (
+			name: "ENABLE_NOTIFICATAION_SERVICE",
+			description:'Enable NotificationService registration',
+			defaultValue: false
+			)
 		booleanParam (
 			name: "DEPLOY_TT",
 			description:'Deploy Trading Tool',
@@ -134,6 +140,8 @@ pipeline{
 		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
 		MATOMO_IS_ENABLED = "${params.ENABLE_MATOMO}"
+		//TODO Remove NOTIFICATION_SERVICE_IS_ENABLED after release ARCHI-527
+		NOTIFICATION_SERVICE_IS_ENABLED = "${params.ENABLE_NOTIFICATAION_SERVICE}"
 	}
 
 

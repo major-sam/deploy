@@ -191,5 +191,10 @@
         "stages": [
             "UniRegistrationService.ps1"
         ]
+    }, {
+        "name": "NotificationService",
+        "stages": [
+            "NotificationService.ps1"
+        ]
     }
 ]
