@@ -248,11 +248,16 @@
         "stages": [            
             "IntegrationService.ps1"
         ]
-    } , {
+    }, {
         "name": "UniRegistrationService",
         "stages": [
             "UniRegistrationService.ps1",
             "UniRegistrationServiceDB.ps1"
+        ]
+    }, {
+        "name": "NotificationService",
+        "stages": [
+            "NotificationService.ps1"
         ]
     }
 ]
