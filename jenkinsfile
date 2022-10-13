@@ -357,6 +357,7 @@ pipeline{
 						)
 						def List EtcHosts = [
 							'website.bb-webapps.com',
+							'krm.bb-webapps.com',
 							'livemon.bb-webapps.com',
 							'livemonadmin.bb-webapps.com',
 							'livemoncontent.bb-webapps.com'
