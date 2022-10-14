@@ -60,12 +60,6 @@
             "UniRuSql.ps1"
         ]
     }, {
-        "name": "KRM",
-        "stages": [
-            "KRMDB.ps1",
-            "KRM.ps1"
-        ]
-    }, {
         "name": "PIC",
         "stages": [
             "AdminMessageService.ps1",

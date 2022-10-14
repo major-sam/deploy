@@ -380,6 +380,7 @@ pipeline{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
 					script{
 						Map core_b_map = [
+							KRM:'/Deploy/Sites/KRM',
 							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
 							choices = requests.getBranches(
