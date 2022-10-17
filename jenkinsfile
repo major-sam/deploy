@@ -65,6 +65,12 @@ pipeline{
 			description:'Enable Matomo Analytics',
 			defaultValue: false
 			)
+		//TODO Remove ENABLE_NOTIFICATAION_SERVICE after release ARCHI-527
+		booleanParam (
+			name: "ENABLE_NOTIFICATAION_SERVICE",
+			description:'Enable NotificationService registration',
+			defaultValue: false
+			)
 		booleanParam (
 			name: "DEPLOY_TT",
 			description:'Deploy Trading Tool',
@@ -134,6 +140,8 @@ pipeline{
 		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
 		MATOMO_IS_ENABLED = "${params.ENABLE_MATOMO}"
+		//TODO Remove NOTIFICATION_SERVICE_IS_ENABLED after release ARCHI-527
+		NOTIFICATION_SERVICE_IS_ENABLED = "${params.ENABLE_NOTIFICATAION_SERVICE}"
 	}
 
 
@@ -349,6 +357,7 @@ pipeline{
 						)
 						def List EtcHosts = [
 							'website.bb-webapps.com',
+							'krm.bb-webapps.com',
 							'livemon.bb-webapps.com',
 							'livemonadmin.bb-webapps.com',
 							'livemoncontent.bb-webapps.com'
@@ -371,6 +380,7 @@ pipeline{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
 					script{
 						Map core_b_map = [
+							KRM:'/Deploy/Sites/KRM',
 							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
 							choices = requests.getBranches(

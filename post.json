@@ -192,6 +192,11 @@
             "UniRegistrationService.ps1"
         ]
     }, {
+        "name": "NotificationService",
+        "stages": [
+            "NotificationService.ps1"
+        ]
+    }, {
         "name": "AchievementService",
         "stages": [
             "EditKernelSettings.ps1",
