@@ -393,6 +393,7 @@ pipeline{
 							core_b_map[coreBuild] = {
 								build (
 										job:coreBuildPath, 
+										propagate: false,
 										parameters: [
 											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
 											string(name: 'Branch', value: br_name) ]
@@ -701,6 +702,7 @@ pipeline{
 								b_map[b_name] = {
 									build (
 											job:param.getKey().replaceAll('_','/'), 
+											propagate: false,
 											parameters: [
 												booleanParam(name: 'Reload', value: false),
 												string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
