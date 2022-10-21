@@ -196,5 +196,11 @@
         "stages": [
             "NotificationService.ps1"
         ]
+    }, {
+        "name": "AchievementService",
+        "stages": [
+            "EditKernelSettings.ps1",
+            "AchievementService.ps1"
+        ]
     }
 ]
