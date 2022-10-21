@@ -1,4 +1,4 @@
-@Library(["JenkinsCI", "DeployLib@feature/AchievementService"]) _
+@Library(["JenkinsCI", "DeployLib"]) _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
@@ -52,7 +52,7 @@ def getNodeList(label = 'windows'){
 
 pipeline{
 	parameters {
-		string name:'Branch', defaultValue: "feature-BON-2", trim: true, description: "Branch(Task)"
+		string name:'Branch', defaultValue: "master", trim: true, description: "Branch(Task)"
 		choice name:"DEPLOY_AGENT", choices: getNodeList()
 		string name:'Comments', defaultValue: "", trim: true, description: "Build comments"
 		booleanParam (
