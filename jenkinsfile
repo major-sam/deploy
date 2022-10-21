@@ -380,7 +380,7 @@ pipeline{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
 					script{
 						Map core_b_map = [
-							KRM:'/Deploy/Sites/KRM',
+						// WEB-7254 KRM:'/Deploy/Sites/KRM',
 							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
 							choices = requests.getBranches(
@@ -393,6 +393,7 @@ pipeline{
 							core_b_map[coreBuild] = {
 								build (
 										job:coreBuildPath, 
+										propagate: false,
 										parameters: [
 											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
 											string(name: 'Branch', value: br_name) ]
@@ -701,6 +702,7 @@ pipeline{
 								b_map[b_name] = {
 									build (
 											job:param.getKey().replaceAll('_','/'), 
+											propagate: false,
 											parameters: [
 												booleanParam(name: 'Reload', value: false),
 												string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
