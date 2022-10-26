@@ -50,11 +50,6 @@
             "UniAdministration.ps1"
         ]
     }, {
-        "name": "PromoExpressService",
-        "stages": [
-            "PromoExpressService.ps1"
-        ]
-    }, {
         "name": "PersonalInfoCenter",
         "stages": [
             "Tasks.ps1",
