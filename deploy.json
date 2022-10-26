@@ -219,6 +219,12 @@
             "UniAuthServiceGrpc.ps1"
         ]
     }, {
+        "name": "AchievementService",
+        "stages": [
+            "AchievementService.ps1",
+            "AchievementServiceDB.ps1"
+        ]
+    }, {
         "name": "EraiService",
         "stages": [
             "EraiService.ps1",
