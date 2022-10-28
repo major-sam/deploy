@@ -139,7 +139,6 @@ pipeline{
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
 		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
-		CONSUL_CERT = credentials('ConsulAgentCert')
 		CONSUL_AGENT_TOKEN = credentials('ConsulAgentToken')
 		CONSUL_GOSIP_TOKEN = credentials('ConsulGOSIPToken')
 		CONSUL_NODES = '"consul-s2", "consul-s1", "consul-s3"'
@@ -324,41 +323,44 @@ pipeline{
 			steps{
 				withCredentials([
 						file(
-							credentialsId:'bb-webapps',
-							variable:'BBWEBAPPS'),
+							credentialsId: 'bb-webapps',
+							variable: 'BBWEBAPPS'),
 						file(
-							credentialsId:'gkbaltbet-ca',
-							variable:'GKBALTBETCA'),
+							credentialsId: 'gkbaltbet-ca',
+							variable: 'GKBALTBETCA'),
 						file(
-							credentialsId:'wcf-host',
-							variable:'WCFHOST'),
+							credentialsId: 'wcf-host',
+							variable: 'WCFHOST'),
 						file(
-							credentialsId:'client.test.kernel',
-							variable:'CLIENTTESTKERNEL'),
+							credentialsId: 'client.test.kernel',
+							variable: 'CLIENTTESTKERNEL'),
 						file(
-							credentialsId:'test.payment.service',
-							variable:'TESTPAYMENTSERVICE'),
+							credentialsId: 'test.payment.service',
+							variable: 'TESTPAYMENTSERVICE'),
 						file(
-							credentialsId:'testCupis',
-							variable:'TESTCUPISCERT'),
+							credentialsId: 'testCupis',
+							variable: 'TESTCUPISCERT'),
 						file(
-							credentialsId:'testCupisCA',
-							variable:'TESTCUPISCA'),
+							credentialsId: 'testCupisCA',
+							variable: 'TESTCUPISCA'),
 						file(
-							credentialsId:'testERAI',
-							variable:'TESTERAICERT'),
+							credentialsId: 'testERAI',
+							variable: 'TESTERAICERT'),
 						file(
-							credentialsId:'testLotoServiceCert',
-							variable:'TESTLOTOCERT'),
+							credentialsId: 'ConsulAgentCert',
+							variable: 'CONSUL_CERT'),
+						file(
+							credentialsId: 'testLotoServiceCert',
+							variable: 'TESTLOTOCERT'),
 						string(
-							credentialsId:'Asterisk_Secret',
-							variable:'AsteriskSecret'),
+							credentialsId: 'Asterisk_Secret',
+							variable: 'AsteriskSecret'),
 						string(
-							credentialsId:'Uni_DecryptionKey',
-							variable:'UniDecryptionKey'),
+							credentialsId: 'Uni_DecryptionKey',
+							variable: 'UniDecryptionKey'),
 						string(
-							credentialsId:'Uni_ValidationKey',
-							variable:'UniValidationKey')
+							credentialsId: 'Uni_ValidationKey',
+							variable: 'UniValidationKey')
 				]){
 					script{
 						def List scriptFile = readJSON (file: DEPLOY_JSON)
