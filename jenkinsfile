@@ -110,13 +110,13 @@ pipeline{
 			name: "_Deploy_Services_LotoService",
 			description: 'Deploy Loto Service',
 			defaultValue: false
-			)		
+			)
 	}
 
 	agent {label "${DEPLOY_AGENT}" }
 
 	environment {
-		SIDE_FUNCTIONS = '.\\scripts\\sideFunctions.psm1' 
+		SIDE_FUNCTIONS = '.\\scripts\\sideFunctions.psm1'
 		CONFIG_UPDATES = "configUpdates.log"
 		SERVICE_CREDS = credentials('Testkernel')
 		REDIS_CREDS = credentials('RedisCreds')
@@ -133,12 +133,17 @@ pipeline{
 		NAMESPACE="$DEPLOY_AGENT"
 		KUBER_IP = utils.getKuberIP(agent_vm:DEPLOY_AGENT)
 		REDIS_HOST = "${KUBER_IP}:${REDIS_PORT}"
-		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}" 
+		RABBIT_HOST = "${KUBER_IP}:${RABBIT_PORT}"
 		PAC_CERT_THUMBPRINT = credentials('testPaymentServiceThumbprint')
 		UNI_REG_ENCRYPTION_PASSPHRASE = credentials('UniRegistrationEncryprionPassphrase')
 		ERAI_API_KEY_TEST = credentials('testEraiApiKey')
 		ERAI_THUMBPRINT_TEST = credentials('testEraiThumbprint')
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
+		CONSUL_CERT = credentials('ConsulAgentCert')
+		CONSUL_AGENT_TOKEN = credentials('ConsulAgentToken')
+		CONSUL_GOSIP_TOKEN = credentials('ConsulGOSIPToken')
+		CONSUL_NODES = '"consul-s2", "consul-s1", "consul-s3"'
+		CONSUL_DC = 'dc1'
 		MATOMO_IS_ENABLED = "${params.ENABLE_MATOMO}"
 		//TODO Remove NOTIFICATION_SERVICE_IS_ENABLED after release ARCHI-527
 		NOTIFICATION_SERVICE_IS_ENABLED = "${params.ENABLE_NOTIFICATAION_SERVICE}"
@@ -400,7 +405,7 @@ pipeline{
 							def br_name = normalise_branch in choices ? normalise_branch : 'master'
 							core_b_map[coreBuild] = {
 								build (
-										job:coreBuildPath, 
+										job:coreBuildPath,
 										propagate: false,
 										parameters: [
 											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
@@ -408,8 +413,8 @@ pipeline{
 								)
 							}
 						}
-						parallel core_b_map 
-					} 
+						parallel core_b_map
+					}
 				}
 			}
 		}
@@ -709,7 +714,7 @@ pipeline{
 								def br_name = normalise_branch in choices ? normalise_branch : 'master'
 								b_map[b_name] = {
 									build (
-											job:param.getKey().replaceAll('_','/'), 
+											job:param.getKey().replaceAll('_','/'),
 											propagate: false,
 											parameters: [
 												booleanParam(name: 'Reload', value: false),
@@ -717,7 +722,7 @@ pipeline{
 												string(name: 'BG', value: 'Blue'),
 												string(name: 'Branch', value: br_name),
 												string(
-													name: 'Folder', 
+													name: 'Folder',
 													value: param
 														.getKey()
 														.replaceAll('_Deploy','')
@@ -730,7 +735,7 @@ pipeline{
 							}
 						}
 						parallel b_map
-					} 
+					}
 				}
 			}
 		}
