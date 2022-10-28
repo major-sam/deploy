@@ -275,7 +275,8 @@ pipeline{
 								sh(
 									script:"""
 										kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'
-										/usr/bin/kubectl create ns ${DEPLOY_AGENT} """ ,
+										/usr/bin/kubectl create ns ${DEPLOY_AGENT}
+										/usr/bin/helm repo update """ ,
 									label:'clean ns'
 								)
 								sh(
