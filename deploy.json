@@ -37,12 +37,6 @@
             "WebsiteComPublic.ps1"
         ]
     }, {
-        "name": "PromoExpressService",
-        "stages": [
-            "config.ps1",
-            "db.ps1"
-        ]
-    }, {
         "name": "FavoritesService",
         "stages": [
             "FavoritesService.ps1"

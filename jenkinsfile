@@ -271,7 +271,14 @@ pipeline{
 									script:"""
 										kubectl delete ns ${DEPLOY_AGENT}|| echo 'NameSpace already removed'
 										/usr/bin/kubectl create ns ${DEPLOY_AGENT} """ ,
-									label:'clean ns')
+									label:'clean ns'
+								)
+								sh(
+									script:"""
+										openssl s_client -showcerts -connect nexus.gkbaltbet.local:443 -servername nexus.gkbaltbet.local  </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /etc/ssl/certs/gkbaltbet-nexus.pem
+										update-ca-certificates """ ,
+									label:'cert install'
+								)
 							}
 						}
 					}
@@ -380,6 +387,7 @@ pipeline{
 				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
 					script{
 						Map core_b_map = [
+							PromoExpressService:'/Deploy/Services/PromoExpressService',
 						// WEB-7254 KRM:'/Deploy/Sites/KRM',
 							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
