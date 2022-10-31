@@ -149,9 +149,6 @@ pipeline{
 	}
 
 
-	tools {
-		maven 'maven382'
-	}
 	options {
 		parallelsAlwaysFailFast()
 	}
@@ -396,7 +393,6 @@ pipeline{
 					script{
 						Map core_b_map = [
 							PromoExpressService:'/Deploy/Services/PromoExpressService',
-						// WEB-7254 KRM:'/Deploy/Sites/KRM',
 							Website:'/Deploy/Sites/Website']
 						core_b_map.each{ coreBuild , coreBuildPath ->
 							choices = requests.getBranches(
