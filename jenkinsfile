@@ -141,7 +141,7 @@ pipeline{
 		LOTO_CERT_PSW = credentials('testLotoServiceCertPassword')
 		CONSUL_AGENT_TOKEN = credentials('ConsulAgentToken')
 		CONSUL_GOSIP_TOKEN = credentials('ConsulGOSIPToken')
-		CONSUL_NODES = '"consul-s2", "consul-s1", "consul-s3"'
+		CONSUL_NODES = 'consul-s2,consul-s1,consul-s3'
 		CONSUL_DC = 'dc1'
 		MATOMO_IS_ENABLED = "${params.ENABLE_MATOMO}"
 		//TODO Remove NOTIFICATION_SERVICE_IS_ENABLED after release ARCHI-527
