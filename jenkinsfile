@@ -402,12 +402,13 @@ pipeline{
 									groupid: coreBuild )
 							def normalise_branch = defaultNexusNaming(params.Branch)
 							def br_name = normalise_branch in choices ? normalise_branch : 'master'
+							print "Build ${coreBuild} on branch ${br_name}"
 							core_b_map[coreBuild] = {
 								build (
 										job:coreBuildPath,
 										propagate: false,
 										parameters: [
-											string(name: 'DEPLOY_AGENT', value: DEPLOY_AGENT),
+											string(name: 'DEPLOY_AGENT', value: params.DEPLOY_AGENT),
 											string(name: 'Branch', value: br_name) ]
 								)
 							}
