@@ -122,7 +122,7 @@ pipeline{
 		REDIS_CREDS = credentials('RedisCreds')
 		RABBIT_CREDS = credentials('RabbitCreds')
 		TT_SERVICE_CREDS = credentials('kernelsvc')
-		NEXUS_CREDS = credentials('jenkinsAD')
+		NEXUS_CREDS = credentials('jenkinsNexusLocal')
 		CUPIS_CERT_PASS = credentials('CupisCertPassword')
 		CUPIS_FNS_KEY = credentials('CupisFnsKey')
 		CUPIS_CERT_THUMBPRINT = credentials('CupisCertThumbprint')
@@ -389,7 +389,7 @@ pipeline{
 
 		stage('Deploy Core builds'){
 			steps{
-				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsNexusLocal', variable: 'creds')]) {
 					script{
 						Map core_b_map = [
 							PromoExpressService:'/Deploy/Services/PromoExpressService',
@@ -698,7 +698,7 @@ pipeline{
 
 		stage('Deploy other builds'){
 			steps{
-				withCredentials([usernameColonPassword(credentialsId: 'jenkinsAD', variable: 'creds')]) {
+				withCredentials([usernameColonPassword(credentialsId: 'jenkinsNexusLocal', variable: 'creds')]) {
 					script{
 						Map b_map = [:]
 						params.each{ param ->
@@ -786,7 +786,7 @@ pipeline{
 					root: env.CONFLUENCE_LOG_PAGE_ID,
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
-					auth: 'jenkinsAD')
+					auth: 'jenkinsNexusLocal')
 					addDeployToDashboard(env: params.DEPLOY_AGENT, buildNumber: params.Branch)
 			}
 		}
