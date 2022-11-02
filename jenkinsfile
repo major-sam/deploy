@@ -786,7 +786,7 @@ pipeline{
 					root: env.CONFLUENCE_LOG_PAGE_ID,
 					spacekey: env.CONFLUENCE_LOG_PAGE_SPACE,
 					body: currentBuild.description,
-					auth: 'jenkinsNexusLocal')
+					auth: 'jenkinsAD')
 					addDeployToDashboard(env: params.DEPLOY_AGENT, buildNumber: params.Branch)
 			}
 		}
